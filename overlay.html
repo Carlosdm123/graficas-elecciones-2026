@@ -14,13 +14,14 @@
 
 <body>
 
-<!-- ========================= -->
-<!-- CAPA CANDIDATOS -->
-<!-- ========================= -->
+
+<!-- ====================================== -->
+<!-- CANDIDATOS -->
+<!-- ====================================== -->
 
 <div id="candidatos-system" class="overlay-layer">
 
-<div id="candidateBanner" style="opacity:0;">
+<div id="candidateBanner">
 
 <div id="candidateBox1">
 <div id="candidateMask1">
@@ -35,6 +36,7 @@
 
 </div>
 </div>
+
 
 <div id="candidateBox2">
 <div id="candidateMask2">
@@ -53,13 +55,13 @@
 </div>
 
 
-<!-- ========================= -->
-<!-- CAPA BANNER -->
-<!-- ========================= -->
+<!-- ====================================== -->
+<!-- BANNERS -->
+<!-- ====================================== -->
 
 <div id="banner-system" class="overlay-layer">
 
-<div id="banner" style="opacity:0;">
+<div id="banner">
 
 <div id="box1">
 <div id="mask1">
@@ -72,6 +74,7 @@
 
 </div>
 </div>
+
 
 <div id="box2">
 <div id="mask2">
@@ -90,13 +93,13 @@
 </div>
 
 
-<!-- ========================= -->
-<!-- CAPA TITULO DE ROL -->
-<!-- ========================= -->
+<!-- ====================================== -->
+<!-- ROLES -->
+<!-- ====================================== -->
 
 <div id="roles-system" class="overlay-layer">
 
-<div id="rolesBanner" style="opacity:0;">
+<div id="rolesBanner">
 
 <div id="rolesBox1">
 <div id="rolesMask1">
@@ -110,13 +113,21 @@
 </div>
 </div>
 
+
 <div id="rolesBox2">
 <div id="rolesMask2">
 
 <img src="assets/shared/caja2.png" class="bg">
 
 <div id="rolesTextContainer">
-<div id="rolesBannerText"></div>
+
+<div id="rolesBannerText">
+
+<div id="roleName"></div>
+<div id="roleText"></div>
+
+</div>
+
 </div>
 
 </div>
@@ -127,13 +138,13 @@
 </div>
 
 
-<!-- ========================= -->
-<!-- CAPA MOSCA -->
-<!-- ========================= -->
+<!-- ====================================== -->
+<!-- MOSCA -->
+<!-- ====================================== -->
 
 <div id="mosca-system" class="overlay-layer">
 
-<div id="mosca">
+<div id="moscaContainer">
 
 <div id="texto"></div>
 
@@ -144,25 +155,183 @@
 <div id="ticker">
 
 <div class="ticker-track">
-<span class="text">WWW.ELESPECTADOR.COM</span>
-<span class="text">WWW.ELESPECTADOR.COM</span>
-</div>
+
+<span class="text">
+WWW.ELESPECTADOR.COM
+</span>
+
+<span class="text">
+WWW.ELESPECTADOR.COM
+</span>
 
 </div>
 
 </div>
+
+</div>
+
 
 <div id="logoEE">
 
 <div class="circle-mask">
+
 <img src="assets/mosca/logoee.png">
-</div>
 
 </div>
 
 </div>
 
 </div>
+
+</div>
+
+
+<script>
+
+const ably = new Ably.Realtime(
+"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ"
+);
+
+const channel = ably.channels.get(
+"ably-elecciones-completo"
+);
+
+
+// ======================================
+// ESTADOS
+// ======================================
+
+let bannerVisible=false;
+let candidateVisible=false;
+let roleVisible=false;
+
+
+// ======================================
+// BANNER
+// ======================================
+
+channel.subscribe("graphics",(msg)=>{
+
+const data=msg.data;
+
+
+// ======================================
+// BANNER NORMAL
+// ======================================
+
+if(data.type==="banner"){
+
+const banner=document.getElementById("banner");
+
+if(data.action==="show"){
+
+document.getElementById("bannerText").innerText=data.text;
+
+banner.style.opacity="1";
+
+bannerVisible=true;
+
+}
+
+if(data.action==="hide"){
+
+banner.style.opacity="0";
+
+bannerVisible=false;
+
+}
+
+}
+
+
+// ======================================
+// CANDIDATOS
+// ======================================
+
+if(data.type==="candidatos"){
+
+const banner=document.getElementById("candidateBanner");
+
+if(data.action==="show"){
+
+document.getElementById("candidateBannerText").innerText=data.text;
+
+document.getElementById("candidateImg").src=
+"assets/candidatos/"+data.candidate;
+
+banner.style.opacity="1";
+
+candidateVisible=true;
+
+}
+
+if(data.action==="hide"){
+
+banner.style.opacity="0";
+
+candidateVisible=false;
+
+}
+
+}
+
+
+// ======================================
+// ROLES
+// ======================================
+
+if(data.type==="roles"){
+
+const banner=document.getElementById("rolesBanner");
+
+if(data.action==="show"){
+
+document.getElementById("roleName").innerText=data.name;
+
+document.getElementById("roleText").innerText=data.role;
+
+banner.style.opacity="1";
+
+roleVisible=true;
+
+}
+
+if(data.action==="hide"){
+
+banner.style.opacity="0";
+
+roleVisible=false;
+
+}
+
+}
+
+
+// ======================================
+// MOSCA
+// ======================================
+
+if(data.type==="mosca"){
+
+const mosca=document.getElementById("moscaContainer");
+
+if(data.action==="on"){
+
+mosca.style.opacity="1";
+
+}
+
+if(data.action==="off"){
+
+mosca.style.opacity="0";
+
+}
+
+}
+
+});
+
+</script>
 
 <script src="js/app.js"></script>
 
