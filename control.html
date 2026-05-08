@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Controlador Universal Elecciones 2026</title>
+<title>CONTROLADOR UNIVERSAL ELECCIONES 2026</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -14,45 +14,51 @@
 
 </head>
 
-<body class="controller-body">
+<body class="controllerBody">
+
+
+<!-- ====================================== -->
+<!-- INDICADOR -->
+<!-- ====================================== -->
+
+<div class="version" id="connectionDot"></div>
+
+
+<!-- ====================================== -->
+<!-- CONTENEDOR -->
+<!-- ====================================== -->
+
+<div class="containerUniversal">
 
 
 <!-- ====================================== -->
 <!-- HEADER -->
 <!-- ====================================== -->
 
-<header class="universal-header">
-
-<div class="header-left">
+<div class="universalHeader">
 
 <img
 src="assets/universal/logo-controlador.png"
-class="header-logo">
+class="headerLogo">
 
-<div class="header-title">
+<div class="headerTitle">
 CONTROLADOR UNIVERSAL ELECCIONES 2026
 </div>
 
 </div>
-
-<div id="connectionDot" class="connection-dot"></div>
-
-</header>
 
 
 <!-- ====================================== -->
 <!-- PREVIEW -->
 <!-- ====================================== -->
 
-<section class="preview-section">
-
-<div class="preview-title">
+<div class="previewTitleUniversal">
 PREVISUALIZADOR GENERAL
 </div>
 
-<div class="preview-container">
+<div class="preview">
 
-<div class="preview-inner">
+<div class="previewInner">
 
 <iframe src="overlay.html"></iframe>
 
@@ -61,7 +67,11 @@ PREVISUALIZADOR GENERAL
 </div>
 
 
-<div class="preview-buttons">
+<!-- ====================================== -->
+<!-- BOTONES -->
+<!-- ====================================== -->
+
+<div class="previewButtons">
 
 <button onclick="openOverlay()">
 Abrir overlay
@@ -73,34 +83,38 @@ Copiar URL para vMix
 
 </div>
 
-</section>
-
 
 <!-- ====================================== -->
 <!-- GRID -->
 <!-- ====================================== -->
 
-<section class="controls-grid">
+<div class="universalGrid">
 
 
 <!-- ====================================== -->
 <!-- BANNERS -->
 <!-- ====================================== -->
 
-<div class="control-card">
+<div class="controlBlock">
 
-<h2>CONTROL DE BANNERS</h2>
+<div class="previewTitle">
+CONTROL DE BANNERS
+</div>
 
 <div class="panel" id="bannerPanel"></div>
 
 <div class="inputArea">
 
 <textarea
-id="newBannerText"
+id="bannerNewText"
 maxlength="130"></textarea>
 
 <div class="counter" id="bannerCounter">
 0 / 130
+</div>
+
+<div class="error" id="bannerError">
+límite máximo de caracteres
 </div>
 
 <button
@@ -120,30 +134,32 @@ Agregar
 <!-- ROLES -->
 <!-- ====================================== -->
 
-<div class="control-card">
+<div class="controlBlock">
 
-<h2>CONTROL DE TÍTULOS DE ROL</h2>
+<div class="previewTitle">
+CONTROL DE TÍTULOS DE ROL
+</div>
 
-<div class="panel" id="rolesPanel"></div>
+<div class="panel rolesPanel" id="rolesPanel"></div>
 
 <div class="inputArea">
 
 <input
-id="newRoleName"
+id="newName"
 maxlength="70"
 placeholder="Nombre">
 
-<div class="counter" id="roleNameCounter">
+<div class="counter" id="countName">
 0 / 70
 </div>
 
 
 <input
-id="newRoleText"
+id="newRole"
 maxlength="100"
 placeholder="Rol">
 
-<div class="counter" id="roleTextCounter">
+<div class="counter" id="countRole">
 0 / 100
 </div>
 
@@ -165,20 +181,26 @@ Agregar
 <!-- CANDIDATOS -->
 <!-- ====================================== -->
 
-<div class="control-card">
+<div class="controlBlock">
 
-<h2>CONTROL DE CANDIDATOS</h2>
+<div class="previewTitle">
+CONTROL DE CANDIDATOS
+</div>
 
 <div class="panel" id="candidatePanel"></div>
 
 <div class="inputArea">
 
 <textarea
-id="newCandidateText"
+id="candidateNewText"
 maxlength="130"></textarea>
 
 <div class="counter" id="candidateCounter">
 0 / 130
+</div>
+
+<div class="error" id="candidateError">
+límite máximo de caracteres
 </div>
 
 <button
@@ -198,39 +220,49 @@ Agregar
 <!-- MOSCA -->
 <!-- ====================================== -->
 
-<div class="control-card">
+<div class="controlBlock">
 
-<h2>CONTROL MOSCA ANÁLISIS</h2>
+<div class="previewTitle">
+CONTROL DE MOSCA ANÁLISIS
+</div>
 
-<div class="mosca-controls">
 
+<div class="moscaContent">
 
 <label class="switch">
 
 <input
 type="checkbox"
-id="moscaToggle">
+id="toggle">
 
 <span class="slider"></span>
 
 </label>
 
 
-<div class="mosca-block">
+<div class="moscaLabel">
+Cierre de votaciones en:
+</div>
 
-<div>Cierre de votaciones:</div>
+
+<div class="hora-box">
 
 <input
 type="time"
 id="hora"
 value="16:00">
 
+<span id="status" class="status"></span>
+
 </div>
 
 
-<div class="mosca-block">
+<div class="moscaLabel marginTop">
+Reiniciar animación cada (minutos)
+</div>
 
-<div>Repetición (minutos)</div>
+
+<div class="hora-box">
 
 <select id="loopMin">
 
@@ -249,7 +281,13 @@ value="16:00">
 
 </div>
 
-</section>
+
+</div>
+<!-- GRID -->
+
+
+</div>
+<!-- CONTAINER -->
 
 
 <script src="animation.js"></script>
