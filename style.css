@@ -7,13 +7,16 @@ font-weight:600;
 
 *{
 box-sizing:border-box;
-}
-
-body{
 margin:0;
 padding:0;
-font-family:"LFT Etica",sans-serif;
+}
+
+html,
+body{
+width:100%;
+height:100%;
 overflow:hidden;
+font-family:"LFT Etica",sans-serif;
 background:transparent;
 }
 
@@ -153,7 +156,6 @@ min-height:420px;
 }
 
 .control-card h2{
-margin-top:0;
 margin-bottom:20px;
 font-size:24px;
 font-weight:700;
@@ -339,7 +341,13 @@ left:0;
 width:1920px;
 height:1080px;
 pointer-events:none;
+overflow:hidden;
 }
+
+
+/* ====================================== */
+/* ORDEN CAPAS */
+/* ====================================== */
 
 #candidatos-system{
 z-index:10;
@@ -359,50 +367,18 @@ z-index:40;
 
 
 /* ====================================== */
-/* BANNERS */
+/* RESET OVERLAY */
 /* ====================================== */
 
 #banner,
 #rolesBanner,
-#candidateBanner{
+#candidateBanner,
+#moscaContainer{
 position:absolute;
-bottom:230px;
 left:0;
-width:1920px;
+top:0;
 opacity:0;
-transition:opacity .35s ease;
-}
-
-#box1,
-#box2,
-#rolesBox1,
-#rolesBox2,
-#candidateBox1,
-#candidateBox2{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-}
-
-.bg{
-width:100%;
-height:auto;
-display:block;
-transform:scaleY(0.9);
-transform-origin:center;
-}
-
-#mask1,
-#mask2,
-#rolesMask1,
-#rolesMask2,
-#candidateMask1,
-#candidateMask2{
-position:absolute;
-top:0;
-left:0;
-width:100%;
+pointer-events:none;
 }
 
 
@@ -410,37 +386,93 @@ width:100%;
 /* BANNER NORMAL */
 /* ====================================== */
 
+#banner{
+bottom:220px;
+width:1920px;
+height:180px;
+}
+
+#box1{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+}
+
+#box2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+}
+
+#mask1{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+overflow:hidden;
+}
+
+#mask2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+overflow:hidden;
+}
+
+#box1 .bg{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:auto;
+}
+
+#box2 .bg{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:auto;
+}
+
 #logoBox{
 position:absolute;
-top:50%;
-left:50vw;
+left:420px;
+top:90px;
 transform:translate(-50%,-50%);
+z-index:10;
 }
 
 #logo{
-height:70px;
+height:74px;
+width:auto;
 }
 
 #textContainer{
 position:absolute;
+left:530px;
 top:50%;
-left:250px;
-width:1340px;
 transform:translateY(-50%);
+width:1050px;
+height:80px;
 display:flex;
 align-items:center;
 overflow:hidden;
 }
 
 #bannerText{
-font-size:34px;
-font-weight:600;
+position:relative;
+font-size:36px;
+line-height:1.15;
+font-weight:700;
 color:white;
-width:100%;
-line-height:1.25;
-max-height:2.5em;
-overflow:hidden;
-word-break:keep-all;
 text-transform:uppercase;
 }
 
@@ -449,47 +481,102 @@ text-transform:uppercase;
 /* CANDIDATOS */
 /* ====================================== */
 
+#candidateBanner{
+bottom:220px;
+width:1920px;
+height:180px;
+}
+
+#candidateBox1{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+}
+
+#candidateBox2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+}
+
+#candidateMask1{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+overflow:hidden;
+}
+
+#candidateMask2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+overflow:hidden;
+}
+
+#candidateBox1 .bg{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:auto;
+}
+
+#candidateBox2 .bg{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:auto;
+}
+
 #candidateLogoBox{
 position:absolute;
-top:50%;
-left:50vw;
+left:420px;
+top:90px;
 transform:translate(-50%,-50%);
+z-index:10;
 }
 
 #candidateLogo{
-height:70px;
+height:74px;
+width:auto;
 }
 
 #candidateImg{
 position:absolute;
 left:115px;
-top:50%;
-transform:translateY(-50%);
-height:120px;
+top:28px;
+height:124px;
 width:auto;
-z-index:5;
+z-index:10;
 }
 
 #candidateTextContainer{
 position:absolute;
-top:50%;
 left:320px;
-width:1250px;
+top:50%;
 transform:translateY(-50%);
+width:1220px;
+height:80px;
 display:flex;
 align-items:center;
 overflow:hidden;
 }
 
 #candidateBannerText{
-font-size:34px;
-font-weight:600;
+position:relative;
+font-size:36px;
+line-height:1.15;
+font-weight:700;
 color:white;
-width:100%;
-line-height:1.25;
-max-height:2.5em;
-overflow:hidden;
-word-break:keep-all;
 text-transform:uppercase;
 }
 
@@ -498,29 +585,89 @@ text-transform:uppercase;
 /* ROLES */
 /* ====================================== */
 
+#rolesBanner{
+bottom:220px;
+width:1920px;
+height:180px;
+}
+
+#rolesBox1{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+}
+
+#rolesBox2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+}
+
+#rolesMask1{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+overflow:hidden;
+}
+
+#rolesMask2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:180px;
+overflow:hidden;
+}
+
+#rolesBox1 .bg{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:auto;
+}
+
+#rolesBox2 .bg{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+height:auto;
+}
+
 #rolesLogoBox{
 position:absolute;
-top:50%;
-left:50vw;
+left:420px;
+top:90px;
 transform:translate(-50%,-50%);
+z-index:10;
 }
 
 #rolesLogo{
-height:70px;
+height:74px;
+width:auto;
 }
 
 #rolesTextContainer{
 position:absolute;
+left:530px;
 top:50%;
-left:250px;
-width:1340px;
 transform:translateY(-50%);
+width:1050px;
+height:90px;
 display:flex;
 align-items:center;
 overflow:hidden;
 }
 
 #rolesBannerText{
+position:relative;
 display:flex;
 flex-direction:column;
 gap:4px;
@@ -529,17 +676,17 @@ gap:4px;
 #roleName{
 font-size:38px;
 font-weight:700;
+line-height:1;
 color:#EDE4D3;
 text-transform:uppercase;
-line-height:1;
 }
 
 #roleText{
 font-size:24px;
 font-weight:600;
+line-height:1;
 color:white;
 text-transform:uppercase;
-line-height:1;
 }
 
 
@@ -552,18 +699,18 @@ position:absolute;
 top:70px;
 right:80px;
 width:600px;
-opacity:0;
-transition:opacity .5s ease;
+transition:opacity .35s ease;
 }
 
 #texto{
+position:relative;
 width:600px;
 text-align:right;
-color:#ffffff;
+color:white;
 font-size:36px;
-font-weight:bold;
-text-transform:uppercase;
+font-weight:700;
 line-height:1.05;
+text-transform:uppercase;
 text-shadow:6px 6px 12px rgba(0,0,0,.8);
 }
 
@@ -578,6 +725,7 @@ align-items:flex-end;
 
 #logoMosca img{
 height:110px;
+width:auto;
 }
 
 #logoEE{
