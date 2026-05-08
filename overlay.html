@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+
+</head>
+
+<body>
+
+<div id="banner" style="opacity:0;">
+
+<div id="box1">
+<div id="mask1">
+
+<img src="assets/caja1.png" class="bg">
+
+<div id="logoBox">
+<img src="assets/logo.png" id="logo">
+</div>
+
+</div>
+</div>
+
+<div id="box2">
+<div id="mask2">
+
+<img src="assets/caja2.png" class="bg">
+
+<div id="textContainer">
+<div id="bannerText" style="text-transform:uppercase;"></div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script src="animation.js"></script>
+
+<script>
+
+const ably = new Ably.Realtime("bOKecA.9QsrUQ:0fDP1G0ebCieBR4lo6sS-CwOVg7MJZ6B-vDLgERRGug");
+
+const channel = ably.channels.get("vmix-banner");
+
+let visible=false;
+let changing=false;
+
+function hideImmediately(){
+
+const banner=document.getElementById("banner");
+
+banner.style.opacity="0";
+
+}
+
+hideImmediately();
+
+
+// =============================
+// MENSAJES DEL BANNER
+// =============================
+
+channel.subscribe("banner",(message)=>{
+
+const data=message.data;
+
+if(data.action==="show"){
+
+const banner=document.getElementById("banner");
+
+const text=data.text;
+
+if(visible){
+
+changing=true;
+
+hideBanner();
+
+setTimeout(()=>{
+
+document.getElementById("bannerText").innerText=text;
+
+banner.style.opacity="1";
+
+startBanner();
+
+visible=true;
+changing=false;
+
+},3500);
+
+}else{
+
+document.getElementById("bannerText").innerText=text;
+
+banner.style.opacity="1";
+
+startBanner();
+
+visible=true;
+
+}
+
+}
+
+if(data.action==="hide"){
+
+if(!visible) return;
+
+hideBanner();
+
+setTimeout(()=>{
+
+hideImmediately();
+visible=false;
+
+},1500);
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
