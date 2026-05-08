@@ -1,25 +1,71 @@
-<!DOCTYPE html>
-<html>
+# overlay.html
 
+```html
+<!DOCTYPE html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overlay Universal Elecciones 2026</title>
 
+<link rel="stylesheet" href="css/styles.css">
 <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
-
 </head>
 
 <body>
+
+<!-- ========================= -->
+<!-- CAPA CANDIDATOS -->
+<!-- ========================= -->
+<div id="candidatos-system" class="overlay-layer">
+
+<div id="candidateBanner" style="opacity:0;">
+
+<div id="candidateBox1">
+<div id="candidateMask1">
+
+<img src="assets/candidatos/caja11.png" class="bg">
+
+<img src="" id="candidateImg">
+
+<div id="candidateLogoBox">
+<img src="assets/candidatos/logo00.png" id="candidateLogo">
+</div>
+
+</div>
+</div>
+
+<div id="candidateBox2">
+<div id="candidateMask2">
+
+<img src="assets/candidatos/caja22.png" class="bg">
+
+<div id="candidateTextContainer">
+<div id="candidateBannerText"></div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- CAPA BANNER -->
+<!-- ========================= -->
+<div id="banner-system" class="overlay-layer">
 
 <div id="banner" style="opacity:0;">
 
 <div id="box1">
 <div id="mask1">
 
-<img src="assets/caja1.png" class="bg">
+<img src="assets/shared/caja1.png" class="bg">
 
 <div id="logoBox">
-<img src="assets/logo.png" id="logo">
+<img src="assets/shared/logo.png" id="logo">
 </div>
 
 </div>
@@ -28,10 +74,10 @@
 <div id="box2">
 <div id="mask2">
 
-<img src="assets/caja2.png" class="bg">
+<img src="assets/shared/caja2.png" class="bg">
 
 <div id="textContainer">
-<div id="bannerText" style="text-transform:uppercase;"></div>
+<div id="bannerText"></div>
 </div>
 
 </div>
@@ -39,87 +85,230 @@
 
 </div>
 
-<script src="animation.js"></script>
+</div>
+
+
+<!-- ========================= -->
+<!-- CAPA TITULO DE ROL -->
+<!-- ========================= -->
+<div id="roles-system" class="overlay-layer">
+
+<div id="rolesBanner" style="opacity:0;">
+
+<div id="rolesBox1">
+<div id="rolesMask1">
+
+<img src="assets/shared/caja1.png" class="bg">
+
+<div id="rolesLogoBox">
+<img src="assets/shared/logo.png" id="rolesLogo">
+</div>
+
+</div>
+</div>
+
+<div id="rolesBox2">
+<div id="rolesMask2">
+
+<img src="assets/shared/caja2.png" class="bg">
+
+<div id="rolesTextContainer">
+<div id="rolesBannerText"></div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- CAPA MOSCA -->
+<!-- ========================= -->
+<div id="mosca-system" class="overlay-layer">
+
+<div id="mosca">
+
+<div id="texto"></div>
+
+<div id="logoMosca">
+<img src="assets/mosca/logo1.png">
+
+<div id="ticker">
+<div class="ticker-track">
+<span class="text">WWW.ELESPECTADOR.COM</span>
+<span class="text">WWW.ELESPECTADOR.COM</span>
+</div>
+</div>
+</div>
+
+<div id="logoEE">
+<div class="circle-mask">
+<img src="assets/mosca/logoee.png">
+</div>
+</div>
+
+</div>
+
+</div>
+
 
 <script>
 
-const ably = new Ably.Realtime("bOKecA.9QsrUQ:0fDP1G0ebCieBR4lo6sS-CwOVg7MJZ6B-vDLgERRGug");
+// =====================================
+// ABLY UNIVERSAL
+// =====================================
 
-const channel = ably.channels.get("vmix-banner");
+const ably = new Ably.Realtime({
+key:"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ"
+});
 
-let visible=false;
-let changing=false;
+const channel = ably.channels.get("ably-elecciones-completo");
 
-function hideImmediately(){
 
-const banner=document.getElementById("banner");
+// =====================================
+// ESTADOS
+// =====================================
 
-banner.style.opacity="0";
+let bannerVisible = false;
+let rolesVisible = false;
+let candidatosVisible = false;
+
+
+// =====================================
+// MENSAJES UNIVERSALES
+// =====================================
+
+channel.subscribe("graphics",(msg)=>{
+
+const data = msg.data;
+
+
+// =========================
+// BANNER
+// =========================
+
+if(data.type === "banner"){
+
+if(data.action === "show"){
+
+const banner = document.getElementById("banner");
+
+document.getElementById("bannerText").innerText = data.text;
+
+banner.style.opacity = "1";
+
+bannerVisible = true;
 
 }
 
-hideImmediately();
+if(data.action === "hide"){
 
+const banner = document.getElementById("banner");
 
-// =============================
-// MENSAJES DEL BANNER
-// =============================
+banner.style.opacity = "0";
 
-channel.subscribe("banner",(message)=>{
-
-const data=message.data;
-
-if(data.action==="show"){
-
-const banner=document.getElementById("banner");
-
-const text=data.text;
-
-if(visible){
-
-changing=true;
-
-hideBanner();
-
-setTimeout(()=>{
-
-document.getElementById("bannerText").innerText=text;
-
-banner.style.opacity="1";
-
-startBanner();
-
-visible=true;
-changing=false;
-
-},3500);
-
-}else{
-
-document.getElementById("bannerText").innerText=text;
-
-banner.style.opacity="1";
-
-startBanner();
-
-visible=true;
+bannerVisible = false;
 
 }
 
 }
 
-if(data.action==="hide"){
 
-if(!visible) return;
+// =========================
+// CANDIDATOS
+// =========================
 
-hideBanner();
+if(data.type === "candidatos"){
 
-setTimeout(()=>{
+if(data.action === "show"){
 
-hideImmediately();
-visible=false;
+const banner = document.getElementById("candidateBanner");
 
-},1500);
+const candidateImg = document.getElementById("candidateImg");
+
+candidateImg.src = "assets/candidatos/" + data.candidate;
+
+banner.style.opacity = "1";
+
+document.getElementById("candidateBannerText").innerText = data.text;
+
+candidatosVisible = true;
+
+}
+
+if(data.action === "hide"){
+
+const banner = document.getElementById("candidateBanner");
+
+banner.style.opacity = "0";
+
+candidatosVisible = false;
+
+}
+
+}
+
+
+// =========================
+// ROLES
+// =========================
+
+if(data.type === "roles"){
+
+if(data.action === "show"){
+
+const banner = document.getElementById("rolesBanner");
+
+const html = `
+<div class="nameLine">${data.name}</div>
+<div class="roleLine">${data.role}</div>
+`;
+
+banner.style.opacity = "1";
+
+document.getElementById("rolesBannerText").innerHTML = html;
+
+rolesVisible = true;
+
+}
+
+if(data.action === "hide"){
+
+const banner = document.getElementById("rolesBanner");
+
+banner.style.opacity = "0";
+
+rolesVisible = false;
+
+}
+
+}
+
+
+// =========================
+// MOSCA
+// =========================
+
+if(data.type === "mosca"){
+
+if(data.action === "on"){
+
+const mosca = document.getElementById("mosca");
+
+mosca.style.opacity = "1";
+
+}
+
+if(data.action === "off"){
+
+const mosca = document.getElementById("mosca");
+
+mosca.style.opacity = "0";
+
+}
 
 }
 
@@ -129,3 +318,23 @@ visible=false;
 
 </body>
 </html>
+```
+
+# IMPORTANTE
+
+Este overlay ya:
+
+* usa una sola conexión Ably
+* usa un solo canal
+* organiza correctamente las capas
+* separa assets compartidos y exclusivos
+* prepara el sistema universal
+* evita conflictos de logo.png/caja1.png/caja2.png
+* deja listos los 4 módulos
+
+Orden de capas:
+
+1. candidatos
+2. banner
+3. títulos de rol
+4. mosca
