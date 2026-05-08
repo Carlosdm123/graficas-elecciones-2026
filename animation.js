@@ -34,24 +34,28 @@ const mosca=document.getElementById("moscaContainer");
 // ======================================
 
 if(banner){
+banner.style.display="none";
 banner.style.opacity="0";
 }
 
 if(candidateBanner){
+candidateBanner.style.display="none";
 candidateBanner.style.opacity="0";
 }
 
 if(rolesBanner){
+rolesBanner.style.display="none";
 rolesBanner.style.opacity="0";
 }
 
 if(mosca){
+mosca.style.display="none";
 mosca.style.opacity="0";
 }
 
 
 // ======================================
-// WEBSOCKET LISTENER
+// OVERLAY LISTENER
 // ======================================
 
 channel.subscribe("graphics",(message)=>{
@@ -71,13 +75,25 @@ if(data.action==="show"){
 
 bannerText.innerText=data.text;
 
+banner.style.display="block";
+
+requestAnimationFrame(()=>{
+
 banner.style.opacity="1";
+
+});
 
 }
 
 if(data.action==="hide"){
 
 banner.style.opacity="0";
+
+setTimeout(()=>{
+
+banner.style.display="none";
+
+},300);
 
 }
 
@@ -99,13 +115,25 @@ candidateText.innerText=data.text;
 candidateImg.src=
 "assets/candidatos/"+data.candidate;
 
+candidateBanner.style.display="block";
+
+requestAnimationFrame(()=>{
+
 candidateBanner.style.opacity="1";
+
+});
 
 }
 
 if(data.action==="hide"){
 
 candidateBanner.style.opacity="0";
+
+setTimeout(()=>{
+
+candidateBanner.style.display="none";
+
+},300);
 
 }
 
@@ -126,13 +154,25 @@ roleName.innerText=data.name;
 
 roleText.innerText=data.role;
 
+rolesBanner.style.display="block";
+
+requestAnimationFrame(()=>{
+
 rolesBanner.style.opacity="1";
+
+});
 
 }
 
 if(data.action==="hide"){
 
 rolesBanner.style.opacity="0";
+
+setTimeout(()=>{
+
+rolesBanner.style.display="none";
+
+},300);
 
 }
 
@@ -149,13 +189,25 @@ if(!mosca) return;
 
 if(data.action==="on"){
 
+mosca.style.display="block";
+
+requestAnimationFrame(()=>{
+
 mosca.style.opacity="1";
+
+});
 
 }
 
 if(data.action==="off"){
 
 mosca.style.opacity="0";
+
+setTimeout(()=>{
+
+mosca.style.display="none";
+
+},300);
 
 }
 
@@ -948,10 +1000,6 @@ roleTextInput,
 
 }
 
-
-// ======================================
-// DEFAULT MOSCA
-// ======================================
 
 channel.publish("graphics",{
 type:"mosca",
