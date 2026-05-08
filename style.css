@@ -6,66 +6,82 @@ font-weight:600;
 }
 
 *{
-margin:0;
-padding:0;
 box-sizing:border-box;
 }
 
 html,
 body{
+margin:0;
+padding:0;
 width:100%;
 height:100%;
-overflow:hidden;
-font-family:"LFT Etica",sans-serif;
-background:transparent;
+font-family:sans-serif;
+overflow-x:hidden;
 }
 
 
 /* ====================================== */
-/* CONTROLADOR */
+/* BODY CONTROLADOR */
 /* ====================================== */
 
-.controller-body{
-background:#111111;
-color:white;
-padding:30px;
-overflow:auto;
-min-height:100vh;
-}
-
-.universal-header{
+.controllerBody{
+background:#1e1e1e;
+color:#e6e6e6;
+margin:0;
+padding:40px;
 display:flex;
-align-items:center;
-justify-content:space-between;
-margin-bottom:30px;
-padding-bottom:20px;
-border-bottom:1px solid rgba(255,255,255,.08);
 }
 
-.header-left{
-display:flex;
-align-items:center;
-gap:20px;
-}
 
-.header-logo{
-height:58px;
-width:auto;
-}
+/* ====================================== */
+/* INDICADOR */
+/* ====================================== */
 
-.header-title{
-font-size:34px;
-font-weight:700;
-letter-spacing:1px;
-text-transform:uppercase;
-line-height:1;
-}
-
-.connection-dot{
+.version{
 width:18px;
 height:18px;
 border-radius:50%;
 background:#666;
+margin-right:20px;
+margin-top:5px;
+flex-shrink:0;
+}
+
+
+/* ====================================== */
+/* CONTAINER */
+/* ====================================== */
+
+.containerUniversal{
+flex:1;
+}
+
+
+/* ====================================== */
+/* HEADER */
+/* ====================================== */
+
+.universalHeader{
+width:854px;
+margin:0 auto 30px auto;
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+.headerLogo{
+height:58px;
+width:auto;
+}
+
+.headerTitle{
+font-size:34px;
+font-weight:700;
+letter-spacing:1px;
+color:white;
+text-transform:uppercase;
+line-height:1;
+font-family:"LFT Etica",sans-serif;
 }
 
 
@@ -73,30 +89,28 @@ background:#666;
 /* PREVIEW */
 /* ====================================== */
 
-.preview-section{
-margin-bottom:40px;
-}
-
-.preview-title{
+.previewTitleUniversal{
 width:854px;
-margin:0 auto 14px auto;
-font-size:24px;
+margin:0 auto 12px auto;
+font-size:26px;
 font-weight:700;
 letter-spacing:1px;
+color:white;
+text-align:left;
+font-family:"LFT Etica",sans-serif;
 }
 
-.preview-container{
+.preview{
 width:854px;
 height:480px;
+border:4px solid white;
 margin:auto;
 overflow:hidden;
-border:4px solid white;
 background:black;
 position:relative;
-border-radius:12px;
 }
 
-.preview-inner{
+.previewInner{
 position:absolute;
 top:0;
 left:0;
@@ -106,167 +120,121 @@ transform:scale(0.444);
 transform-origin:top left;
 }
 
-.preview-inner iframe{
+.preview iframe{
 width:1920px;
 height:1080px;
 border:none;
 background:transparent;
 }
 
-.preview-buttons{
+
+/* ====================================== */
+/* BOTONES PREVIEW */
+/* ====================================== */
+
+.previewButtons{
 width:854px;
-margin:15px auto 0 auto;
+margin:15px auto 40px auto;
 display:flex;
-justify-content:center;
 gap:10px;
+justify-content:center;
 }
 
-.preview-buttons button{
-background:#2d2d2d;
+.previewButtons button{
+background:#2e2e2e;
 color:white;
 border:none;
-padding:10px 18px;
-border-radius:6px;
-font-size:14px;
+padding:8px 14px;
 cursor:pointer;
+border-radius:4px;
 font-family:"LFT Etica",sans-serif;
 }
 
-.preview-buttons button:hover{
-background:#3c3c3c;
+.previewButtons button:hover{
+background:#3d3d3d;
 }
 
 
 /* ====================================== */
-/* GRID */
+/* GRID UNIVERSAL */
 /* ====================================== */
 
-.controls-grid{
+.universalGrid{
+width:1750px;
+margin:0 auto;
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:28px;
+gap:30px;
 align-items:start;
 }
 
-.control-card{
-background:#1c1c1c;
-border:1px solid rgba(255,255,255,.08);
-border-radius:14px;
-padding:24px;
-min-height:420px;
-}
 
-.control-card h2{
-margin-bottom:20px;
-font-size:24px;
-font-weight:700;
-letter-spacing:1px;
+/* ====================================== */
+/* BLOQUES */
+/* ====================================== */
+
+.controlBlock{
+background:#242424;
+padding:24px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,.08);
 }
 
 
 /* ====================================== */
-/* PANELS */
+/* TITULOS */
+/* ====================================== */
+
+.previewTitle{
+margin:0 0 20px 0;
+font-size:26px;
+font-weight:700;
+letter-spacing:1px;
+color:white;
+text-align:left;
+font-family:"LFT Etica",sans-serif;
+}
+
+
+/* ====================================== */
+/* PANEL */
 /* ====================================== */
 
 .panel{
-max-height:520px;
+width:100%;
+max-height:420px;
 overflow-y:auto;
-padding-right:4px;
+}
+
+.rolesPanel{
+max-height:520px;
 }
 
 .item{
 display:flex;
 align-items:center;
-gap:12px;
-background:#292929;
+justify-content:space-between;
+margin:10px 0;
+background:#2a2a2a;
 padding:10px;
-border-radius:8px;
-margin-bottom:10px;
+border-radius:6px;
+gap:12px;
 }
 
 .item span{
 flex:1;
+margin-left:12px;
 font-size:14px;
-line-height:1.3;
+line-height:1.35;
 }
 
 .item select{
 width:180px;
-background:#1f1f1f;
+background:#1e1e1e;
 color:white;
 border:1px solid #555;
-padding:8px;
-border-radius:6px;
-}
-
-
-/* ====================================== */
-/* INPUTS */
-/* ====================================== */
-
-.inputArea{
-margin-top:24px;
-}
-
-textarea,
-input,
-select{
-width:100%;
-background:#2a2a2a;
-border:1px solid #555;
-border-radius:8px;
-padding:12px;
-color:white;
-font-size:14px;
-font-family:"LFT Etica",sans-serif;
-}
-
-textarea{
-height:120px;
-resize:none;
-}
-
-input{
-margin-bottom:6px;
-}
-
-.counter{
-font-size:12px;
-color:#aaaaaa;
-margin-bottom:10px;
-text-align:right;
-}
-
-.addBtn{
-margin-top:10px;
-background:#2c8f6b;
-color:white;
-border:none;
-padding:10px 18px;
-border-radius:6px;
-cursor:pointer;
-font-size:14px;
-font-family:"LFT Etica",sans-serif;
-}
-
-.addBtn:hover{
-background:#3aa17b;
-}
-
-.deleteBtn{
-background:#444444;
-color:white;
-border:none;
-padding:6px 10px;
-border-radius:6px;
-cursor:pointer;
-font-size:12px;
-font-family:"LFT Etica",sans-serif;
-flex-shrink:0;
-}
-
-.deleteBtn:hover{
-background:#aa3333;
+padding:6px;
+border-radius:4px;
 }
 
 
@@ -277,8 +245,8 @@ background:#aa3333;
 .switch{
 position:relative;
 display:inline-block;
-width:44px;
-height:24px;
+width:42px;
+height:22px;
 flex-shrink:0;
 }
 
@@ -295,14 +263,14 @@ right:0;
 bottom:0;
 background:#555;
 transition:.3s;
-border-radius:24px;
+border-radius:22px;
 }
 
 .slider:before{
 position:absolute;
 content:"";
-height:18px;
-width:18px;
+height:16px;
+width:16px;
 left:3px;
 bottom:3px;
 background:white;
@@ -320,20 +288,130 @@ transform:translateX(20px);
 
 
 /* ====================================== */
-/* MOSCA CONTROLS */
+/* BORRAR */
 /* ====================================== */
 
-.mosca-controls{
-display:flex;
-flex-direction:column;
-gap:22px;
+.deleteBtn{
+margin-left:10px;
+background:#444;
+color:white;
+border:none;
+padding:4px 8px;
+cursor:pointer;
+border-radius:4px;
+font-family:"LFT Etica",sans-serif;
+}
+
+.deleteBtn:hover{
+background:#aa3333;
+}
+
+
+/* ====================================== */
+/* INPUTS */
+/* ====================================== */
+
+.inputArea{
+margin-top:30px;
+}
+
+textarea{
+width:100%;
+height:120px;
+padding:12px;
+resize:none;
+font-family:sans-serif;
+font-size:14px;
+background:#2a2a2a;
+color:white;
+border:1px solid #555;
+border-radius:6px;
+}
+
+textarea.limit{
+border-color:#cc4444;
+background:#3a1e1e;
+}
+
+input,
+select{
+width:100%;
+padding:12px;
+font-size:14px;
+background:#2a2a2a;
+color:white;
+border:1px solid #555;
+border-radius:6px;
+margin-bottom:10px;
+}
+
+.counter{
+font-size:12px;
+margin-top:6px;
+color:#aaa;
+text-align:right;
+font-family:"LFT Etica",sans-serif;
+}
+
+.counter.warning{
+color:#ff5555;
+}
+
+.error{
+color:#ff4444;
+font-size:12px;
+margin-top:5px;
+display:none;
+font-family:"LFT Etica",sans-serif;
+}
+
+.addBtn{
+margin-top:10px;
+padding:8px 18px;
+background:#2c8f6b;
+border:none;
+color:white;
+cursor:pointer;
+border-radius:4px;
+font-family:"LFT Etica",sans-serif;
+}
+
+.addBtn:hover{
+background:#38a77f;
+}
+
+
+/* ====================================== */
+/* MOSCA */
+/* ====================================== */
+
+.moscaContent{
 margin-top:20px;
 }
 
-.mosca-block{
+.moscaLabel{
+margin-top:20px;
+margin-bottom:10px;
+font-size:14px;
+font-family:"LFT Etica",sans-serif;
+}
+
+.marginTop{
+margin-top:30px;
+}
+
+.hora-box{
 display:flex;
-flex-direction:column;
-gap:8px;
+align-items:center;
+gap:10px;
+}
+
+.status{
+width:12px;
+height:12px;
+border-radius:50%;
+background:#00ff7a;
+display:inline-block;
 }
 
 
@@ -350,11 +428,6 @@ height:1080px;
 overflow:hidden;
 pointer-events:none;
 }
-
-
-/* ====================================== */
-/* ORDEN CAPAS */
-/* ====================================== */
 
 #candidatos-system{
 z-index:10;
@@ -374,380 +447,14 @@ z-index:40;
 
 
 /* ====================================== */
-/* RESET OVERLAY */
-/* ====================================== */
-
-#banner,
-#rolesBanner,
-#candidateBanner,
-#moscaContainer{
-position:absolute;
-left:0;
-top:0;
-opacity:0;
-pointer-events:none;
-}
-
-
-/* ====================================== */
-/* BANNERS */
-/* ====================================== */
-
-#banner{
-bottom:220px;
-width:1920px;
-height:180px;
-}
-
-#box1,
-#box2{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:180px;
-}
-
-#mask1,
-#mask2{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:180px;
-overflow:hidden;
-}
-
-#box1 .bg,
-#box2 .bg{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:auto;
-}
-
-#logoBox{
-position:absolute;
-left:420px;
-top:90px;
-transform:translate(-50%,-50%);
-z-index:10;
-}
-
-#logo{
-height:74px;
-width:auto;
-}
-
-#textContainer{
-position:absolute;
-left:530px;
-top:50%;
-transform:translateY(-50%);
-width:1050px;
-height:80px;
-display:flex;
-align-items:center;
-overflow:hidden;
-}
-
-#bannerText{
-position:relative;
-font-size:36px;
-line-height:1.15;
-font-weight:700;
-color:white;
-text-transform:uppercase;
-}
-
-
-/* ====================================== */
-/* CANDIDATOS */
-/* ====================================== */
-
-#candidateBanner{
-bottom:220px;
-width:1920px;
-height:180px;
-}
-
-#candidateBox1,
-#candidateBox2{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:180px;
-}
-
-#candidateMask1,
-#candidateMask2{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:180px;
-overflow:hidden;
-}
-
-#candidateBox1 .bg,
-#candidateBox2 .bg{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:auto;
-}
-
-#candidateLogoBox{
-position:absolute;
-left:420px;
-top:90px;
-transform:translate(-50%,-50%);
-z-index:10;
-}
-
-#candidateLogo{
-height:74px;
-width:auto;
-}
-
-#candidateImg{
-position:absolute;
-left:115px;
-top:28px;
-height:124px;
-width:auto;
-z-index:10;
-}
-
-#candidateTextContainer{
-position:absolute;
-left:320px;
-top:50%;
-transform:translateY(-50%);
-width:1220px;
-height:80px;
-display:flex;
-align-items:center;
-overflow:hidden;
-}
-
-#candidateBannerText{
-position:relative;
-font-size:36px;
-line-height:1.15;
-font-weight:700;
-color:white;
-text-transform:uppercase;
-}
-
-
-/* ====================================== */
-/* ROLES */
-/* ====================================== */
-
-#rolesBanner{
-bottom:220px;
-width:1920px;
-height:180px;
-}
-
-#rolesBox1,
-#rolesBox2{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:180px;
-}
-
-#rolesMask1,
-#rolesMask2{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:180px;
-overflow:hidden;
-}
-
-#rolesBox1 .bg,
-#rolesBox2 .bg{
-position:absolute;
-left:0;
-top:0;
-width:1920px;
-height:auto;
-}
-
-#rolesLogoBox{
-position:absolute;
-left:420px;
-top:90px;
-transform:translate(-50%,-50%);
-z-index:10;
-}
-
-#rolesLogo{
-height:74px;
-width:auto;
-}
-
-#rolesTextContainer{
-position:absolute;
-left:530px;
-top:50%;
-transform:translateY(-50%);
-width:1050px;
-height:90px;
-display:flex;
-align-items:center;
-overflow:hidden;
-}
-
-#rolesBannerText{
-position:relative;
-display:flex;
-flex-direction:column;
-gap:4px;
-}
-
-#roleName{
-font-size:38px;
-font-weight:700;
-line-height:1;
-color:#EDE4D3;
-text-transform:uppercase;
-}
-
-#roleText{
-font-size:24px;
-font-weight:600;
-line-height:1;
-color:white;
-text-transform:uppercase;
-}
-
-
-/* ====================================== */
-/* MOSCA */
-/* ====================================== */
-
-#moscaContainer{
-position:absolute;
-top:70px;
-right:80px;
-width:600px;
-transition:opacity .35s ease;
-}
-
-#texto{
-position:relative;
-width:600px;
-text-align:right;
-color:white;
-font-size:36px;
-font-weight:700;
-line-height:1.05;
-text-transform:uppercase;
-text-shadow:6px 6px 12px rgba(0,0,0,.8);
-}
-
-#logoMosca{
-position:absolute;
-top:0;
-right:0;
-display:flex;
-flex-direction:column;
-align-items:flex-end;
-}
-
-#logoMosca img{
-height:110px;
-width:auto;
-}
-
-#logoEE{
-position:absolute;
-top:0;
-right:0;
-display:flex;
-justify-content:flex-end;
-}
-
-.circle-mask{
-width:105px;
-height:105px;
-background:white;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-overflow:hidden;
-}
-
-.circle-mask img{
-width:100%;
-height:100%;
-object-fit:cover;
-border-radius:50%;
-}
-
-#ticker{
-width:210px;
-height:28px;
-background:white;
-margin-top:6px;
-margin-right:16px;
-overflow:hidden;
-display:flex;
-align-items:center;
-}
-
-.ticker-track{
-display:flex;
-align-items:center;
-white-space:nowrap;
-animation:tickerLoop 12s linear infinite;
-margin-left:-6px;
-}
-
-.text{
-font-size:14px;
-font-weight:bold;
-color:black;
-margin-right:36px;
-}
-
-@keyframes tickerLoop{
-
-0%{
-transform:translateX(0);
-}
-
-100%{
-transform:translateX(-50%);
-}
-
-}
-
-
-/* ====================================== */
 /* RESPONSIVE */
 /* ====================================== */
 
-@media(max-width:1400px){
+@media(max-width:1850px){
 
-.controls-grid{
-grid-template-columns:1fr;
-}
-
-.preview-container,
-.preview-title,
-.preview-buttons{
+.universalGrid{
 width:100%;
+grid-template-columns:1fr;
 }
 
 }
