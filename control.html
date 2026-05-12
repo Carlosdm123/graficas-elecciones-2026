@@ -1,75 +1,411 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>CONTROLADOR UNIVERSAL ELECCIONES 2026</title>
-
-<link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
 
+<style>
+
+body{
+background:#1e1e1e;
+color:#e6e6e6;
+font-family:sans-serif;
+margin:40px;
+display:flex;
+}
+
+.version{
+width:18px;
+height:18px;
+border-radius:50%;
+background:#666;
+margin-right:20px;
+margin-top:5px;
+flex-shrink:0;
+}
+
+.container{
+flex:1;
+}
+
+/* ===================================== */
+/* TABS */
+/* ===================================== */
+
+.tabs{
+width:854px;
+margin:0 auto 20px auto;
+display:flex;
+gap:10px;
+}
+
+.tabBtn{
+background:#2a2a2a;
+border:none;
+color:white;
+padding:10px 16px;
+cursor:pointer;
+border-radius:6px;
+font-size:14px;
+}
+
+.tabBtn.active{
+background:#2c8f6b;
+}
+
+/* ===================================== */
+/* PREVIEW */
+/* ===================================== */
+
+.previewTitle{
+width:854px;
+margin:0 auto 12px auto;
+font-size:26px;
+font-weight:700;
+letter-spacing:1px;
+color:white;
+text-align:left;
+}
+
+.preview{
+width:854px;
+height:480px;
+border:4px solid white;
+margin:auto;
+overflow:hidden;
+position:relative;
+background:black;
+}
+
+.preview iframe{
+width:1920px;
+height:1080px;
+transform:scale(0.444);
+transform-origin:top left;
+border:none;
+}
+
+/* ===================================== */
+/* PREVIEW BUTTONS */
+/* ===================================== */
+
+.previewButtons{
+width:854px;
+margin:15px auto 0 auto;
+display:flex;
+gap:10px;
+justify-content:center;
+}
+
+.previewButtons button{
+background:#2e2e2e;
+color:white;
+border:none;
+padding:8px 14px;
+cursor:pointer;
+border-radius:4px;
+}
+
+.previewButtons button:hover{
+background:#3d3d3d;
+}
+
+/* ===================================== */
+/* PANELS */
+/* ===================================== */
+
+.controlPanel{
+display:none;
+}
+
+.controlPanel.active{
+display:block;
+}
+
+.panel{
+width:854px;
+margin:auto;
+margin-top:30px;
+}
+
+.item{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin:10px 0;
+background:#2a2a2a;
+padding:10px;
+border-radius:6px;
+gap:12px;
+}
+
+.item span{
+flex:1;
+font-size:14px;
+}
+
+/* ===================================== */
+/* SWITCH */
+/* ===================================== */
+
+.switch{
+position:relative;
+display:inline-block;
+width:42px;
+height:22px;
+}
+
+.switch input{
+display:none;
+}
+
+.slider{
+position:absolute;
+cursor:pointer;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:#555;
+transition:.3s;
+border-radius:22px;
+}
+
+.slider:before{
+position:absolute;
+content:"";
+height:16px;
+width:16px;
+left:3px;
+bottom:3px;
+background:white;
+transition:.3s;
+border-radius:50%;
+}
+
+input:checked + .slider{
+background:#2c8f6b;
+}
+
+input:checked + .slider:before{
+transform:translateX(20px);
+}
+
+/* ===================================== */
+/* BUTTONS */
+/* ===================================== */
+
+.deleteBtn{
+margin-left:10px;
+background:#444;
+color:white;
+border:none;
+padding:4px 8px;
+cursor:pointer;
+border-radius:4px;
+}
+
+.deleteBtn:hover{
+background:#aa3333;
+}
+
+.addBtn{
+margin-top:10px;
+padding:8px 18px;
+background:#2c8f6b;
+border:none;
+color:white;
+cursor:pointer;
+border-radius:4px;
+}
+
+.addBtn:hover{
+background:#38a77f;
+}
+
+/* ===================================== */
+/* INPUT AREAS */
+/* ===================================== */
+
+.inputArea{
+width:600px;
+margin:40px auto;
+text-align:center;
+}
+
+textarea{
+width:100%;
+height:120px;
+padding:12px;
+resize:none;
+font-family:sans-serif;
+font-size:14px;
+background:#2a2a2a;
+color:white;
+border:1px solid #555;
+border-radius:6px;
+}
+
+textarea.limit{
+border-color:#cc4444;
+background:#3a1e1e;
+}
+
+.counter{
+font-size:12px;
+margin-top:6px;
+color:#aaa;
+}
+
+.counter.warning{
+color:#ff5555;
+}
+
+.error{
+color:#ff4444;
+font-size:12px;
+margin-top:5px;
+display:none;
+}
+
+.inputArea input{
+width:100%;
+padding:10px;
+margin-bottom:4px;
+font-size:14px;
+background:#2a2a2a;
+color:white;
+border:1px solid #555;
+border-radius:6px;
+}
+
+/* ===================================== */
+/* SELECT */
+/* ===================================== */
+
+select{
+background:#1f1f1f;
+color:white;
+border:1px solid #555;
+padding:6px 10px;
+border-radius:4px;
+min-width:240px;
+}
+
+/* ===================================== */
+/* MOSCA */
+/* ===================================== */
+
+#previewMosca{
+width:960px;
+height:540px;
+border:1px solid #444;
+overflow:hidden;
+margin:auto;
+position:relative;
+}
+
+#previewMosca iframe{
+position:absolute;
+width:1920px;
+height:1080px;
+transform:scale(.5);
+transform-origin:top left;
+border:none;
+}
+
+.moscaWrap{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+margin-top:30px;
+}
+
+.hora-box{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+input[type="time"]{
+padding:8px;
+background:#000;
+color:white;
+border:1px solid #333;
+color-scheme: dark;
+filter: invert(1);
+}
+
+.status{
+color:#00e676;
+}
+
+.botones{
+margin-top:20px;
+display:flex;
+gap:10px;
+}
+
+.botones button{
+padding:10px 14px;
+background:#222;
+color:white;
+border:1px solid #444;
+cursor:pointer;
+}
+
+.botones button:hover{
+background:#333;
+}
+
+</style>
+
 </head>
 
-<body class="controllerBody">
-
-
-<!-- ====================================== -->
-<!-- INDICADOR GLOBAL -->
-<!-- ====================================== -->
+<body>
 
 <div class="version" id="connectionDot"></div>
 
+<div class="container">
 
-<!-- ====================================== -->
-<!-- CONTENEDOR -->
-<!-- ====================================== -->
+<!-- ===================================== -->
+<!-- TABS -->
+<!-- ===================================== -->
 
-<div class="containerUniversal">
+<div class="tabs">
 
+<button class="tabBtn active" onclick="showTab('banner',this)">
+Banner
+</button>
 
-<!-- ====================================== -->
-<!-- HEADER -->
-<!-- ====================================== -->
+<button class="tabBtn" onclick="showTab('roles',this)">
+Roles
+</button>
 
-<div class="universalHeader">
+<button class="tabBtn" onclick="showTab('candidatos',this)">
+Candidatos
+</button>
 
-<img
-src="assets/logo.png"
-class="headerLogo">
+<button class="tabBtn" onclick="showTab('mosca',this)">
+Mosca
+</button>
 
-<div class="headerTitle">
-CONTROLADOR UNIVERSAL ELECCIONES 2026
 </div>
 
-</div>
-
-
-<!-- ====================================== -->
+<!-- ===================================== -->
 <!-- PREVIEW -->
-<!-- ====================================== -->
+<!-- ===================================== -->
 
-<div class="previewTitleUniversal">
-PREVISUALIZADOR GENERAL
+<div class="previewTitle">
+CONTROL ELECCIONES 2026
 </div>
 
 <div class="preview">
-
-<div class="previewInner">
-
 <iframe src="overlay.html"></iframe>
-
 </div>
-
-</div>
-
-
-<!-- ====================================== -->
-<!-- BOTONES -->
-<!-- ====================================== -->
 
 <div class="previewButtons">
 
@@ -83,31 +419,17 @@ Copiar URL para vMix
 
 </div>
 
+<!-- ===================================== -->
+<!-- BANNER -->
+<!-- ===================================== -->
 
-<!-- ====================================== -->
-<!-- GRID UNIVERSAL -->
-<!-- ====================================== -->
-
-<div class="universalGrid">
-
-
-<!-- ====================================== -->
-<!-- BANNERS -->
-<!-- ====================================== -->
-
-<div class="controlBlock">
-
-<div class="previewTitle">
-CONTROL DE BANNERS
-</div>
+<div id="banner" class="controlPanel active">
 
 <div class="panel" id="bannerPanel"></div>
 
 <div class="inputArea">
 
-<textarea
-id="bannerNewText"
-maxlength="130"></textarea>
+<textarea id="bannerText" maxlength="130"></textarea>
 
 <div class="counter" id="bannerCounter">
 0 / 130
@@ -117,159 +439,110 @@ maxlength="130"></textarea>
 límite máximo de caracteres
 </div>
 
-<button
-class="addBtn"
-onclick="addBanner()">
-
+<button class="addBtn" onclick="addBanner()">
 Agregar
-
 </button>
 
 </div>
 
 </div>
 
-
-<!-- ====================================== -->
+<!-- ===================================== -->
 <!-- ROLES -->
-<!-- ====================================== -->
+<!-- ===================================== -->
 
-<div class="controlBlock">
+<div id="roles" class="controlPanel">
 
-<div class="previewTitle">
-CONTROL DE TÍTULOS DE ROL
-</div>
-
-<div class="panel rolesPanel" id="rolesPanel"></div>
+<div class="panel" id="rolesPanel"></div>
 
 <div class="inputArea">
 
-<input
-id="newName"
-maxlength="70"
-placeholder="Nombre">
+<input id="newName" maxlength="70" placeholder="Nombre">
 
 <div class="counter" id="countName">
 0 / 70
 </div>
 
-
-<input
-id="newRole"
-maxlength="100"
-placeholder="Rol">
+<input id="newRole" maxlength="100" placeholder="Rol">
 
 <div class="counter" id="countRole">
 0 / 100
 </div>
 
-
-<button
-class="addBtn"
-onclick="addRole()">
-
+<button class="addBtn" onclick="addRole()">
 Agregar
-
 </button>
 
 </div>
 
 </div>
 
-
-<!-- ====================================== -->
+<!-- ===================================== -->
 <!-- CANDIDATOS -->
-<!-- ====================================== -->
+<!-- ===================================== -->
 
-<div class="controlBlock">
+<div id="candidatos" class="controlPanel">
 
-<div class="previewTitle">
-CONTROL DE CANDIDATOS
-</div>
-
-<div class="panel" id="candidatePanel"></div>
+<div class="panel" id="candidatosPanel"></div>
 
 <div class="inputArea">
 
-<textarea
-id="candidateNewText"
-maxlength="130"></textarea>
+<textarea id="candidatoText" maxlength="130"></textarea>
 
-<div class="counter" id="candidateCounter">
+<div class="counter" id="candidatoCounter">
 0 / 130
 </div>
 
-<div class="error" id="candidateError">
+<div class="error" id="candidatoError">
 límite máximo de caracteres
 </div>
 
-<button
-class="addBtn"
-onclick="addCandidateBanner()">
-
+<button class="addBtn" onclick="addCandidato()">
 Agregar
-
 </button>
 
 </div>
 
 </div>
 
-
-<!-- ====================================== -->
+<!-- ===================================== -->
 <!-- MOSCA -->
-<!-- ====================================== -->
+<!-- ===================================== -->
 
-<div class="controlBlock">
+<div id="mosca" class="controlPanel">
 
-<div class="previewTitle">
-CONTROL DE MOSCA ANÁLISIS
-</div>
-
-<div class="moscaContent">
+<div class="moscaWrap">
 
 <label class="switch">
-
-<input
-type="checkbox"
-id="toggle">
-
+<input type="checkbox" id="toggleMosca">
 <span class="slider"></span>
-
 </label>
 
-
-<div class="moscaLabel">
+<div style="margin-bottom:10px;">
 Cierre de votaciones en:
 </div>
 
-
 <div class="hora-box">
 
-<input
-type="time"
-id="hora"
-value="16:00">
+<input type="time" id="hora" value="16:00">
+
+<span id="status" class="status"></span>
 
 </div>
 
-
-<div class="moscaLabel marginTop">
+<div style="margin-top:15px;">
 Reiniciar animación cada (minutos)
 </div>
-
 
 <div class="hora-box">
 
 <select id="loopMin">
-
 <option value="0">0</option>
 <option value="1">1</option>
-<option value="2" selected>2</option>
+<option value="2">2</option>
 <option value="3">3</option>
 <option value="4">4</option>
 <option value="5">5</option>
-
 </select>
 
 </div>
@@ -278,16 +551,90 @@ Reiniciar animación cada (minutos)
 
 </div>
 
-
 </div>
-<!-- GRID -->
 
+<script>
 
-</div>
-<!-- CONTAINER -->
+/* ===================================== */
+/* ABLY */
+/* ===================================== */
 
+const ably = new Ably.Realtime({
+key:"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ"
+});
 
-<script src="animation.js"></script>
+const channel = ably.channels.get("ably-elecciones-completo");
+
+/* ===================================== */
+/* CONNECTION */
+/* ===================================== */
+
+const connectionDot =
+document.getElementById("connectionDot");
+
+ably.connection.on((stateChange)=>{
+
+if(stateChange.current==="connected"){
+connectionDot.style.background="#00ff7a";
+}
+
+if(
+stateChange.current==="connecting" ||
+stateChange.current==="disconnected"
+){
+connectionDot.style.background="#ffaa00";
+}
+
+if(
+stateChange.current==="suspended" ||
+stateChange.current==="failed"
+){
+connectionDot.style.background="#ff0033";
+}
+
+});
+
+/* ===================================== */
+/* TABS */
+/* ===================================== */
+
+function showTab(id,btn){
+
+document.querySelectorAll(".controlPanel")
+.forEach(p=>p.classList.remove("active"));
+
+document.querySelectorAll(".tabBtn")
+.forEach(b=>b.classList.remove("active"));
+
+document.getElementById(id)
+.classList.add("active");
+
+btn.classList.add("active");
+
+}
+
+/* ===================================== */
+/* OVERLAY BUTTONS */
+/* ===================================== */
+
+function openOverlay(){
+
+window.open("overlay.html","_blank");
+
+}
+
+function copyOverlay(){
+
+navigator.clipboard.writeText(
+window.location.origin +
+window.location.pathname.replace("control.html","overlay.html")
+);
+
+alert("URL copiada para vMix");
+
+}
+
+</script>
 
 </body>
 </html>
