@@ -1,258 +1,72 @@
-// ======================================
-// ABLY
-// ======================================
+/* ====================================== */
+/* ABLY UNIVERSAL */
+/* ====================================== */
 
-const ably = new Ably.Realtime(
-"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ"
-);
+const ABLY_KEY =
+"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ";
 
-const channel = ably.channels.get(
-"ably-elecciones-completo"
-);
+const CHANNEL_NAME =
+"ably-elecciones-completo";
 
+const ably =
+new Ably.Realtime(ABLY_KEY);
 
-// ======================================
-// OVERLAY ELEMENTS
-// ======================================
+const channel =
+ably.channels.get(CHANNEL_NAME);
 
-const banner=document.getElementById("banner");
-const bannerText=document.getElementById("bannerText");
 
-const candidateBanner=document.getElementById("candidateBanner");
-const candidateText=document.getElementById("candidateBannerText");
-const candidateImg=document.getElementById("candidateImg");
+/* ====================================== */
+/* INDICADOR CONEXIÓN */
+/* ====================================== */
 
-const rolesBanner=document.getElementById("rolesBanner");
-const roleName=document.getElementById("roleName");
-const roleText=document.getElementById("roleText");
-
-const mosca=document.getElementById("moscaContainer");
-
-
-// ======================================
-// INITIAL STATES
-// ======================================
-
-if(banner){
-banner.style.display="none";
-banner.style.opacity="0";
-}
-
-if(candidateBanner){
-candidateBanner.style.display="none";
-candidateBanner.style.opacity="0";
-}
-
-if(rolesBanner){
-rolesBanner.style.display="none";
-rolesBanner.style.opacity="0";
-}
-
-if(mosca){
-mosca.style.display="none";
-mosca.style.opacity="0";
-}
-
-
-// ======================================
-// OVERLAY LISTENER
-// ======================================
-
-channel.subscribe("graphics",(message)=>{
-
-const data=message.data;
-
-
-// ======================================
-// BANNER
-// ======================================
-
-if(data.type==="banner"){
-
-if(!banner) return;
-
-if(data.action==="show"){
-
-bannerText.innerText=data.text;
-
-banner.style.display="block";
-
-requestAnimationFrame(()=>{
-
-banner.style.opacity="1";
-
-});
-
-}
-
-if(data.action==="hide"){
-
-banner.style.opacity="0";
-
-setTimeout(()=>{
-
-banner.style.display="none";
-
-},300);
-
-}
-
-}
-
-
-// ======================================
-// CANDIDATOS
-// ======================================
-
-if(data.type==="candidatos"){
-
-if(!candidateBanner) return;
-
-if(data.action==="show"){
-
-candidateText.innerText=data.text;
-
-candidateImg.src=
-"assets/candidatos/"+data.candidate;
-
-candidateBanner.style.display="block";
-
-requestAnimationFrame(()=>{
-
-candidateBanner.style.opacity="1";
-
-});
-
-}
-
-if(data.action==="hide"){
-
-candidateBanner.style.opacity="0";
-
-setTimeout(()=>{
-
-candidateBanner.style.display="none";
-
-},300);
-
-}
-
-}
-
-
-// ======================================
-// ROLES
-// ======================================
-
-if(data.type==="roles"){
-
-if(!rolesBanner) return;
-
-if(data.action==="show"){
-
-roleName.innerText=data.name;
-
-roleText.innerText=data.role;
-
-rolesBanner.style.display="block";
-
-requestAnimationFrame(()=>{
-
-rolesBanner.style.opacity="1";
-
-});
-
-}
-
-if(data.action==="hide"){
-
-rolesBanner.style.opacity="0";
-
-setTimeout(()=>{
-
-rolesBanner.style.display="none";
-
-},300);
-
-}
-
-}
-
-
-// ======================================
-// MOSCA
-// ======================================
-
-if(data.type==="mosca"){
-
-if(!mosca) return;
-
-if(data.action==="on"){
-
-mosca.style.display="block";
-
-requestAnimationFrame(()=>{
-
-mosca.style.opacity="1";
-
-});
-
-}
-
-if(data.action==="off"){
-
-mosca.style.opacity="0";
-
-setTimeout(()=>{
-
-mosca.style.display="none";
-
-},300);
-
-}
-
-}
-
-});
-
-
-// ======================================
-// CONTROLADOR
-// ======================================
-
-const connectionDot=document.getElementById(
-"connectionDot"
-);
-
-if(connectionDot){
+const connectionDot =
+document.getElementById("connectionDot");
 
 ably.connection.on((stateChange)=>{
+
+if(!connectionDot) return;
 
 if(stateChange.current==="connected"){
 connectionDot.style.background="#00ff7a";
 }
 
-if(stateChange.current==="connecting"){
+if(
+stateChange.current==="connecting" ||
+stateChange.current==="disconnected"
+){
 connectionDot.style.background="#ffaa00";
 }
 
-if(stateChange.current==="disconnected"){
+if(
+stateChange.current==="suspended" ||
+stateChange.current==="failed"
+){
 connectionDot.style.background="#ff0033";
 }
 
 });
 
-}
+
+/* ====================================== */
+/* OVERLAY URL */
+/* ====================================== */
+
+const overlayURL =
+window.location.origin +
+window.location.pathname.replace(
+"control.html",
+"overlay.html"
+);
 
 
-// ======================================
-// PREVIEW
-// ======================================
+/* ====================================== */
+/* BOTONES */
+/* ====================================== */
 
 function openOverlay(){
 
 window.open(
-"overlay.html",
+overlayURL,
 "_blank"
 );
 
@@ -261,17 +75,17 @@ window.open(
 function copyOverlay(){
 
 navigator.clipboard.writeText(
-window.location.origin+"/overlay.html"
+overlayURL
 );
 
-alert("URL copiada");
+alert("URL copiada para vMix");
 
 }
 
 
-// ======================================
-// BANNERS CONTROL
-// ======================================
+/* ====================================== */
+/* BANNERS */
+/* ====================================== */
 
 let banners=[
 
@@ -286,11 +100,12 @@ let banners=[
 let activeBannerIndex=null;
 
 
+/* RENDER */
+
 function renderBanners(){
 
-const panel=document.getElementById(
-"bannerPanel"
-);
+const panel =
+document.getElementById("bannerPanel");
 
 if(!panel) return;
 
@@ -298,39 +113,55 @@ panel.innerHTML="";
 
 banners.forEach((text,i)=>{
 
-const row=document.createElement("div");
+const row =
+document.createElement("div");
+
 row.className="item";
 
 
-const switchWrap=document.createElement("label");
+const switchWrap =
+document.createElement("label");
+
 switchWrap.className="switch";
 
 
-const toggle=document.createElement("input");
+const toggle =
+document.createElement("input");
 
 toggle.type="checkbox";
-toggle.checked=(activeBannerIndex===i);
 
-toggle.onchange=()=>toggleBanner(i);
+toggle.checked =
+(activeBannerIndex===i);
+
+toggle.onchange=
+()=>toggleBanner(i);
 
 
-const slider=document.createElement("span");
+const slider =
+document.createElement("span");
+
 slider.className="slider";
+
 
 switchWrap.appendChild(toggle);
 switchWrap.appendChild(slider);
 
 
-const label=document.createElement("span");
+const label =
+document.createElement("span");
+
 label.innerText=text;
 
 
-const del=document.createElement("button");
+const del =
+document.createElement("button");
 
-del.className="deleteBtn";
 del.innerText="Borrar";
 
-del.onclick=()=>deleteBanner(i);
+del.className="deleteBtn";
+
+del.onclick=
+()=>deleteBanner(i);
 
 
 row.appendChild(switchWrap);
@@ -343,6 +174,8 @@ panel.appendChild(row);
 
 }
 
+
+/* TOGGLE */
 
 function toggleBanner(i){
 
@@ -374,6 +207,8 @@ renderBanners();
 }
 
 
+/* DELETE */
+
 function deleteBanner(i){
 
 banners.splice(i,1);
@@ -394,15 +229,17 @@ renderBanners();
 }
 
 
+/* ADD */
+
 function addBanner(){
 
-const input=document.getElementById(
-"newBannerText"
+const input =
+document.getElementById(
+"bannerNewText"
 );
 
-if(!input) return;
-
-const text=input.value.trim();
+const text =
+input.value.trim();
 
 if(!text) return;
 
@@ -410,39 +247,287 @@ banners.push(text);
 
 input.value="";
 
-updateCounter(
-input,
-"bannerCounter",
-130
-);
+updateBannerCounter();
 
 renderBanners();
 
 }
 
 
-// ======================================
-// CANDIDATOS CONTROL
-// ======================================
+/* COUNTER */
 
-let candidateBanners=[
+const bannerTextarea =
+document.getElementById(
+"bannerNewText"
+);
+
+const bannerCounter =
+document.getElementById(
+"bannerCounter"
+);
+
+const bannerError =
+document.getElementById(
+"bannerError"
+);
+
+if(bannerTextarea){
+
+bannerTextarea.addEventListener(
+"input",
+updateBannerCounter
+);
+
+}
+
+function updateBannerCounter(){
+
+const len =
+bannerTextarea.value.length;
+
+bannerCounter.innerText=
+len+" / 130";
+
+if(len>110){
+
+bannerCounter.classList.add(
+"warning"
+);
+
+bannerTextarea.classList.add(
+"limit"
+);
+
+}else{
+
+bannerCounter.classList.remove(
+"warning"
+);
+
+bannerTextarea.classList.remove(
+"limit"
+);
+
+}
+
+if(len>=130){
+
+bannerError.style.display="block";
+
+}else{
+
+bannerError.style.display="none";
+
+}
+
+}
+
+
+/* ====================================== */
+/* ROLES */
+/* ====================================== */
+
+let roles=[
 
 {
-text:"Iván Cepeda celebra el crecimiento de su sector en el conteo presidencial",
-candidate:"candidato 1.png"
+name:"CARLOS EDUARDO CAICEDO",
+role:"CANDIDATO POR FIRMAS INDEPENDIENTE"
 },
 
 {
-text:"Los resultados presidenciales vuelven a poner a Clara López en escena",
-candidate:"candidato 2.png"
-},
-
-{
-text:"Claudia López mantiene influencia en el panorama político colombiano",
-candidate:"candidato 3.png"
+name:"CLAUDIA LÓPEZ",
+role:"CON CLAUDIA IMPARABLES"
 }
 
 ];
+
+let activeRoleIndex=null;
+let autoOffTimer=null;
+
+
+/* RENDER */
+
+function renderRoles(){
+
+const panel =
+document.getElementById(
+"rolesPanel"
+);
+
+if(!panel) return;
+
+panel.innerHTML="";
+
+roles.forEach((item,i)=>{
+
+const row =
+document.createElement("div");
+
+row.className="item";
+
+
+const switchWrap =
+document.createElement("label");
+
+switchWrap.className="switch";
+
+
+const toggle =
+document.createElement("input");
+
+toggle.type="checkbox";
+
+toggle.checked=
+(activeRoleIndex===i);
+
+toggle.onchange=
+()=>toggleRole(i);
+
+
+const slider =
+document.createElement("span");
+
+slider.className="slider";
+
+
+switchWrap.appendChild(toggle);
+switchWrap.appendChild(slider);
+
+
+const label =
+document.createElement("span");
+
+label.innerText=item.name;
+
+
+const del =
+document.createElement("button");
+
+del.innerText="Borrar";
+
+del.className="deleteBtn";
+
+del.onclick=
+()=>deleteRole(i);
+
+
+row.appendChild(switchWrap);
+row.appendChild(label);
+row.appendChild(del);
+
+panel.appendChild(row);
+
+});
+
+}
+
+
+/* TOGGLE */
+
+function toggleRole(i){
+
+if(activeRoleIndex===i){
+
+channel.publish("graphics",{
+type:"roles",
+action:"hide"
+});
+
+activeRoleIndex=null;
+
+clearTimeout(autoOffTimer);
+
+renderRoles();
+
+return;
+
+}
+
+activeRoleIndex=i;
+
+channel.publish("graphics",{
+type:"roles",
+action:"show",
+name:roles[i].name,
+role:roles[i].role
+});
+
+clearTimeout(autoOffTimer);
+
+autoOffTimer=setTimeout(()=>{
+
+channel.publish("graphics",{
+type:"roles",
+action:"hide"
+});
+
+activeRoleIndex=null;
+
+renderRoles();
+
+},11000);
+
+renderRoles();
+
+}
+
+
+/* DELETE */
+
+function deleteRole(i){
+
+roles.splice(i,1);
+
+if(activeRoleIndex===i){
+
+channel.publish("graphics",{
+type:"roles",
+action:"hide"
+});
+
+activeRoleIndex=null;
+
+}
+
+renderRoles();
+
+}
+
+
+/* ADD */
+
+function addRole(){
+
+const nameInput =
+document.getElementById("newName");
+
+const roleInput =
+document.getElementById("newRole");
+
+const name =
+nameInput.value.trim();
+
+const role =
+roleInput.value.trim();
+
+if(!name || !role) return;
+
+roles.push({
+name:name,
+role:role
+});
+
+nameInput.value="";
+roleInput.value="";
+
+renderRoles();
+
+}
+
+
+/* ====================================== */
+/* CANDIDATOS */
+/* ====================================== */
 
 const candidates=[
 
@@ -450,26 +535,28 @@ const candidates=[
 {name:"Clara Eugenia López",file:"candidato 2.png"},
 {name:"Claudia López",file:"candidato 3.png"},
 {name:"Santiago Botero",file:"candidato 4.png"},
-{name:"Abelardo de la Espriella",file:"candidato 5.png"},
-{name:"Mauricio Lizcano",file:"candidato 6.png"},
-{name:"Miguel Uribe",file:"candidato 7.png"},
-{name:"Sondra Macollins",file:"candidato 8.png"},
-{name:"Roy Barreras",file:"candidato 9.png"},
-{name:"Carlos Caicedo",file:"candidato 10.png"},
-{name:"Gustavo Matamoros",file:"candidato 11.png"},
-{name:"Paloma Valencia",file:"candidato 12.png"},
-{name:"Sergio Fajardo",file:"candidato 13.png"},
-{name:"Luis Gilberto Murillo",file:"candidato 14.png"},
-{name:"Voto en blanco",file:"candidato 15.png"}
+{name:"Abelardo de la Espriella",file:"candidato 5.png"}
+
+];
+
+let candidateBanners=[
+
+{
+text:"Iván Cepeda celebra el crecimiento de su sector en el conteo presidencial",
+candidate:"candidato 1.png"
+}
 
 ];
 
 let activeCandidateIndex=null;
 
 
+/* RENDER */
+
 function renderCandidates(){
 
-const panel=document.getElementById(
+const panel =
+document.getElementById(
 "candidatePanel"
 );
 
@@ -479,41 +566,60 @@ panel.innerHTML="";
 
 candidateBanners.forEach((item,i)=>{
 
-const row=document.createElement("div");
+const row =
+document.createElement("div");
+
 row.className="item";
 
 
-const switchWrap=document.createElement("label");
+const switchWrap =
+document.createElement("label");
+
 switchWrap.className="switch";
 
 
-const toggle=document.createElement("input");
+const toggle =
+document.createElement("input");
 
 toggle.type="checkbox";
-toggle.checked=(activeCandidateIndex===i);
 
-toggle.onchange=()=>toggleCandidate(i);
+toggle.checked=
+(activeCandidateIndex===i);
+
+toggle.onchange=
+()=>toggleCandidate(i);
 
 
-const slider=document.createElement("span");
+const slider =
+document.createElement("span");
+
 slider.className="slider";
+
 
 switchWrap.appendChild(toggle);
 switchWrap.appendChild(slider);
 
 
-const label=document.createElement("span");
+const label =
+document.createElement("span");
+
 label.innerText=item.text;
 
 
-const select=document.createElement("select");
+const select =
+document.createElement("select");
+
 
 candidates.forEach(candidate=>{
 
-const option=document.createElement("option");
+const option =
+document.createElement("option");
 
-option.value=candidate.file;
-option.innerText=candidate.name;
+option.value=
+candidate.file;
+
+option.innerText=
+candidate.name;
 
 if(candidate.file===item.candidate){
 option.selected=true;
@@ -526,28 +632,21 @@ select.appendChild(option);
 
 select.onchange=(e)=>{
 
-candidateBanners[i].candidate=e.target.value;
-
-if(activeCandidateIndex===i){
-
-channel.publish("graphics",{
-type:"candidatos",
-action:"show",
-text:candidateBanners[i].text.toUpperCase(),
-candidate:candidateBanners[i].candidate
-});
-
-}
+candidateBanners[i].candidate=
+e.target.value;
 
 };
 
 
-const del=document.createElement("button");
+const del =
+document.createElement("button");
 
-del.className="deleteBtn";
 del.innerText="Borrar";
 
-del.onclick=()=>deleteCandidate(i);
+del.className="deleteBtn";
+
+del.onclick=
+()=>deleteCandidate(i);
 
 
 row.appendChild(switchWrap);
@@ -561,6 +660,8 @@ panel.appendChild(row);
 
 }
 
+
+/* TOGGLE */
 
 function toggleCandidate(i){
 
@@ -593,6 +694,8 @@ renderCandidates();
 }
 
 
+/* DELETE */
+
 function deleteCandidate(i){
 
 candidateBanners.splice(i,1);
@@ -613,15 +716,17 @@ renderCandidates();
 }
 
 
+/* ADD */
+
 function addCandidateBanner(){
 
-const input=document.getElementById(
-"newCandidateText"
+const input =
+document.getElementById(
+"candidateNewText"
 );
 
-if(!input) return;
-
-const text=input.value.trim();
+const text =
+input.value.trim();
 
 if(!text) return;
 
@@ -632,238 +737,126 @@ candidate:"candidato 1.png"
 
 input.value="";
 
-updateCounter(
-input,
-"candidateCounter",
-130
-);
+updateCandidateCounter();
 
 renderCandidates();
 
 }
 
 
-// ======================================
-// ROLES CONTROL
-// ======================================
+/* COUNTER */
 
-let roles=[
-
-{
-name:"CARLOS EDUARDO CAICEDO",
-role:"CANDIDATO POR FIRMAS INDEPENDIENTE"
-},
-
-{
-name:"LUIS GILBERTO MURILLO URRUTIA",
-role:"LUIS GILBERTO SOY YO"
-},
-
-{
-name:"CLAUDIA LÓPEZ",
-role:"CON CLAUDIA IMPARABLES"
-},
-
-{
-name:"CATALINA VALENCIA",
-role:"MODERADORA"
-}
-
-];
-
-let activeRoleIndex=null;
-let autoOffTimer=null;
-
-
-function renderRoles(){
-
-const panel=document.getElementById(
-"rolesPanel"
+const candidateTextarea =
+document.getElementById(
+"candidateNewText"
 );
 
-if(!panel) return;
+const candidateCounter =
+document.getElementById(
+"candidateCounter"
+);
 
-panel.innerHTML="";
+const candidateError =
+document.getElementById(
+"candidateError"
+);
 
-roles.forEach((item,i)=>{
+if(candidateTextarea){
 
-const row=document.createElement("div");
-row.className="item";
+candidateTextarea.addEventListener(
+"input",
+updateCandidateCounter
+);
 
+}
 
-const switchWrap=document.createElement("label");
-switchWrap.className="switch";
+function updateCandidateCounter(){
 
+const len =
+candidateTextarea.value.length;
 
-const toggle=document.createElement("input");
+candidateCounter.innerText=
+len+" / 130";
 
-toggle.type="checkbox";
-toggle.checked=(activeRoleIndex===i);
+if(len>110){
 
-toggle.onchange=()=>toggleRole(i);
+candidateCounter.classList.add(
+"warning"
+);
 
+candidateTextarea.classList.add(
+"limit"
+);
 
-const slider=document.createElement("span");
-slider.className="slider";
+}else{
 
-switchWrap.appendChild(toggle);
-switchWrap.appendChild(slider);
+candidateCounter.classList.remove(
+"warning"
+);
 
+candidateTextarea.classList.remove(
+"limit"
+);
 
-const label=document.createElement("span");
-label.innerText=item.name;
+}
 
+if(len>=130){
 
-const del=document.createElement("button");
+candidateError.style.display="block";
 
-del.className="deleteBtn";
-del.innerText="Borrar";
+}else{
 
-del.onclick=()=>deleteRole(i);
+candidateError.style.display="none";
 
-
-row.appendChild(switchWrap);
-row.appendChild(label);
-row.appendChild(del);
-
-panel.appendChild(row);
-
-});
+}
 
 }
 
 
-function toggleRole(i){
+/* ====================================== */
+/* MOSCA */
+/* ====================================== */
 
-if(activeRoleIndex===i){
+const toggle =
+document.getElementById("toggle");
 
-channel.publish("graphics",{
-type:"roles",
-action:"hide"
-});
+const horaInput =
+document.getElementById("hora");
 
-activeRoleIndex=null;
-
-clearTimeout(autoOffTimer);
-
-renderRoles();
-
-return;
-
-}
-
-activeRoleIndex=i;
-
-channel.publish("graphics",{
-type:"roles",
-action:"show",
-name:roles[i].name.toUpperCase(),
-role:roles[i].role.toUpperCase()
-});
-
-clearTimeout(autoOffTimer);
-
-autoOffTimer=setTimeout(()=>{
-
-channel.publish("graphics",{
-type:"roles",
-action:"hide"
-});
-
-activeRoleIndex=null;
-
-renderRoles();
-
-},11000);
-
-renderRoles();
-
-}
+const loopSelect =
+document.getElementById("loopMin");
 
 
-function deleteRole(i){
+if(toggle){
 
-roles.splice(i,1);
-
-if(activeRoleIndex===i){
-
-channel.publish("graphics",{
-type:"roles",
-action:"hide"
-});
-
-activeRoleIndex=null;
-
-}
-
-renderRoles();
-
-}
-
-
-function addRole(){
-
-const nameInput=document.getElementById(
-"newRoleName"
-);
-
-const roleInput=document.getElementById(
-"newRoleText"
-);
-
-const name=nameInput.value.trim();
-const role=roleInput.value.trim();
-
-if(!name || !role) return;
-
-roles.push({name,role});
-
-nameInput.value="";
-roleInput.value="";
-
-updateCounter(
-nameInput,
-"roleNameCounter",
-70
-);
-
-updateCounter(
-roleInput,
-"roleTextCounter",
-100
-);
-
-renderRoles();
-
-}
-
-
-// ======================================
-// MOSCA CONTROL
-// ======================================
-
-const moscaToggle=document.getElementById(
-"moscaToggle"
-);
-
-const horaInput=document.getElementById(
-"hora"
-);
-
-const loopMin=document.getElementById(
-"loopMin"
-);
-
-
-if(moscaToggle){
-
-moscaToggle.addEventListener("change",()=>{
+toggle.addEventListener("change",()=>{
 
 channel.publish("graphics",{
 type:"mosca",
-action:moscaToggle.checked ? "on" : "off"
+action:
+toggle.checked ? "on" : "off"
 });
 
+});
+
+}
+
+
+function enviarHora(){
+
+channel.publish("graphics",{
+type:"moscaHora",
+hora:horaInput.value
+});
+
+}
+
+
+function enviarLoop(){
+
+channel.publish("graphics",{
+type:"moscaLoop",
+minutos:loopSelect.value
 });
 
 }
@@ -871,140 +864,33 @@ action:moscaToggle.checked ? "on" : "off"
 
 if(horaInput){
 
-horaInput.addEventListener("change",()=>{
+horaInput.addEventListener(
+"change",
+enviarHora
+);
 
-channel.publish("graphics",{
-type:"mosca",
-action:"updateHora",
-hora:horaInput.value
-});
+}
 
-});
+if(loopSelect){
+
+loopSelect.addEventListener(
+"change",
+enviarLoop
+);
 
 }
 
 
-if(loopMin){
-
-loopMin.addEventListener("change",()=>{
-
-channel.publish("graphics",{
-type:"mosca",
-action:"updateLoop",
-minutos:loopMin.value
-});
-
-});
-
-}
-
-
-// ======================================
-// COUNTERS
-// ======================================
-
-function updateCounter(input,id,max){
-
-const counter=document.getElementById(id);
-
-if(!counter) return;
-
-counter.innerText=
-input.value.length+" / "+max;
-
-}
-
-
-// ======================================
-// INIT
-// ======================================
-
-window.addEventListener("DOMContentLoaded",()=>{
+/* ====================================== */
+/* INIT */
+/* ====================================== */
 
 renderBanners();
-renderCandidates();
 renderRoles();
+renderCandidates();
 
-const bannerInput=document.getElementById(
-"newBannerText"
-);
+updateBannerCounter();
+updateCandidateCounter();
 
-if(bannerInput){
-
-bannerInput.addEventListener("input",()=>{
-
-updateCounter(
-bannerInput,
-"bannerCounter",
-130
-);
-
-});
-
-}
-
-
-const candidateInput=document.getElementById(
-"newCandidateText"
-);
-
-if(candidateInput){
-
-candidateInput.addEventListener("input",()=>{
-
-updateCounter(
-candidateInput,
-"candidateCounter",
-130
-);
-
-});
-
-}
-
-
-const roleNameInput=document.getElementById(
-"newRoleName"
-);
-
-if(roleNameInput){
-
-roleNameInput.addEventListener("input",()=>{
-
-updateCounter(
-roleNameInput,
-"roleNameCounter",
-70
-);
-
-});
-
-}
-
-
-const roleTextInput=document.getElementById(
-"newRoleText"
-);
-
-if(roleTextInput){
-
-roleTextInput.addEventListener("input",()=>{
-
-updateCounter(
-roleTextInput,
-"roleTextCounter",
-100
-);
-
-});
-
-}
-
-
-channel.publish("graphics",{
-type:"mosca",
-action:"updateLoop",
-minutos:2
-});
-
-});
+enviarHora();
+enviarLoop();
