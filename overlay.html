@@ -12,21 +12,32 @@
 
 <body>
 
-<!-- ========================= -->
+<!-- ===================================================== -->
 <!-- CANDIDATOS -->
-<!-- ========================= -->
+<!-- ===================================================== -->
 
 <div id="candidatosBanner" class="bannerBase" style="opacity:0;">
 
 <div class="box1">
 <div class="mask1">
 
-<img src="assets/caja1.png" class="bg">
+<img
+src="assets/candidatos/caja11.png"
+class="bg"
+>
 
-<img src="" class="candidateImg">
+<img
+src=""
+class="candidateImg"
+>
 
 <div class="logoBox">
-<img src="assets/logo.png" class="logo">
+
+<img
+src="assets/candidatos/logo00.png"
+class="logo"
+>
+
 </div>
 
 </div>
@@ -35,10 +46,18 @@
 <div class="box2">
 <div class="mask2">
 
-<img src="assets/caja2.png" class="bg">
+<img
+src="assets/candidatos/caja22.png"
+class="bg"
+>
 
 <div class="textContainer">
-<div class="bannerText" style="text-transform:uppercase;"></div>
+
+<div
+class="bannerText"
+style="text-transform:uppercase;"
+></div>
+
 </div>
 
 </div>
@@ -46,19 +65,27 @@
 
 </div>
 
-<!-- ========================= -->
+<!-- ===================================================== -->
 <!-- BANNER NORMAL -->
-<!-- ========================= -->
+<!-- ===================================================== -->
 
 <div id="normalBanner" class="bannerBase" style="opacity:0;">
 
 <div class="box1">
 <div class="mask1">
 
-<img src="assets/caja1.png" class="bg">
+<img
+src="assets/banner/caja1.png"
+class="bg"
+>
 
 <div class="logoBox">
-<img src="assets/logo.png" class="logo">
+
+<img
+src="assets/banner/logo.png"
+class="logo"
+>
+
 </div>
 
 </div>
@@ -67,10 +94,18 @@
 <div class="box2">
 <div class="mask2">
 
-<img src="assets/caja2.png" class="bg">
+<img
+src="assets/banner/caja2.png"
+class="bg"
+>
 
 <div class="textContainer">
-<div class="bannerText" style="text-transform:uppercase;"></div>
+
+<div
+class="bannerText"
+style="text-transform:uppercase;"
+></div>
+
 </div>
 
 </div>
@@ -78,19 +113,27 @@
 
 </div>
 
-<!-- ========================= -->
+<!-- ===================================================== -->
 <!-- ROLES -->
-<!-- ========================= -->
+<!-- ===================================================== -->
 
 <div id="rolesBanner" class="bannerBase" style="opacity:0;">
 
 <div class="box1">
 <div class="mask1">
 
-<img src="assets/caja1.png" class="bg">
+<img
+src="assets/roles/caja1.png"
+class="bg"
+>
 
 <div class="logoBox">
-<img src="assets/logo.png" class="logo">
+
+<img
+src="assets/roles/logo.png"
+class="logo"
+>
+
 </div>
 
 </div>
@@ -99,20 +142,25 @@
 <div class="box2">
 <div class="mask2">
 
-<img src="assets/caja2.png" class="bg">
+<img
+src="assets/roles/caja2.png"
+class="bg"
+>
 
 <div class="textContainer">
+
 <div class="bannerText"></div>
-</div>
-
-</div>
-</div>
 
 </div>
 
-<!-- ========================= -->
+</div>
+</div>
+
+</div>
+
+<!-- ===================================================== -->
 <!-- MOSCA -->
-<!-- ========================= -->
+<!-- ===================================================== -->
 
 <div id="mosca">
 
@@ -120,14 +168,21 @@
 
 <div id="logoMosca">
 
-<img src="assets/logo1.png">
+<img
+src="assets/mosca/logo1.png"
+>
 
 <div id="ticker">
 
 <div class="ticker-track">
 
-<span class="text">WWW.ELESPECTADOR.COM</span>
-<span class="text">WWW.ELESPECTADOR.COM</span>
+<span class="text">
+WWW.ELESPECTADOR.COM
+</span>
+
+<span class="text">
+WWW.ELESPECTADOR.COM
+</span>
 
 </div>
 
@@ -138,7 +193,11 @@
 <div id="logoEE">
 
 <div class="circle-mask">
-<img src="assets/logoee.png">
+
+<img
+src="assets/mosca/logoee.png"
+>
+
 </div>
 
 </div>
@@ -149,77 +208,102 @@
 
 <script>
 
+/* ===================================== */
+/* ABLY */
+/* ===================================== */
+
 const ably = new Ably.Realtime({
 key:"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ"
 });
 
-const channel = ably.channels.get("ably-elecciones-completo");
+const channel = ably.channels.get(
+"ably-elecciones-completo"
+);
 
-/* ========================= */
-/* ESTADOS */
-/* ========================= */
-
-let normalVisible = false;
-let rolesVisible = false;
-let candidatosVisible = false;
-
-/* ========================= */
+/* ===================================== */
 /* HELPERS */
-/* ========================= */
+/* ===================================== */
 
 function hideImmediately(el){
-el.style.opacity = "0";
+
+el.style.opacity="0";
+
 }
 
-hideImmediately(document.getElementById("normalBanner"));
-hideImmediately(document.getElementById("rolesBanner"));
-hideImmediately(document.getElementById("candidatosBanner"));
+/* ===================================== */
+/* ELEMENTS */
+/* ===================================== */
 
-/* ========================= */
-/* BANNER NORMAL */
-/* ========================= */
+const normalBanner =
+document.getElementById("normalBanner");
+
+const rolesBanner =
+document.getElementById("rolesBanner");
+
+const candidatosBanner =
+document.getElementById("candidatosBanner");
+
+/* ===================================== */
+/* STATES */
+/* ===================================== */
+
+let normalVisible=false;
+let rolesVisible=false;
+let candidatosVisible=false;
+
+/* ===================================== */
+/* INITIAL RESET */
+/* ===================================== */
+
+hideImmediately(normalBanner);
+hideImmediately(rolesBanner);
+hideImmediately(candidatosBanner);
+
+/* ===================================== */
+/* CHANNEL */
+/* ===================================== */
 
 channel.subscribe("control",(message)=>{
 
 const data = message.data;
 
-/* ========================= */
+/* ===================================== */
 /* BANNER */
-/* ========================= */
+/* ===================================== */
 
 if(data.module === "banner"){
 
-const banner = document.getElementById("normalBanner");
-
 if(data.action === "show"){
-
-const text = data.text;
 
 if(normalVisible){
 
-hideBanner(banner);
+hideBanner(normalBanner);
 
 setTimeout(()=>{
 
-banner.querySelector(".bannerText").innerText = text;
+normalBanner.querySelector(
+".bannerText"
+).innerText = data.text;
 
-banner.style.opacity = "1";
+normalBanner.style.opacity="1";
 
-startBanner(banner);
+startBanner(normalBanner);
 
-normalVisible = true;
+normalVisible=true;
 
 },3500);
 
 }else{
 
-banner.querySelector(".bannerText").innerText = text;
+normalBanner.querySelector(
+".bannerText"
+).innerText = data.text;
 
-banner.style.opacity = "1";
+normalBanner.style.opacity="1";
 
-startBanner(banner);
+startBanner(normalBanner);
 
-normalVisible = true;
+normalVisible=true;
 
 }
 
@@ -229,13 +313,13 @@ if(data.action === "hide"){
 
 if(!normalVisible) return;
 
-hideBanner(banner);
+hideBanner(normalBanner);
 
 setTimeout(()=>{
 
-hideImmediately(banner);
+hideImmediately(normalBanner);
 
-normalVisible = false;
+normalVisible=false;
 
 },1500);
 
@@ -243,49 +327,53 @@ normalVisible = false;
 
 }
 
-/* ========================= */
+/* ===================================== */
 /* ROLES */
-/* ========================= */
+/* ===================================== */
 
 if(data.module === "roles"){
 
-const banner = document.getElementById("rolesBanner");
-
 if(data.action === "show"){
 
-const name = data.name.toUpperCase();
-const role = data.role.toUpperCase();
-
 const textHTML = `
-<div class="nameLine">${name}</div>
-<div class="roleLine">${role}</div>
+<div class="nameLine">
+${data.name.toUpperCase()}
+</div>
+
+<div class="roleLine">
+${data.role.toUpperCase()}
+</div>
 `;
 
 if(rolesVisible){
 
-hideBanner(banner);
+hideBanner(rolesBanner);
 
 setTimeout(()=>{
 
-banner.querySelector(".bannerText").innerHTML = textHTML;
+rolesBanner.querySelector(
+".bannerText"
+).innerHTML = textHTML;
 
-banner.style.opacity = "1";
+rolesBanner.style.opacity="1";
 
-startBanner(banner);
+startBanner(rolesBanner);
 
-rolesVisible = true;
+rolesVisible=true;
 
 },3500);
 
 }else{
 
-banner.querySelector(".bannerText").innerHTML = textHTML;
+rolesBanner.querySelector(
+".bannerText"
+).innerHTML = textHTML;
 
-banner.style.opacity = "1";
+rolesBanner.style.opacity="1";
 
-startBanner(banner);
+startBanner(rolesBanner);
 
-rolesVisible = true;
+rolesVisible=true;
 
 }
 
@@ -295,13 +383,13 @@ if(data.action === "hide"){
 
 if(!rolesVisible) return;
 
-hideBanner(banner);
+hideBanner(rolesBanner);
 
 setTimeout(()=>{
 
-hideImmediately(banner);
+hideImmediately(rolesBanner);
 
-rolesVisible = false;
+rolesVisible=false;
 
 },1500);
 
@@ -309,48 +397,51 @@ rolesVisible = false;
 
 }
 
-/* ========================= */
+/* ===================================== */
 /* CANDIDATOS */
-/* ========================= */
+/* ===================================== */
 
 if(data.module === "candidatos"){
 
-const banner = document.getElementById("candidatosBanner");
-
 if(data.action === "show"){
 
-const text = data.text;
-const candidate = data.candidate;
+const candidateImg =
+candidatosBanner.querySelector(
+".candidateImg"
+);
 
-const candidateImg = banner.querySelector(".candidateImg");
-
-candidateImg.src = "assets/" + candidate;
+candidateImg.src =
+"assets/candidatos/" + data.candidate;
 
 if(candidatosVisible){
 
-hideBanner(banner);
+hideBanner(candidatosBanner);
 
 setTimeout(()=>{
 
-banner.querySelector(".bannerText").innerText = text;
+candidatosBanner.querySelector(
+".bannerText"
+).innerText = data.text;
 
-banner.style.opacity = "1";
+candidatosBanner.style.opacity="1";
 
-startBanner(banner, true);
+startBanner(candidatosBanner,true);
 
-candidatosVisible = true;
+candidatosVisible=true;
 
 },3500);
 
 }else{
 
-banner.querySelector(".bannerText").innerText = text;
+candidatosBanner.querySelector(
+".bannerText"
+).innerText = data.text;
 
-banner.style.opacity = "1";
+candidatosBanner.style.opacity="1";
 
-startBanner(banner, true);
+startBanner(candidatosBanner,true);
 
-candidatosVisible = true;
+candidatosVisible=true;
 
 }
 
@@ -360,13 +451,13 @@ if(data.action === "hide"){
 
 if(!candidatosVisible) return;
 
-hideBanner(banner);
+hideBanner(candidatosBanner);
 
 setTimeout(()=>{
 
-hideImmediately(banner);
+hideImmediately(candidatosBanner);
 
-candidatosVisible = false;
+candidatosVisible=false;
 
 },1500);
 
@@ -374,9 +465,9 @@ candidatosVisible = false;
 
 }
 
-/* ========================= */
+/* ===================================== */
 /* MOSCA */
-/* ========================= */
+/* ===================================== */
 
 if(data.module === "mosca"){
 
@@ -385,7 +476,9 @@ if(data.action === "on"){
 stopMosca();
 
 setTimeout(()=>{
+
 startMosca();
+
 },80);
 
 }
@@ -406,7 +499,8 @@ updateTexto();
 
 if(data.action === "updateLoop"){
 
-minutosLoop = parseInt(data.minutos || 0);
+minutosLoop =
+parseInt(data.minutos || 0);
 
 }
 
