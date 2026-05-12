@@ -466,50 +466,461 @@ alert("URL copiada para vMix");
 }
 
 /* ====================================================== */
-/* AQUÍ DEBES PEGAR LOS 4 BLOQUES JS ORIGINALES COMPLETOS */
+/* BANNER MODULE */
 /* ====================================================== */
 
-/*
-1. BANNER ORIGINAL COMPLETO
-- banners[]
-- render()
-- toggleBanner()
-- deleteBanner()
-- addBanner()
-- updateCounter()
+const bannerState = {
+activeIndex:null,
+banners:[
+"Registraduría reporta normalidad en apertura de urnas para elecciones 2026",
+"Candidatos presidenciales inician jornada de votación en Bogotá",
+"Alta participación ciudadana marca primeras horas de elecciones 2026"
+]
+};
 
-2. ROLES ORIGINAL COMPLETO
-- lista completa
-- render()
-- autoOffTimer
-- addRole()
+function renderBanner(){
 
-3. CANDIDATOS ORIGINAL COMPLETO
-- candidates[]
-- banners[]
-- render()
-- selects
+const panel=document.getElementById("bannerPanel");
+panel.innerHTML="";
 
-4. MOSCA ORIGINAL COMPLETO
-- toggle
-- hora
-- loop
+bannerState.banners.forEach((text,i)=>{
 
-ÚNICO CAMBIO:
+const row=document.createElement("div");
+row.className="item";
 
-ANTES:
-channel.publish("banner",{
-action:"show"
+const switchWrap=document.createElement("label");
+switchWrap.className="switch";
+
+const toggle=document.createElement("input");
+toggle.type="checkbox";
+toggle.checked=(bannerState.activeIndex===i);
+toggle.onchange=()=>toggleBanner(i);
+
+const slider=document.createElement("span");
+slider.className="slider";
+
+switchWrap.appendChild(toggle);
+switchWrap.appendChild(slider);
+
+const label=document.createElement("span");
+label.innerText=text;
+
+const del=document.createElement("button");
+del.innerText="Borrar";
+del.className="deleteBtn";
+del.onclick=()=>deleteBanner(i);
+
+row.appendChild(switchWrap);
+row.appendChild(label);
+row.appendChild(del);
+
+panel.appendChild(row);
+
 });
 
-AHORA:
+}
+
+function toggleBanner(i){
+
+if(bannerState.activeIndex===i){
+
 channel.publish("control",{
 module:"banner",
-action:"show"
+action:"hide"
 });
-*/
+
+bannerState.activeIndex=null;
+renderBanner();
+return;
+
+}
+
+bannerState.activeIndex=i;
+
+channel.publish("control",{
+module:"banner",
+action:"show",
+text:bannerState.banners[i].toUpperCase()
+});
+
+renderBanner();
+
+}
+
+function deleteBanner(i){
+
+bannerState.banners.splice(i,1);
+
+if(bannerState.activeIndex===i){
+
+channel.publish("control",{
+module:"banner",
+action:"hide"
+});
+
+bannerState.activeIndex=null;
+
+}
+
+renderBanner();
+
+}
+
+function addBanner(){
+
+const input=document.getElementById("newText");
+const text=input.value.trim();
+
+if(!text) return;
+
+bannerState.banners.push(text);
+
+input.value="";
+
+updateBannerCounter();
+renderBanner();
+
+}
+
+const textarea=document.getElementById("newText");
+const counter=document.getElementById("counter");
+const errorMsg=document.getElementById("errorMsg");
+
+textarea.addEventListener("input",updateBannerCounter);
+
+function updateBannerCounter(){
+
+const len=textarea.value.length;
+
+counter.innerText=len+" / 130";
+
+if(len>110){
+counter.classList.add("warning");
+textarea.classList.add("limit");
+}else{
+counter.classList.remove("warning");
+textarea.classList.remove("limit");
+}
+
+if(len>=130){
+errorMsg.style.display="block";
+}else{
+errorMsg.style.display="none";
+}
+
+}
+
+/* ====================================================== */
+/* ROLES MODULE */
+/* ====================================================== */
+
+const rolesState={
+activeIndex:null,
+autoOffTimer:null,
+banners:[
+{name:"CARLOS EDUARDO CAICEDO",role:"CANDIDATO POR FIRMAS INDEPENDIENTE"},
+{name:"CLAUDIA LÓPEZ",role:"CON CLAUDIA IMPARABLES"},
+{name:"CATALINA VALENCIA",role:"MODERADORA"},
+{name:"FIDEL CANO CORREA",role:"DIRECTOR DE EL ESPECTADOR"}
+]
+};
+
+function renderRoles(){
+
+const panel=document.getElementById("rolesPanel");
+panel.innerHTML="";
+
+rolesState.banners.forEach((item,i)=>{
+
+const row=document.createElement("div");
+row.className="item";
+
+const switchWrap=document.createElement("label");
+switchWrap.className="switch";
+
+const toggle=document.createElement("input");
+toggle.type="checkbox";
+toggle.checked=(rolesState.activeIndex===i);
+toggle.onchange=()=>toggleRole(i);
+
+const slider=document.createElement("span");
+slider.className="slider";
+
+switchWrap.appendChild(toggle);
+switchWrap.appendChild(slider);
+
+const label=document.createElement("span");
+label.innerText=item.name;
+
+const del=document.createElement("button");
+del.innerText="Borrar";
+del.className="deleteBtn";
+del.onclick=()=>deleteRole(i);
+
+row.appendChild(switchWrap);
+row.appendChild(label);
+row.appendChild(del);
+
+panel.appendChild(row);
+
+});
+
+}
+
+function toggleRole(i){
+
+if(rolesState.activeIndex===i){
+
+channel.publish("control",{
+module:"roles",
+action:"hide"
+});
+
+rolesState.activeIndex=null;
+clearTimeout(rolesState.autoOffTimer);
+renderRoles();
+return;
+
+}
+
+rolesState.activeIndex=i;
+
+channel.publish("control",{
+module:"roles",
+action:"show",
+name:rolesState.banners[i].name,
+role:rolesState.banners[i].role
+});
+
+clearTimeout(rolesState.autoOffTimer);
+
+rolesState.autoOffTimer=setTimeout(()=>{
+
+channel.publish("control",{
+module:"roles",
+action:"hide"
+});
+
+rolesState.activeIndex=null;
+renderRoles();
+
+},11000);
+
+renderRoles();
+
+}
+
+function deleteRole(i){
+rolesState.banners.splice(i,1);
+renderRoles();
+}
+
+function addRole(){
+
+const name=document.getElementById("newName").value.trim();
+const role=document.getElementById("newRole").value.trim();
+
+if(!name || !role) return;
+
+rolesState.banners.push({name,role});
+
+renderRoles();
+
+}
+
+/* ====================================================== */
+/* CANDIDATOS MODULE */
+/* ====================================================== */
+
+const candidatosState={
+activeIndex:null,
+candidates:[
+{name:"Iván Cepeda",file:"candidato 1.png"},
+{name:"Claudia López",file:"candidato 3.png"},
+{name:"Sergio Fajardo",file:"candidato 13.png"}
+],
+banners:[
+{
+text:"Iván Cepeda celebra el crecimiento de su sector en el conteo presidencial",
+candidate:"candidato 1.png"
+}
+]
+};
+
+function renderCandidatos(){
+
+const panel=document.getElementById("candidatosPanel");
+panel.innerHTML="";
+
+candidatosState.banners.forEach((item,i)=>{
+
+const row=document.createElement("div");
+row.className="item";
+
+const switchWrap=document.createElement("label");
+switchWrap.className="switch";
+
+const toggle=document.createElement("input");
+toggle.type="checkbox";
+toggle.checked=(candidatosState.activeIndex===i);
+toggle.onchange=()=>toggleCandidato(i);
+
+const slider=document.createElement("span");
+slider.className="slider";
+
+switchWrap.appendChild(toggle);
+switchWrap.appendChild(slider);
+
+const label=document.createElement("span");
+label.innerText=item.text;
+
+const select=document.createElement("select");
+
+candidatosState.candidates.forEach(candidate=>{
+
+const option=document.createElement("option");
+option.value=candidate.file;
+option.innerText=candidate.name;
+
+if(candidate.file===item.candidate){
+option.selected=true;
+}
+
+select.appendChild(option);
+
+});
+
+select.onchange=(e)=>{
+item.candidate=e.target.value;
+};
+
+const del=document.createElement("button");
+del.innerText="Borrar";
+del.className="deleteBtn";
+del.onclick=()=>deleteCandidato(i);
+
+row.appendChild(switchWrap);
+row.appendChild(label);
+row.appendChild(select);
+row.appendChild(del);
+
+panel.appendChild(row);
+
+});
+
+}
+
+function toggleCandidato(i){
+
+if(candidatosState.activeIndex===i){
+
+channel.publish("control",{
+module:"candidatos",
+action:"hide"
+});
+
+candidatosState.activeIndex=null;
+renderCandidatos();
+return;
+
+}
+
+candidatosState.activeIndex=i;
+
+channel.publish("control",{
+module:"candidatos",
+action:"show",
+text:candidatosState.banners[i].text.toUpperCase(),
+candidate:candidatosState.banners[i].candidate
+});
+
+renderCandidatos();
+
+}
+
+function deleteCandidato(i){
+
+candidatosState.banners.splice(i,1);
+renderCandidatos();
+
+}
+
+function addCandidato(){
+
+const input=document.getElementById("newCandidateText");
+const text=input.value.trim();
+
+if(!text) return;
+
+candidatosState.banners.push({
+text,
+candidate:"candidato 1.png"
+});
+
+renderCandidatos();
+
+}
+
+/* ====================================================== */
+/* MOSCA MODULE */
+/* ====================================================== */
+
+const toggle=document.getElementById("toggleMosca");
+const horaInput=document.getElementById("hora");
+const loopSelect=document.getElementById("loopMin");
+const status=document.getElementById("status");
+
+toggle.addEventListener("change",()=>{
+
+channel.publish("control",{
+module:"mosca",
+action: toggle.checked ? "on" : "off"
+});
+
+});
+
+function enviarHora(){
+
+channel.publish("control",{
+module:"mosca",
+action:"updateHora",
+hora:horaInput.value
+});
+
+status.innerText="✔ "+horaInput.value;
+
+}
+
+function enviarLoop(){
+
+channel.publish("control",{
+module:"mosca",
+action:"updateLoop",
+minutos:loopSelect.value
+});
+
+}
+
+horaInput.addEventListener("change",enviarHora);
+loopSelect.addEventListener("change",enviarLoop);
+
+window.addEventListener("load",()=>{
+
+renderBanner();
+renderRoles();
+renderCandidatos();
+
+updateBannerCounter();
+
+enviarHora();
+enviarLoop();
+
+});
 
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
