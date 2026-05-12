@@ -5,211 +5,54 @@
 
 <meta charset="UTF-8">
 
-<link rel="stylesheet" href="overlay.css">
+<title>OVERLAY UNIVERSAL</title>
 
-<script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+<link rel="stylesheet" href="style.css">
 
 </head>
 
-<body>
+<body class="overlayBody">
 
 
-<!-- CANDIDATOS -->
+<!-- ====================================== -->
+<!-- CAPA 1 · CANDIDATOS -->
+<!-- ====================================== -->
 
-<div id="candidatos-system" class="overlay-layer">
+<iframe
+id="candidatosOverlay"
+src="candidatos-overlay.html">
+</iframe>
 
-<div id="bannerCandidatos">
 
-<div id="candidateBox1">
+<!-- ====================================== -->
+<!-- CAPA 2 · BANNER -->
+<!-- ====================================== -->
 
-<div id="candidateMask1">
+<iframe
+id="bannerOverlay"
+src="banner-overlay.html">
+</iframe>
 
-<img
-src="assets/caja11.png"
-class="candidateBg">
 
-<img
-src=""
-id="candidateImg">
+<!-- ====================================== -->
+<!-- CAPA 3 · TITULO DE ROL -->
+<!-- ====================================== -->
 
-<div id="candidateLogoBox">
+<iframe
+id="rolesOverlay"
+src="roles-overlay.html">
+</iframe>
 
-<img
-src="assets/logo00.png"
-id="candidateLogo">
 
-</div>
+<!-- ====================================== -->
+<!-- CAPA 4 · MOSCA -->
+<!-- ====================================== -->
 
-</div>
+<iframe
+id="moscaOverlay"
+src="mosca-overlay.html">
+</iframe>
 
-</div>
-
-<div id="candidateBox2">
-
-<div id="candidateMask2">
-
-<img
-src="assets/caja22.png"
-class="candidateBg">
-
-<div id="candidateTextContainer">
-
-<div id="candidateBannerText"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- BANNER -->
-
-<div id="banner-system" class="overlay-layer">
-
-<div id="banner">
-
-<div id="box1">
-
-<div id="mask1">
-
-<img
-src="assets/caja1.png"
-class="bg">
-
-<div id="logoBox">
-
-<img
-src="assets/logo.png"
-id="logo">
-
-</div>
-
-</div>
-
-</div>
-
-<div id="box2">
-
-<div id="mask2">
-
-<img
-src="assets/caja2.png"
-class="bg">
-
-<div id="textContainer">
-
-<div id="bannerText"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- ROLES -->
-
-<div id="roles-system" class="overlay-layer">
-
-<div id="rolesBanner">
-
-<div id="rolesBox1">
-
-<div id="rolesMask1">
-
-<img
-src="assets/caja1.png"
-class="rolesBg">
-
-<div id="rolesLogoBox">
-
-<img
-src="assets/logo.png"
-id="rolesLogo">
-
-</div>
-
-</div>
-
-</div>
-
-<div id="rolesBox2">
-
-<div id="rolesMask2">
-
-<img
-src="assets/caja2.png"
-class="rolesBg">
-
-<div id="rolesTextContainer">
-
-<div id="rolesBannerText"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- MOSCA -->
-
-<div id="mosca-system" class="overlay-layer">
-
-<div id="mosca">
-
-<div id="texto"></div>
-
-<div id="logoMosca">
-
-<img src="assets/logo1.png">
-
-<div id="ticker">
-
-<div class="ticker-track">
-
-<span class="text">
-WWW.ELESPECTADOR.COM
-</span>
-
-<span class="text">
-WWW.ELESPECTADOR.COM
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-<div id="logoEE">
-
-<div class="circle-mask">
-
-<img src="assets/logoee.png">
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script src="animation.js"></script>
 
 </body>
 </html>
