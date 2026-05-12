@@ -1,58 +1,420 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 
 <head>
-
 <meta charset="UTF-8">
-
-<title>OVERLAY UNIVERSAL</title>
 
 <link rel="stylesheet" href="style.css">
 
+<script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+
 </head>
 
-<body class="overlayBody">
+<body>
 
+<!-- ========================= -->
+<!-- CANDIDATOS -->
+<!-- ========================= -->
 
-<!-- ====================================== -->
-<!-- CAPA 1 · CANDIDATOS -->
-<!-- ====================================== -->
+<div id="candidatosBanner" class="bannerBase" style="opacity:0;">
 
-<iframe
-id="candidatosOverlay"
-src="candidatos-overlay.html">
-</iframe>
+<div class="box1">
+<div class="mask1">
 
+<img src="assets/caja1.png" class="bg">
 
-<!-- ====================================== -->
-<!-- CAPA 2 · BANNER -->
-<!-- ====================================== -->
+<img src="" class="candidateImg">
 
-<iframe
-id="bannerOverlay"
-src="banner-overlay.html">
-</iframe>
+<div class="logoBox">
+<img src="assets/logo.png" class="logo">
+</div>
 
+</div>
+</div>
 
-<!-- ====================================== -->
-<!-- CAPA 3 · TITULO DE ROL -->
-<!-- ====================================== -->
+<div class="box2">
+<div class="mask2">
 
-<iframe
-id="rolesOverlay"
-src="roles-overlay.html">
-</iframe>
+<img src="assets/caja2.png" class="bg">
 
+<div class="textContainer">
+<div class="bannerText" style="text-transform:uppercase;"></div>
+</div>
 
-<!-- ====================================== -->
-<!-- CAPA 4 · MOSCA -->
-<!-- ====================================== -->
+</div>
+</div>
 
-<iframe
-id="moscaOverlay"
-src="mosca-overlay.html">
-</iframe>
+</div>
 
+<!-- ========================= -->
+<!-- BANNER NORMAL -->
+<!-- ========================= -->
+
+<div id="normalBanner" class="bannerBase" style="opacity:0;">
+
+<div class="box1">
+<div class="mask1">
+
+<img src="assets/caja1.png" class="bg">
+
+<div class="logoBox">
+<img src="assets/logo.png" class="logo">
+</div>
+
+</div>
+</div>
+
+<div class="box2">
+<div class="mask2">
+
+<img src="assets/caja2.png" class="bg">
+
+<div class="textContainer">
+<div class="bannerText" style="text-transform:uppercase;"></div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- ROLES -->
+<!-- ========================= -->
+
+<div id="rolesBanner" class="bannerBase" style="opacity:0;">
+
+<div class="box1">
+<div class="mask1">
+
+<img src="assets/caja1.png" class="bg">
+
+<div class="logoBox">
+<img src="assets/logo.png" class="logo">
+</div>
+
+</div>
+</div>
+
+<div class="box2">
+<div class="mask2">
+
+<img src="assets/caja2.png" class="bg">
+
+<div class="textContainer">
+<div class="bannerText"></div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- MOSCA -->
+<!-- ========================= -->
+
+<div id="mosca">
+
+<div id="texto"></div>
+
+<div id="logoMosca">
+
+<img src="assets/logo1.png">
+
+<div id="ticker">
+
+<div class="ticker-track">
+
+<span class="text">WWW.ELESPECTADOR.COM</span>
+<span class="text">WWW.ELESPECTADOR.COM</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="logoEE">
+
+<div class="circle-mask">
+<img src="assets/logoee.png">
+</div>
+
+</div>
+
+</div>
+
+<script src="animation.js"></script>
+
+<script>
+
+const ably = new Ably.Realtime({
+key:"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ"
+});
+
+const channel = ably.channels.get("ably-elecciones-completo");
+
+/* ========================= */
+/* ESTADOS */
+/* ========================= */
+
+let normalVisible = false;
+let rolesVisible = false;
+let candidatosVisible = false;
+
+/* ========================= */
+/* HELPERS */
+/* ========================= */
+
+function hideImmediately(el){
+el.style.opacity = "0";
+}
+
+hideImmediately(document.getElementById("normalBanner"));
+hideImmediately(document.getElementById("rolesBanner"));
+hideImmediately(document.getElementById("candidatosBanner"));
+
+/* ========================= */
+/* BANNER NORMAL */
+/* ========================= */
+
+channel.subscribe("control",(message)=>{
+
+const data = message.data;
+
+/* ========================= */
+/* BANNER */
+/* ========================= */
+
+if(data.module === "banner"){
+
+const banner = document.getElementById("normalBanner");
+
+if(data.action === "show"){
+
+const text = data.text;
+
+if(normalVisible){
+
+hideBanner(banner);
+
+setTimeout(()=>{
+
+banner.querySelector(".bannerText").innerText = text;
+
+banner.style.opacity = "1";
+
+startBanner(banner);
+
+normalVisible = true;
+
+},3500);
+
+}else{
+
+banner.querySelector(".bannerText").innerText = text;
+
+banner.style.opacity = "1";
+
+startBanner(banner);
+
+normalVisible = true;
+
+}
+
+}
+
+if(data.action === "hide"){
+
+if(!normalVisible) return;
+
+hideBanner(banner);
+
+setTimeout(()=>{
+
+hideImmediately(banner);
+
+normalVisible = false;
+
+},1500);
+
+}
+
+}
+
+/* ========================= */
+/* ROLES */
+/* ========================= */
+
+if(data.module === "roles"){
+
+const banner = document.getElementById("rolesBanner");
+
+if(data.action === "show"){
+
+const name = data.name.toUpperCase();
+const role = data.role.toUpperCase();
+
+const textHTML = `
+<div class="nameLine">${name}</div>
+<div class="roleLine">${role}</div>
+`;
+
+if(rolesVisible){
+
+hideBanner(banner);
+
+setTimeout(()=>{
+
+banner.querySelector(".bannerText").innerHTML = textHTML;
+
+banner.style.opacity = "1";
+
+startBanner(banner);
+
+rolesVisible = true;
+
+},3500);
+
+}else{
+
+banner.querySelector(".bannerText").innerHTML = textHTML;
+
+banner.style.opacity = "1";
+
+startBanner(banner);
+
+rolesVisible = true;
+
+}
+
+}
+
+if(data.action === "hide"){
+
+if(!rolesVisible) return;
+
+hideBanner(banner);
+
+setTimeout(()=>{
+
+hideImmediately(banner);
+
+rolesVisible = false;
+
+},1500);
+
+}
+
+}
+
+/* ========================= */
+/* CANDIDATOS */
+/* ========================= */
+
+if(data.module === "candidatos"){
+
+const banner = document.getElementById("candidatosBanner");
+
+if(data.action === "show"){
+
+const text = data.text;
+const candidate = data.candidate;
+
+const candidateImg = banner.querySelector(".candidateImg");
+
+candidateImg.src = "assets/" + candidate;
+
+if(candidatosVisible){
+
+hideBanner(banner);
+
+setTimeout(()=>{
+
+banner.querySelector(".bannerText").innerText = text;
+
+banner.style.opacity = "1";
+
+startBanner(banner, true);
+
+candidatosVisible = true;
+
+},3500);
+
+}else{
+
+banner.querySelector(".bannerText").innerText = text;
+
+banner.style.opacity = "1";
+
+startBanner(banner, true);
+
+candidatosVisible = true;
+
+}
+
+}
+
+if(data.action === "hide"){
+
+if(!candidatosVisible) return;
+
+hideBanner(banner);
+
+setTimeout(()=>{
+
+hideImmediately(banner);
+
+candidatosVisible = false;
+
+},1500);
+
+}
+
+}
+
+/* ========================= */
+/* MOSCA */
+/* ========================= */
+
+if(data.module === "mosca"){
+
+if(data.action === "on"){
+
+stopMosca();
+
+setTimeout(()=>{
+startMosca();
+},80);
+
+}
+
+if(data.action === "off"){
+
+stopMosca();
+
+}
+
+if(data.action === "updateHora"){
+
+horaCierre = data.hora;
+
+updateTexto();
+
+}
+
+if(data.action === "updateLoop"){
+
+minutosLoop = parseInt(data.minutos || 0);
+
+}
+
+}
+
+});
+
+</script>
 
 </body>
 </html>
