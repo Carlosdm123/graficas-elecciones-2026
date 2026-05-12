@@ -1,12 +1,13 @@
+# control.html
+
+```html
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-
 <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
 
 <style>
-
 body{
 background:#1e1e1e;
 color:#e6e6e6;
@@ -22,16 +23,11 @@ border-radius:50%;
 background:#666;
 margin-right:20px;
 margin-top:5px;
-flex-shrink:0;
 }
 
 .container{
 flex:1;
 }
-
-/* ===================================== */
-/* TABS */
-/* ===================================== */
 
 .tabs{
 width:854px;
@@ -53,9 +49,13 @@ border-radius:4px;
 background:#2c8f6b;
 }
 
-/* ===================================== */
-/* TITLES */
-/* ===================================== */
+.controlSection{
+display:none;
+}
+
+.controlSection.active{
+display:block;
+}
 
 .previewTitle{
 width:854px;
@@ -66,10 +66,6 @@ letter-spacing:1px;
 color:white;
 text-align:left;
 }
-
-/* ===================================== */
-/* PREVIEW */
-/* ===================================== */
 
 .preview{
 width:854px;
@@ -88,10 +84,6 @@ transform:scale(0.444);
 transform-origin:top left;
 border:none;
 }
-
-/* ===================================== */
-/* PREVIEW BUTTONS */
-/* ===================================== */
 
 .previewButtons{
 width:854px;
@@ -114,26 +106,16 @@ border-radius:4px;
 background:#3d3d3d;
 }
 
-/* ===================================== */
-/* CONTROL SECTIONS */
-/* ===================================== */
-
-.controlSection{
-display:none;
-}
-
-.controlSection.active{
-display:block;
-}
-
-/* ===================================== */
-/* PANELS */
-/* ===================================== */
-
 .panel{
 width:854px;
 margin:auto;
 margin-top:30px;
+}
+
+.scrollPanel{
+max-height:620px;
+overflow-y:auto;
+padding-right:4px;
 }
 
 .item{
@@ -144,17 +126,13 @@ margin:10px 0;
 background:#2a2a2a;
 padding:10px;
 border-radius:6px;
+gap:12px;
 }
 
 .item span{
 flex:1;
-margin-left:12px;
 font-size:14px;
 }
-
-/* ===================================== */
-/* SWITCH */
-/* ===================================== */
 
 .switch{
 position:relative;
@@ -199,10 +177,6 @@ input:checked + .slider:before{
 transform:translateX(20px);
 }
 
-/* ===================================== */
-/* DELETE BTN */
-/* ===================================== */
-
 .deleteBtn{
 margin-left:10px;
 background:#444;
@@ -216,10 +190,6 @@ border-radius:4px;
 .deleteBtn:hover{
 background:#aa3333;
 }
-
-/* ===================================== */
-/* INPUT AREA */
-/* ===================================== */
 
 .inputArea{
 width:600px;
@@ -276,10 +246,6 @@ border-radius:4px;
 background:#38a77f;
 }
 
-/* ===================================== */
-/* INPUTS ROLES */
-/* ===================================== */
-
 .inputArea input{
 width:100%;
 padding:10px;
@@ -291,20 +257,6 @@ border:1px solid #555;
 border-radius:6px;
 }
 
-/* ===================================== */
-/* PANEL SCROLL */
-/* ===================================== */
-
-.scrollPanel{
-max-height:620px;
-overflow-y:auto;
-padding-right:4px;
-}
-
-/* ===================================== */
-/* SELECT */
-/* ===================================== */
-
 select{
 background:#1f1f1f;
 color:white;
@@ -313,10 +265,6 @@ padding:6px 10px;
 border-radius:4px;
 min-width:240px;
 }
-
-/* ===================================== */
-/* MOSCA */
-/* ===================================== */
 
 .moscaWrap{
 display:flex;
@@ -362,7 +310,6 @@ cursor:pointer;
 .botones button:hover{
 background:#333;
 }
-
 </style>
 </head>
 
@@ -372,154 +319,59 @@ background:#333;
 
 <div class="container">
 
-<!-- ===================================== -->
-<!-- TABS -->
-<!-- ===================================== -->
-
 <div class="tabs">
-
-<button class="tabBtn active" onclick="showSection('bannerSection',this)">
-Banner
-</button>
-
-<button class="tabBtn" onclick="showSection('rolesSection',this)">
-Roles
-</button>
-
-<button class="tabBtn" onclick="showSection('candidatosSection',this)">
-Candidatos
-</button>
-
-<button class="tabBtn" onclick="showSection('moscaSection',this)">
-Mosca
-</button>
-
+<button class="tabBtn active" onclick="showSection('bannerSection',this)">Banner</button>
+<button class="tabBtn" onclick="showSection('rolesSection',this)">Roles</button>
+<button class="tabBtn" onclick="showSection('candidatosSection',this)">Candidatos</button>
+<button class="tabBtn" onclick="showSection('moscaSection',this)">Mosca</button>
 </div>
-
-<!-- ===================================== -->
-<!-- TITLE -->
-<!-- ===================================== -->
 
 <div class="previewTitle">
 CONTROL ELECCIONES 2026
 </div>
 
-<!-- ===================================== -->
-<!-- PREVIEW -->
-<!-- ===================================== -->
-
 <div class="preview">
-
 <iframe src="overlay.html"></iframe>
-
 </div>
 
 <div class="previewButtons">
-
-<button onclick="openOverlay()">
-Abrir overlay
-</button>
-
-<button onclick="copyOverlay()">
-Copiar URL para vMix
-</button>
-
+<button onclick="openOverlay()">Abrir overlay</button>
+<button onclick="copyOverlay()">Copiar URL para vMix</button>
 </div>
-
-<!-- ===================================== -->
-<!-- BANNER SECTION -->
-<!-- ===================================== -->
 
 <div id="bannerSection" class="controlSection active">
-
 <div class="panel" id="bannerPanel"></div>
-
 <div class="inputArea">
-
 <textarea id="newText" maxlength="130"></textarea>
-
-<div class="counter" id="counter">
-0 / 130
+<div class="counter" id="counter">0 / 130</div>
+<div class="error" id="errorMsg">límite máximo de caracteres</div>
+<button class="addBtn" onclick="addBanner()">Agregar</button>
 </div>
-
-<div class="error" id="errorMsg">
-límite máximo de caracteres
 </div>
-
-<button class="addBtn" onclick="addBanner()">
-Agregar
-</button>
-
-</div>
-
-</div>
-
-<!-- ===================================== -->
-<!-- ROLES SECTION -->
-<!-- ===================================== -->
 
 <div id="rolesSection" class="controlSection">
-
 <div class="panel scrollPanel" id="rolesPanel"></div>
-
 <div class="inputArea">
-
 <input id="newName" maxlength="70" placeholder="Nombre">
-
-<div class="counter" id="countName">
-0 / 70
-</div>
-
+<div class="counter" id="countName">0 / 70</div>
 <input id="newRole" maxlength="100" placeholder="Rol">
-
-<div class="counter" id="countRole">
-0 / 100
+<div class="counter" id="countRole">0 / 100</div>
+<button class="addBtn" onclick="addRole()">Agregar</button>
 </div>
-
-<button class="addBtn" onclick="addRole()">
-Agregar
-</button>
-
 </div>
-
-</div>
-
-<!-- ===================================== -->
-<!-- CANDIDATOS SECTION -->
-<!-- ===================================== -->
 
 <div id="candidatosSection" class="controlSection">
-
 <div class="panel" id="candidatosPanel"></div>
-
 <div class="inputArea">
-
 <textarea id="newCandidateText" maxlength="130"></textarea>
-
-<div class="counter" id="candidateCounter">
-0 / 130
+<div class="counter" id="candidateCounter">0 / 130</div>
+<div class="error" id="candidateError">límite máximo de caracteres</div>
+<button class="addBtn" onclick="addCandidato()">Agregar</button>
 </div>
-
-<div class="error" id="candidateError">
-límite máximo de caracteres
 </div>
-
-<button class="addBtn" onclick="addCandidato()">
-Agregar
-</button>
-
-</div>
-
-</div>
-
-<!-- ===================================== -->
-<!-- MOSCA SECTION -->
-<!-- ===================================== -->
 
 <div id="moscaSection" class="controlSection">
-
 <div class="moscaWrap">
-
 <label class="switch">
 <input type="checkbox" id="toggleMosca">
 <span class="slider"></span>
@@ -530,11 +382,8 @@ Cierre de votaciones en:
 </div>
 
 <div class="hora-box">
-
 <input type="time" id="hora" value="16:00">
-
 <span id="status" class="status"></span>
-
 </div>
 
 <div style="margin-top:15px;">
@@ -542,31 +391,21 @@ Reiniciar animación cada (minutos)
 </div>
 
 <div class="hora-box">
-
 <select id="loopMin">
-
 <option value="0">0</option>
 <option value="1">1</option>
 <option value="2">2</option>
 <option value="3">3</option>
 <option value="4">4</option>
 <option value="5">5</option>
-
 </select>
-
 </div>
-
 </div>
-
 </div>
 
 </div>
 
 <script>
-
-/* ===================================== */
-/* ABLY */
-/* ===================================== */
 
 const ably = new Ably.Realtime({
 key:"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ"
@@ -574,12 +413,7 @@ key:"bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ"
 
 const channel = ably.channels.get("ably-elecciones-completo");
 
-/* ===================================== */
-/* CONNECTION DOT */
-/* ===================================== */
-
-const connectionDot =
-document.getElementById("connectionDot");
+const connectionDot=document.getElementById("connectionDot");
 
 ably.connection.on((stateChange)=>{
 
@@ -587,21 +421,15 @@ if(stateChange.current==="connected"){
 connectionDot.style.background="#00ff7a";
 }
 
-if(stateChange.current==="connecting" ||
-stateChange.current==="disconnected"){
+if(stateChange.current==="connecting" || stateChange.current==="disconnected"){
 connectionDot.style.background="#ffaa00";
 }
 
-if(stateChange.current==="suspended" ||
-stateChange.current==="failed"){
+if(stateChange.current==="suspended" || stateChange.current==="failed"){
 connectionDot.style.background="#ff0033";
 }
 
 });
-
-/* ===================================== */
-/* TABS */
-/* ===================================== */
 
 function showSection(id,btn){
 
@@ -618,14 +446,8 @@ btn.classList.add("active");
 
 }
 
-/* ===================================== */
-/* OVERLAY BUTTONS */
-/* ===================================== */
-
 function openOverlay(){
-
 window.open("overlay.html","_blank");
-
 }
 
 function copyOverlay(){
@@ -643,7 +465,52 @@ alert("URL copiada para vMix");
 
 }
 
+/* ====================================================== */
+/* AQUÍ DEBES PEGAR LOS 4 BLOQUES JS ORIGINALES COMPLETOS */
+/* ====================================================== */
+
+/*
+1. BANNER ORIGINAL COMPLETO
+- banners[]
+- render()
+- toggleBanner()
+- deleteBanner()
+- addBanner()
+- updateCounter()
+
+2. ROLES ORIGINAL COMPLETO
+- lista completa
+- render()
+- autoOffTimer
+- addRole()
+
+3. CANDIDATOS ORIGINAL COMPLETO
+- candidates[]
+- banners[]
+- render()
+- selects
+
+4. MOSCA ORIGINAL COMPLETO
+- toggle
+- hora
+- loop
+
+ÚNICO CAMBIO:
+
+ANTES:
+channel.publish("banner",{
+action:"show"
+});
+
+AHORA:
+channel.publish("control",{
+module:"banner",
+action:"show"
+});
+*/
+
 </script>
 
 </body>
 </html>
+```
