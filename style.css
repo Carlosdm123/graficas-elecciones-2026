@@ -14,6 +14,10 @@ width:1920px;
 height:1080px;
 }
 
+/* ===================================================== */
+/* BASE BANNERS */
+/* ===================================================== */
+
 .bannerBase{
 position:absolute;
 bottom:230px;
@@ -57,7 +61,324 @@ transform:translate(-50%,-50%);
 height:70px;
 }
 
+/* ===================================================== */
+/* TEXTOS BASE */
+/* ===================================================== */
+
 .textContainer{
 position:absolute;
 top:50%;
+left:250px;
+width:1340px;
+transform:translateY(-50%);
+display:flex;
+align-items:center;
+overflow:hidden;
+}
+
+.bannerText{
+font-size:34px;
+font-weight:600;
+color:white;
+width:100%;
+line-height:1.25;
+max-height:2.5em;
+overflow:hidden;
+word-break:keep-all;
+text-transform:uppercase;
+}
+
+/* ===================================================== */
+/* BANNER NORMAL */
+/* ===================================================== */
+
+#normalBanner{
+z-index:99997;
+}
+
+/* assets/banner/ */
+
+/* ===================================================== */
+/* ROLES */
+/* ===================================================== */
+
+#rolesBanner{
+z-index:99998;
+}
+
+/* assets/roles/ */
+
+#rolesBanner .bannerText{
+font-size:30px;
+overflow:visible;
+max-height:none;
+line-height:1.25;
+}
+
+.nameLine{
+font-size:30px;
+color:#EDE4D3;
+line-height:1.1;
+}
+
+.roleLine{
+font-size:22px;
+color:white;
+line-height:1.1;
+}
+
+/* ===================================================== */
+/* CANDIDATOS */
+/* ===================================================== */
+
+#candidatosBanner{
+z-index:99996;
+}
+
+/* assets/candidatos/ */
+
+#candidatosBanner .logoBox{
+
+width:200px;
+height:90px;
+
+overflow:visible;
+}
+
+#candidatosBanner .logo{
+
+height:82px;
+
+position:relative;
+
+top:6px;
+left:-80px;
+
+z-index:3;
+
+opacity:1;
+
+transition:
+opacity 0.35s ease;
+}
+
+.candidateImg{
+
+position:absolute;
+
+left:0;
+top:7.7px;
+
+width:200px;
+height:90%;
+
+object-fit:cover;
+
+opacity:0;
+
+z-index:1;
+
+pointer-events:none;
+
+transition:
+opacity 0.35s ease;
+}
+
+/* ===================================================== */
+/* MOSCA */
+/* ===================================================== */
+
+#mosca{
+
+position:absolute;
+
+top:70px;
+right:80px;
+
+width:600px;
+
+opacity:0;
+
+filter:blur(20px);
+
+transition:all .6s ease;
+
+z-index:99999;
+
+pointer-events:none;
+}
+
+/* ===================================================== */
+/* TEXTO MOSCA */
+/* ===================================================== */
+
+#texto{
+
+width:600px;
+
+text-align:right;
+
+color:#ffffff;
+
+font-size:36px;
+font-weight:bold;
+
+text-transform:uppercase;
+
+opacity:0;
+
+filter:blur(20px);
+
+transition:all .8s ease;
+
+line-height:1.05;
+
+text-shadow:
+0 2px 6px rgba(0,0,0,0.8);
+}
+
+/* ===================================================== */
+/* LOGO MOSCA */
+/* ===================================================== */
+
+#logoMosca{
+
+position:absolute;
+
+top:0;
+right:0;
+
+opacity:0;
+
+filter:blur(20px);
+
+display:flex;
+
+flex-direction:column;
+
+align-items:flex-end;
+
+transition:all .8s ease;
+}
+
+#logoMosca img{
+
+height:120px;
+
+filter:
+drop-shadow(0 3px 10px rgba(0,0,0,0.8));
+}
+
+/* ===================================================== */
+/* LOGO EE */
+/* ===================================================== */
+
+#logoEE{
+
+position:absolute;
+
+top:0;
+right:0;
+
+opacity:0;
+
+display:flex;
+
+justify-content:flex-end;
+}
+
+.circle-mask{
+
+width:90px;
+height:90px;
+
+background:black;
+
+border-radius:50%;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+overflow:visible;
+
+clip-path:circle(0% at 50% 50%);
+
+transition:
+clip-path .7s ease,
+background .4s ease;
+}
+
+.circle-mask img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+border-radius:50%;
+
+filter:
+drop-shadow(0 0 6px rgba(0,0,0,0.9))
+drop-shadow(0 0 12px rgba(0,0,0,0.6))
+drop-shadow(0 3px 10px rgba(0,0,0,0.8));
+}
+
+/* ===================================================== */
+/* TICKER */
+/* ===================================================== */
+
+:root{
+
+--ticker-width:230px;
+--ticker-height:31px;
+}
+
+#ticker{
+
+width:var(--ticker-width);
+height:var(--ticker-height);
+
+background:white;
+
+margin-top:6px;
+
+overflow:hidden;
+
+display:flex;
+
+align-items:center;
+}
+
+.ticker-track{
+
+display:flex;
+
+white-space:nowrap;
+
+animation:tickerLoop 12s linear infinite;
+}
+
+.text{
+
+font-size:16px;
+
+font-weight:bold;
+
+color:black;
+
+margin-right:48px;
+}
+
+@keyframes tickerLoop{
+
+0%{
+transform:translateX(0);
+}
+
+100%{
+transform:translateX(-50%);
+}
+
 }
