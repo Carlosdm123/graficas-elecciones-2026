@@ -163,17 +163,14 @@ background:#3d3d3d;
 width:1750px;
 margin:0 auto;
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:minmax(0,1fr) minmax(0,1fr);
 gap:30px;
 align-items:start;
 }
 
-
-/* ====================================== */
-/* BLOQUES */
-/* ====================================== */
-
 .controlBlock{
+width:100%;
+min-width:0;
 background:#242424;
 padding:24px;
 border-radius:10px;
@@ -454,6 +451,13 @@ z-index:40;
 
 .universalGrid{
 width:100%;
+}
+
+}
+
+@media(max-width:1400px){
+
+.universalGrid{
 grid-template-columns:1fr;
 }
 
