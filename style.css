@@ -1,471 +1,337 @@
 @font-face{
 font-family:"LFT Etica";
-src:url("fonts/LFTEticaSb.woff2") format("woff2"),
-    url("fonts/LFTEticaSb.woff") format("woff");
+src:url("../fonts/LFTEticaSb.woff2") format("woff2"),
+    url("../fonts/LFTEticaSb.woff") format("woff");
 font-weight:600;
 }
 
-
-/* ====================================== */
-/* RESET */
-/* ====================================== */
-
-*{
-box-sizing:border-box;
-}
-
-html,
 body{
 margin:0;
-padding:0;
-font-family:"LFT Etica",sans-serif;
-}
-
-
-/* ====================================== */
-/* CONTROLADOR */
-/* ====================================== */
-
-.controllerBody{
-background:#1e1e1e;
-color:#e6e6e6;
-padding:40px;
-display:flex;
-overflow-x:hidden;
-}
-
-
-/* ====================================== */
-/* OVERLAY */
-/* ====================================== */
-
-.overlayBody{
-margin:0;
-width:1920px;
-height:1080px;
 overflow:hidden;
 background:transparent;
-position:relative;
-}
-
-
-/* ====================================== */
-/* IFRAMES OVERLAY */
-/* ====================================== */
-
-#candidatosOverlay,
-#bannerOverlay,
-#rolesOverlay,
-#moscaOverlay{
-position:absolute;
-top:0;
-left:0;
+font-family:"LFT Etica",sans-serif;
 width:1920px;
 height:1080px;
-border:none;
-outline:none;
-background:transparent;
+}
+
+/* ===================================== */
+/* BASE BANNERS */
+/* ===================================== */
+
+.bannerBase{
+position:absolute;
+bottom:230px;
+left:0;
+width:1920px;
 pointer-events:none;
+}
+
+.box1,
+.box2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+}
+
+.bg{
+width:100%;
+height:auto;
+display:block;
+transform:scaleY(0.9);
+transform-origin:center;
+}
+
+.mask1,
+.mask2{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+}
+
+.logoBox{
+position:absolute;
+top:50%;
+left:50vw;
+transform:translate(-50%,-50%);
+}
+
+.logo{
+height:70px;
+}
+
+/* ===================================== */
+/* TEXTOS BASE */
+/* ===================================== */
+
+.textContainer{
+position:absolute;
+top:50%;
+left:250px;
+width:1340px;
+transform:translateY(-50%);
+display:flex;
+align-items:center;
 overflow:hidden;
 }
 
-#candidatosOverlay{
-z-index:10;
-}
-
-#bannerOverlay{
-z-index:20;
-}
-
-#rolesOverlay{
-z-index:30;
-}
-
-#moscaOverlay{
-z-index:40;
-}
-
-
-/* ====================================== */
-/* INDICADOR */
-/* ====================================== */
-
-.version{
-width:18px;
-height:18px;
-border-radius:50%;
-background:#666;
-margin-right:20px;
-margin-top:5px;
-flex-shrink:0;
-}
-
-
-/* ====================================== */
-/* CONTENEDOR */
-/* ====================================== */
-
-.containerUniversal{
-flex:1;
-}
-
-
-/* ====================================== */
-/* HEADER */
-/* ====================================== */
-
-.universalHeader{
-width:854px;
-margin:0 auto 30px auto;
-display:flex;
-align-items:center;
-gap:18px;
-}
-
-.headerLogo{
-height:58px;
-width:auto;
-}
-
-.headerTitle{
+.bannerText{
 font-size:34px;
-font-weight:700;
-letter-spacing:1px;
+font-weight:600;
 color:white;
-text-transform:uppercase;
-line-height:1;
-}
-
-
-/* ====================================== */
-/* PREVIEW */
-/* ====================================== */
-
-.previewTitleUniversal{
-width:854px;
-margin:0 auto 12px auto;
-font-size:26px;
-font-weight:700;
-letter-spacing:1px;
-color:white;
-text-align:left;
-}
-
-.preview{
-width:854px;
-height:480px;
-border:4px solid white;
-margin:auto;
+width:100%;
+line-height:1.25;
+max-height:2.5em;
 overflow:hidden;
-background:black;
+word-break:keep-all;
+text-transform:uppercase;
+}
+
+/* ===================================== */
+/* ROLES */
+/* ===================================== */
+
+#rolesBanner{
+z-index:99998;
+}
+
+#rolesBanner .bannerText{
+font-size:30px;
+overflow:visible;
+max-height:none;
+line-height:1.25;
+}
+
+.nameLine{
+font-size:30px;
+color:#EDE4D3;
+line-height:1.1;
+}
+
+.roleLine{
+font-size:22px;
+color:white;
+line-height:1.1;
+}
+
+/* ===================================== */
+/* BANNER NORMAL */
+/* ===================================== */
+
+#normalBanner{
+z-index:99997;
+}
+
+/* ===================================== */
+/* CANDIDATOS */
+/* ===================================== */
+
+#candidatosBanner{
+z-index:99996;
+}
+
+#candidatosBanner .logoBox{
+
+width:200px;
+height:90px;
+
+overflow:visible;
+}
+
+#candidatosBanner .logo{
+height:82px;
 position:relative;
+
+top:6px;
+left:-80px;
+
+z-index:3;
+
+opacity:1;
+
+transition:
+opacity 0.35s ease;
 }
 
-.previewInner{
+.candidateImg{
 position:absolute;
-top:0;
+
 left:0;
-width:1920px;
-height:1080px;
-transform:scale(0.444);
-transform-origin:top left;
+top:7.7px;
+
+width:200px;
+height:90%;
+
+object-fit:cover;
+
+opacity:0;
+
+z-index:1;
+
+pointer-events:none;
+
+transition:
+opacity 0.35s ease;
 }
 
-.preview iframe{
-width:1920px;
-height:1080px;
-border:none;
-background:transparent;
-}
-
-
-/* ====================================== */
-/* BOTONES */
-/* ====================================== */
-
-.previewButtons{
-width:854px;
-margin:15px auto 40px auto;
-display:flex;
-gap:10px;
-justify-content:center;
-}
-
-.previewButtons button{
-background:#2e2e2e;
-color:white;
-border:none;
-padding:8px 14px;
-cursor:pointer;
-border-radius:4px;
-font-family:"LFT Etica",sans-serif;
-}
-
-.previewButtons button:hover{
-background:#3d3d3d;
-}
-
-
-/* ====================================== */
-/* GRID */
-/* ====================================== */
-
-.universalGrid{
-width:1750px;
-margin:0 auto;
-display:grid;
-grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-gap:30px;
-align-items:start;
-}
-
-.controlBlock{
-background:#242424;
-padding:24px;
-border-radius:10px;
-border:1px solid rgba(255,255,255,.08);
-min-width:0;
-}
-
-
-/* ====================================== */
-/* TITULOS */
-/* ====================================== */
-
-.previewTitle{
-margin:0 0 20px 0;
-font-size:26px;
-font-weight:700;
-letter-spacing:1px;
-color:white;
-text-align:left;
-}
-
-
-/* ====================================== */
-/* PANEL */
-/* ====================================== */
-
-.panel{
-width:100%;
-max-height:420px;
-overflow-y:auto;
-}
-
-.rolesPanel{
-max-height:520px;
-}
-
-.item{
-display:flex;
-align-items:center;
-justify-content:space-between;
-margin:10px 0;
-background:#2a2a2a;
-padding:10px;
-border-radius:6px;
-gap:12px;
-}
-
-.item span{
-flex:1;
-margin-left:12px;
-font-size:14px;
-line-height:1.35;
-}
-
-.item select{
-width:180px;
-background:#1e1e1e;
-color:white;
-border:1px solid #555;
-padding:6px;
-border-radius:4px;
-}
-
-
-/* ====================================== */
-/* SWITCH */
-/* ====================================== */
-
-.switch{
-position:relative;
-display:inline-block;
-width:42px;
-height:22px;
-flex-shrink:0;
-}
-
-.switch input{
-display:none;
-}
-
-.slider{
-position:absolute;
-cursor:pointer;
-top:0;
-left:0;
-right:0;
-bottom:0;
-background:#555;
-transition:.3s;
-border-radius:22px;
-}
-
-.slider:before{
-position:absolute;
-content:"";
-height:16px;
-width:16px;
-left:3px;
-bottom:3px;
-background:white;
-transition:.3s;
-border-radius:50%;
-}
-
-input:checked + .slider{
-background:#2c8f6b;
-}
-
-input:checked + .slider:before{
-transform:translateX(20px);
-}
-
-
-/* ====================================== */
-/* BORRAR */
-/* ====================================== */
-
-.deleteBtn{
-margin-left:10px;
-background:#444;
-color:white;
-border:none;
-padding:4px 8px;
-cursor:pointer;
-border-radius:4px;
-font-family:"LFT Etica",sans-serif;
-}
-
-.deleteBtn:hover{
-background:#aa3333;
-}
-
-
-/* ====================================== */
-/* INPUTS */
-/* ====================================== */
-
-.inputArea{
-margin-top:30px;
-}
-
-textarea{
-width:100%;
-height:120px;
-padding:12px;
-resize:none;
-font-family:sans-serif;
-font-size:14px;
-background:#2a2a2a;
-color:white;
-border:1px solid #555;
-border-radius:6px;
-}
-
-textarea.limit{
-border-color:#cc4444;
-background:#3a1e1e;
-}
-
-input,
-select{
-width:100%;
-padding:12px;
-font-size:14px;
-background:#2a2a2a;
-color:white;
-border:1px solid #555;
-border-radius:6px;
-margin-bottom:10px;
-}
-
-.counter{
-font-size:12px;
-margin-top:6px;
-color:#aaa;
-text-align:right;
-}
-
-.counter.warning{
-color:#ff5555;
-}
-
-.error{
-color:#ff4444;
-font-size:12px;
-margin-top:5px;
-display:none;
-}
-
-.addBtn{
-margin-top:10px;
-padding:8px 18px;
-background:#2c8f6b;
-border:none;
-color:white;
-cursor:pointer;
-border-radius:4px;
-font-family:"LFT Etica",sans-serif;
-}
-
-.addBtn:hover{
-background:#38a77f;
-}
-
-
-/* ====================================== */
+/* ===================================== */
 /* MOSCA */
-/* ====================================== */
+/* ===================================== */
 
-.moscaContent{
-margin-top:20px;
+#mosca{
+position:absolute;
+top:70px;
+right:80px;
+width:600px;
+
+opacity:0;
+filter:blur(20px);
+
+transition:all .6s ease;
+
+z-index:99999;
+
+pointer-events:none;
 }
 
-.moscaLabel{
-margin-top:20px;
-margin-bottom:10px;
-font-size:14px;
+/* TEXTO */
+
+#texto{
+width:600px;
+text-align:right;
+color:#ffffff;
+font-size:36px;
+font-weight:bold;
+text-transform:uppercase;
+
+opacity:0;
+filter:blur(20px);
+
+transition:all .8s ease;
+
+line-height:1.05;
+
+text-shadow:
+0 2px 6px rgba(0,0,0,0.8);
 }
 
-.marginTop{
-margin-top:30px;
+/* LOGO */
+
+#logoMosca{
+position:absolute;
+top:0;
+right:0;
+
+opacity:0;
+filter:blur(20px);
+
+display:flex;
+flex-direction:column;
+align-items:flex-end;
+
+transition:all .8s ease;
 }
 
-.hora-box{
+#logoMosca img{
+height:120px;
+
+filter:
+drop-shadow(0 3px 10px rgba(0,0,0,0.8));
+}
+
+/* LOGO EE */
+
+#logoEE{
+position:absolute;
+top:0;
+right:0;
+
+opacity:0;
+
+display:flex;
+justify-content:flex-end;
+}
+
+.circle-mask{
+width:90px;
+height:90px;
+
+background:black;
+
+border-radius:50%;
+
 display:flex;
 align-items:center;
-gap:10px;
+justify-content:center;
+
+overflow:visible;
+
+clip-path:circle(0% at 50% 50%);
+
+transition:
+clip-path .7s ease,
+background .4s ease;
 }
 
-
-/* ====================================== */
-/* RESPONSIVE */
-/* ====================================== */
-
-@media(max-width:1850px){
-
-.universalGrid{
+.circle-mask img{
 width:100%;
+height:100%;
+object-fit:cover;
+border-radius:50%;
+
+filter:
+drop-shadow(0 0 6px rgba(0,0,0,0.9))
+drop-shadow(0 0 12px rgba(0,0,0,0.6))
+drop-shadow(0 3px 10px rgba(0,0,0,0.8));
 }
 
+/* ===================================== */
+/* TICKER */
+/* ===================================== */
+
+:root{
+--ticker-width:230px;
+--ticker-height:31px;
 }
 
-@media(max-width:1400px){
+#ticker{
+width:var(--ticker-width);
+height:var(--ticker-height);
 
-.universalGrid{
-grid-template-columns:1fr;
+background:white;
+
+margin-top:6px;
+
+overflow:hidden;
+
+display:flex;
+align-items:center;
+}
+
+.ticker-track{
+display:flex;
+white-space:nowrap;
+
+animation:tickerLoop 12s linear infinite;
+}
+
+.text{
+font-size:16px;
+font-weight:bold;
+color:black;
+
+margin-right:48px;
+}
+
+@keyframes tickerLoop{
+
+0%{
+transform:translateX(0);
+}
+
+100%{
+transform:translateX(-50%);
 }
 
 }
