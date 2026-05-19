@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+</head>
+
+<body>
+
+<div id="banner" style="opacity:0;">
+
+<div id="box1">
+<div id="mask1">
+
+<img src="assets/caja1.png" class="bg">
+
+<div id="logoBox">
+<img src="assets/logo.png" id="logo">
+</div>
+
+</div>
+</div>
+
+<div id="box2">
+<div id="mask2">
+
+<img src="assets/caja2.png" class="bg">
+
+<div id="textContainer">
+<div id="bannerText"></div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script src="animation.js"></script>
+
+<script>
+
+const ably = new Ably.Realtime("bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ");
+const channel = ably.channels.get("vmix-roles");
+const bannerChannel = ably.channels.get("vmix-banner");
+
+let visible=false;
+let visibleSource=null;
+let changeTimer=null;
+let hideTimer=null;
+
+function hideImmediately(){
+const banner=document.getElementById("banner");
+banner.style.opacity="0";
+}
+
+hideImmediately();
+
+function escapeHTML(value){
+
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+function setBannerContent(html,mode){
+
+const bannerText=document.getElementById("bannerText");
+bannerText.className=mode;
+bannerText.innerHTML=html;
+
+}
+
+function showOverlay(source,html,mode){
+
+const banner=document.getElementById("banner");
+
+clearTimeout(changeTimer);
+clearTimeout(hideTimer);
+
+if(visible){
+
+hideBanner();
+
+changeTimer=setTimeout(()=>{
+
+setBannerContent(html,mode);
+
+banner.style.opacity="1";
+startBanner();
+
+visible=true;
+visibleSource=source;
+
+},3500);
+
+}else{
+
+setBannerContent(html,mode);
+
+banner.style.opacity="1";
+startBanner();
+
+visible=true;
+visibleSource=source;
+
+}
+
+}
+
+function hideOverlay(source){
+
+if(!visible) return;
+
+if(source!==visibleSource) return;
+
+clearTimeout(changeTimer);
+clearTimeout(hideTimer);
+
+hideBanner();
+
+hideTimer=setTimeout(()=>{
+hideImmediately();
+visible=false;
+visibleSource=null;
+},1500);
+
+}
+
+channel.subscribe("banner",(message)=>{
+
+const data=message.data;
+
+if(data.action==="show"){
+
+if(data.type==="newsBanner"){
+
+const text=escapeHTML(data.text.toUpperCase());
+const textHTML=`<div class="bannerLine">${text}</div>`;
+
+showOverlay("banners",textHTML,"bannerMode");
+return;
+
+}
+
+if(!data.name || !data.role) return;
+
+const name=escapeHTML(data.name.toUpperCase());
+const role=escapeHTML(data.role.toUpperCase());
+
+const textHTML = `
+<div class="nameLine">${name}</div>
+<div class="roleLine">${role}</div>
+`;
+
+showOverlay("roles",textHTML,"roleMode");
+
+}
+
+if(data.action==="hide"){
+
+if(data.type==="newsBanner"){
+hideOverlay("banners");
+return;
+}
+
+hideOverlay("roles");
+
+}
+
+});
+
+bannerChannel.subscribe("banner",(message)=>{
+
+const data=message.data;
+
+if(data.action==="show"){
+
+const text=escapeHTML(data.text.toUpperCase());
+const textHTML=`<div class="bannerLine">${text}</div>`;
+
+showOverlay("banners",textHTML,"bannerMode");
+
+}
+
+if(data.action==="hide"){
+
+hideOverlay("banners");
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
