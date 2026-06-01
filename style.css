@@ -1,0 +1,588 @@
+@font-face{
+font-family:"LFT Etica";
+src:url("fonts/LFTEticaSb.woff2") format("woff2"),
+    url("fonts/LFTEticaSb.woff") format("woff");
+font-weight:600;
+}
+
+body{
+margin:0;
+overflow:hidden;
+background:transparent;
+font-family:"LFT Etica",sans-serif;
+}
+
+#banner{
+position:absolute;
+bottom:230px;
+left:0;
+width:1920px;
+z-index:10;
+}
+
+#box1,
+#box2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+}
+
+.bg{
+width:100%;
+height:auto;
+display:block;
+transform:scaleY(0.9);
+transform-origin:center;
+}
+
+#mask1,
+#mask2{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+}
+
+#logoBox{
+position:absolute;
+top:50%;
+left:50vw;
+transform:translate(-50%,-50%);
+}
+
+#logo{
+height:70px;
+}
+
+#textContainer{
+position:absolute;
+top:50%;
+left:250px;
+width:1540px;
+transform:translateY(-50%);
+display:flex;
+align-items:center;
+overflow:visible;
+}
+
+#bannerText{
+font-size:30px;
+font-weight:600;
+color:white;
+width:100%;
+line-height:1.25;
+word-break:keep-all;
+text-transform:uppercase;
+overflow:visible;
+max-height:none;
+}
+
+#bannerText.bannerMode{
+font-size:34px;
+line-height:1.25;
+max-height:2.5em;
+overflow:hidden;
+}
+
+#bannerText.bannerSingleMode{
+font-size:40px;
+line-height:1;
+white-space:nowrap;
+max-height:1em;
+overflow:hidden;
+padding-top:8px;
+margin-top:-8px;
+}
+
+/* LINEAS */
+
+.nameLine{
+font-size:34px;
+color:white;
+line-height:1.15;
+margin-bottom:4px;
+}
+
+.roleLine{
+font-family:"lft-etica","LFT Etica",sans-serif;
+font-weight:400;
+font-size:25px;
+color:#2f8eb2;
+line-height:1.15;
+}
+
+.bannerLine{
+color:white;
+line-height:1.25;
+}
+
+#candidateBanner{
+position:absolute;
+bottom:230px;
+left:0;
+width:1920px;
+z-index:20;
+}
+
+#candidateBox1,
+#candidateBox2{
+position:absolute;
+left:0;
+top:0;
+width:1920px;
+}
+
+.candidateBg{
+width:100%;
+height:auto;
+display:block;
+transform:scaleY(0.9);
+transform-origin:center;
+}
+
+#candidateMask1,
+#candidateMask2{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+}
+
+#candidateLogoBox{
+position:absolute;
+top:50%;
+left:50vw;
+transform:translate(-50%,-50%);
+width:200px;
+height:90px;
+overflow:visible;
+}
+
+#candidateLogo{
+height:82px;
+position:relative;
+top:6px;
+left:-80px;
+z-index:3;
+opacity:1;
+transition:opacity 0.35s ease;
+}
+
+#candidateImg{
+position:absolute;
+left:0;
+top:7.7px;
+width:200px;
+height:90%;
+object-fit:cover;
+opacity:0;
+z-index:1;
+pointer-events:none;
+transition:opacity 0.35s ease;
+}
+
+#candidateTextContainer{
+position:absolute;
+top:50%;
+left:250px;
+width:1540px;
+transform:translateY(-50%);
+display:flex;
+align-items:center;
+overflow:visible;
+}
+
+#candidateBannerText{
+font-size:34px;
+font-weight:600;
+color:white;
+width:100%;
+line-height:1.25;
+max-height:2.5em;
+overflow:hidden;
+word-break:keep-all;
+text-transform:uppercase;
+}
+
+#candidateBannerText.singleLineMode{
+font-size:40px;
+line-height:1;
+white-space:nowrap;
+max-height:1em;
+overflow:hidden;
+padding-top:8px;
+margin-top:-8px;
+}
+
+#mosca{
+position:absolute;
+top:70px;
+right:80px;
+width:300px;
+opacity:0;
+filter:blur(20px);
+transition:all .6s ease;
+z-index:100;
+pointer-events:none;
+}
+
+#moscaTexto{
+position:absolute;
+top:0;
+right:0;
+width:260px;
+text-align:center;
+color:#ffffff;
+font-weight:bold;
+text-transform:uppercase;
+opacity:0;
+filter:blur(20px);
+transition:all .8s ease;
+text-shadow:6px 6px 12px rgba(0,0,0,.8);
+}
+
+.moscaCountdownLine{
+display:block;
+line-height:1.12;
+white-space:nowrap;
+}
+
+.moscaCountdownTop{
+font-size:38px;
+}
+
+.moscaCountdownMiddle{
+font-size:27px;
+}
+
+.moscaCountdownTime{
+font-size:36px;
+}
+
+#moscaCierreTexto{
+position:absolute;
+top:0;
+right:0;
+width:260px;
+text-align:center;
+color:#ffffff;
+font-weight:bold;
+text-transform:uppercase;
+opacity:0;
+filter:blur(24px);
+text-shadow:6px 6px 12px rgba(0,0,0,.8);
+transform:translateX(26px) scale(.98);
+overflow:hidden;
+}
+
+.moscaClosedLine{
+display:block;
+line-height:1.02;
+white-space:nowrap;
+}
+
+.moscaClosedChar{
+display:inline-block;
+transform:translateY(0);
+}
+
+.moscaClosedTop{
+font-size:38px;
+}
+
+.moscaClosedBottom{
+font-size:46px;
+}
+
+#moscaCierreTexto.active{
+animation:moscaClosedText 60s cubic-bezier(.22,.8,.22,1) forwards;
+}
+
+#moscaCierreTexto.active .moscaClosedChar{
+animation:moscaClosedLetterLift 15s ease-in-out infinite;
+animation-delay:calc(var(--i) * .045s);
+}
+
+#moscaLogo{
+position:absolute;
+top:0;
+right:0;
+width:260px;
+opacity:0;
+filter:blur(20px);
+display:flex;
+flex-direction:column;
+align-items:center;
+transition:all .8s ease;
+}
+
+#moscaLogo img{
+height:110px;
+}
+
+#moscaLogo.logoSweep img{
+animation:moscaLogoSweep .75s ease both;
+}
+
+#moscaLogoEE{
+position:absolute;
+top:0;
+right:0;
+opacity:0;
+display:flex;
+justify-content:flex-end;
+filter:drop-shadow(6px 6px 12px rgba(255,255,255,.3));
+}
+
+.moscaCircleMask{
+width:105px;
+height:105px;
+background:white;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+clip-path:circle(0% at 50% 50%);
+transition:clip-path .7s ease, background .4s ease;
+}
+
+.moscaCircleMask img{
+width:100%;
+height:100%;
+object-fit:cover;
+border-radius:50%;
+}
+
+#moscaTicker{
+width:210px;
+height:28px;
+background:white;
+margin-top:1px;
+transform:translateX(-5px);
+overflow:hidden;
+display:flex;
+align-items:center;
+}
+
+.moscaTickerTrack{
+display:flex;
+align-items:center;
+white-space:nowrap;
+width:max-content;
+animation:moscaTickerLoop 10s linear infinite;
+will-change:transform;
+}
+
+.moscaTickerGroup{
+display:flex;
+align-items:center;
+flex:0 0 auto;
+}
+
+.moscaText{
+font-size:14px;
+font-weight:bold;
+color:black;
+padding:0 18px;
+}
+
+@keyframes moscaTickerLoop{
+0%{ transform:translateX(0); }
+100%{ transform:translateX(-50%); }
+}
+
+@keyframes moscaClosedText{
+0%{
+opacity:0;
+filter:blur(24px);
+transform:translateX(26px) scale(.98);
+text-shadow:
+0 0 16px rgba(229,209,36,.55),
+6px 6px 12px rgba(0,0,0,.8);
+}
+3%{
+opacity:1;
+filter:blur(0);
+transform:translateX(0) scale(1);
+text-shadow:6px 6px 12px rgba(0,0,0,.8);
+}
+96%{
+opacity:1;
+filter:blur(0);
+transform:translateX(0) scale(1);
+text-shadow:6px 6px 12px rgba(0,0,0,.8);
+}
+100%{
+opacity:0;
+filter:blur(18px);
+transform:translateX(-18px) scale(1.01);
+text-shadow:
+0 0 14px rgba(229,209,36,.45),
+6px 6px 12px rgba(0,0,0,.8);
+}
+}
+
+@keyframes moscaClosedLetterLift{
+0%,
+7%,
+100%{
+transform:translateY(0);
+}
+2.5%{
+transform:translateY(-3px);
+}
+5%{
+transform:translateY(1px);
+}
+}
+
+@keyframes moscaLogoSweep{
+0%{
+clip-path:inset(0 100% 0 0);
+filter:blur(12px);
+opacity:.45;
+}
+100%{
+clip-path:inset(0 0 0 0);
+filter:blur(0);
+opacity:1;
+}
+}
+
+#tickerBar{
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+width:100vw;
+height:40px;
+background:white;
+overflow:hidden;
+display:flex;
+align-items:flex-start;
+z-index:80;
+pointer-events:none;
+transform:translateY(100%);
+transition:
+transform .65s cubic-bezier(.22,.8,.22,1);
+will-change:transform;
+}
+
+#tickerBar.active{
+transform:translateY(0);
+}
+
+#tickerTrack{
+position:relative;
+width:100%;
+height:40px;
+white-space:nowrap;
+z-index:1;
+opacity:0;
+transition:opacity .45s ease;
+}
+
+#tickerBar.active #tickerTrack{
+opacity:1;
+}
+
+.tickerItem{
+position:absolute;
+top:0;
+left:0;
+height:40px;
+display:flex;
+align-items:center;
+white-space:nowrap;
+will-change:transform;
+}
+
+.tickerItem.tickerIntroTrail::before{
+content:"";
+position:absolute;
+top:0;
+height:40px;
+right:100%;
+width:100vw;
+background:#ffffff url("assets/ticker/textura franja ticker.png") center / cover no-repeat;
+mask-image:linear-gradient(90deg,#000 0%,#000 calc(100% - 260px),rgba(0,0,0,0) 100%);
+-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 calc(100% - 260px),rgba(0,0,0,0) 100%);
+opacity:1;
+pointer-events:none;
+}
+
+.tickerNoteText{
+font-family:"LFT Etica",sans-serif;
+font-size:28px;
+font-weight:600;
+line-height:40px;
+color:black;
+text-transform:uppercase;
+padding:0 22px;
+}
+
+.tickerBrandText{
+font-family:"lft-etica","LFT Etica",sans-serif;
+font-size:28px;
+font-weight:400;
+line-height:40px;
+color:white;
+text-transform:uppercase;
+height:40px;
+padding:0 54px;
+display:inline-flex;
+align-items:center;
+background:#ffffff url("assets/ticker/textura placa.png") center / cover no-repeat;
+mask-image:linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,.35) 18px,#000 54px,#000 calc(100% - 54px),rgba(0,0,0,.35) calc(100% - 18px),rgba(0,0,0,0) 100%);
+-webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,0) 0,rgba(0,0,0,.35) 18px,#000 54px,#000 calc(100% - 54px),rgba(0,0,0,.35) calc(100% - 18px),rgba(0,0,0,0) 100%);
+position:relative;
+overflow:hidden;
+}
+
+.tickerBrandText::after{
+content:"";
+position:absolute;
+top:-12px;
+bottom:-12px;
+left:-70px;
+width:54px;
+background:linear-gradient(115deg,
+rgba(255,255,255,0) 0%,
+rgba(255,255,255,.78) 50%,
+rgba(255,255,255,0) 100%);
+opacity:0;
+transform:skewX(-18deg);
+pointer-events:none;
+}
+
+.tickerBrandText.tickerShine::after{
+animation:tickerBrandShine 1.15s ease-out;
+}
+
+.tickerDot{
+width:7px;
+height:7px;
+border-radius:50%;
+background:black;
+display:inline-block;
+flex:0 0 auto;
+}
+
+@keyframes tickerBrandShine{
+0%{
+opacity:0;
+left:-70px;
+transform:skewX(-18deg);
+}
+
+18%{
+opacity:.85;
+}
+100%{
+opacity:0;
+left:100%;
+transform:skewX(-18deg);
+}
+}
