@@ -1,0 +1,30 @@
+# Archivos de entorno - NUNCA commitear
+.env
+.env.local
+.env.*.local
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test artifacts
+graficas-elecciones-2026-test/screenshots/*.png
+graficas-elecciones-2026-test/test-report.json
+
+# Build outputs
+dist/
+build/

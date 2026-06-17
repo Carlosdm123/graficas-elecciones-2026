@@ -2,1291 +2,1308 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="https://use.typekit.net/wtc5lqk.css">
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+       <meta charset="UTF-8">
+       <link rel="stylesheet" href="https://use.typekit.net/wtc5lqk.css">
+       <link rel="stylesheet" href="style.css">
+       <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
 </head>
 
 <body>
 
-<div id="banner" style="opacity:0;">
+       <div id="banner" style="opacity:0;">
+
+              <div id="box1">
+                     <div id="mask1">
 
-<div id="box1">
-<div id="mask1">
+                            <img src="assets/caja1.png" class="bg">
 
-<img src="assets/caja1.png" class="bg">
+                            <div id="logoBox">
+                                   <img src="assets/logo.png" id="logo">
+                            </div>
 
-<div id="logoBox">
-<img src="assets/logo.png" id="logo">
-</div>
+                     </div>
+              </div>
 
-</div>
-</div>
+              <div id="box2">
+                     <div id="mask2">
 
-<div id="box2">
-<div id="mask2">
+                            <img src="assets/caja2.png" class="bg">
 
-<img src="assets/caja2.png" class="bg">
+                            <div id="textContainer">
+                                   <div id="bannerText"></div>
+                            </div>
 
-<div id="textContainer">
-<div id="bannerText"></div>
-</div>
+                     </div>
+              </div>
+
+       </div>
+
+       <div id="candidateBanner" style="opacity:0;">
+
+              <div id="candidateBox1">
+                     <div id="candidateMask1">
+
+                            <img src="assets/candidatos/caja1.png" class="candidateBg">
+
+                            <img src="" id="candidateImg">
+
+                            <div id="candidateLogoBox">
+                                   <img src="assets/candidatos/logo.png" id="candidateLogo">
+                            </div>
+
+                     </div>
+              </div>
+
+              <div id="candidateBox2">
+                     <div id="candidateMask2">
+
+                            <img src="assets/candidatos/caja2.png" class="candidateBg">
+
+                            <div id="candidateTextContainer">
+                                   <div id="candidateBannerText"></div>
+                            </div>
+
+                     </div>
+              </div>
+
+       </div>
+
+       <div id="mosca">
+
+              <div id="moscaTexto"></div>
+              <div id="moscaCierreTexto">
+                     <span class="moscaClosedLine moscaClosedTop">
+                            <span class="moscaClosedChar" style="--i:0">V</span><span class="moscaClosedChar"
+                                   style="--i:1">O</span><span class="moscaClosedChar" style="--i:2">T</span><span
+                                   class="moscaClosedChar" style="--i:3">A</span><span class="moscaClosedChar"
+                                   style="--i:4">C</span><span class="moscaClosedChar" style="--i:5">I</span><span
+                                   class="moscaClosedChar" style="--i:6">O</span><span class="moscaClosedChar"
+                                   style="--i:7">N</span><span class="moscaClosedChar" style="--i:8">E</span><span
+                                   class="moscaClosedChar" style="--i:9">S</span>
+                     </span>
+                     <span class="moscaClosedLine moscaClosedBottom">
+                            <span class="moscaClosedChar" style="--i:10">C</span><span class="moscaClosedChar"
+                                   style="--i:11">E</span><span class="moscaClosedChar" style="--i:12">R</span><span
+                                   class="moscaClosedChar" style="--i:13">R</span><span class="moscaClosedChar"
+                                   style="--i:14">A</span><span class="moscaClosedChar" style="--i:15">D</span><span
+                                   class="moscaClosedChar" style="--i:16">A</span><span class="moscaClosedChar"
+                                   style="--i:17">S</span>
+                     </span>
+              </div>
+
+              <div id="moscaLogo">
+                     <img src="assets/mosca/logo1.png" id="moscaLogoImg">
+
+                     <div id="moscaTicker">
+                            <div class="moscaTickerTrack">
+                                   <div class="moscaTickerGroup">
+                                          <span class="moscaText">WWW.ELESPECTADOR.COM</span>
+                                          <span class="moscaText">WWW.ELESPECTADOR.COM</span>
+                                   </div>
+                                   <div class="moscaTickerGroup">
+                                          <span class="moscaText">WWW.ELESPECTADOR.COM</span>
+                                          <span class="moscaText">WWW.ELESPECTADOR.COM</span>
+                                   </div>
+                            </div>
+                     </div>
+              </div>
+
+              <div id="moscaLogoEE">
+                     <div class="moscaCircleMask">
+                            <img src="assets/mosca/logoee.png">
+                     </div>
+              </div>
+
+       </div>
+
+       <div id="tickerBar">
+              <div id="tickerTrack"></div>
+       </div>
+
+       <script src="animation.js"></script>
+
+       <script>
+
+              const ably = new Ably.Realtime("bOKecA.k2ytUw:ePWuQ4buIORlYBqR7-zuSzrM69qpKUHraQz3FQgIS9k");
+              const channelPrefix = "graficas-elecciones-2026-universal-v2";
+              const roleChannel = ably.channels.get(channelPrefix + "-roles");
+              const bannerChannel = ably.channels.get(channelPrefix + "-banners");
+              const candidateChannel = ably.channels.get(channelPrefix + "-candidatos");
+              const moscaChannel = ably.channels.get(channelPrefix + "-mosca");
+              const tickerChannel = ably.channels.get(channelPrefix + "-ticker");
+
+              let visible = false;
+              let visibleSource = null;
+              let changeTimer = null;
+              let hideTimer = null;
+              let candidateBannerMaskCreated = false;
+              let candidateVisible = false;
+              let candidateChangeTimer = null;
+              let candidateHideTimer = null;
+              let baseAnimationTimers = [];
+              let candidateAnimationTimers = [];
+              const mosca = document.getElementById("mosca");
+              const moscaTexto = document.getElementById("moscaTexto");
+              const moscaLogo = document.getElementById("moscaLogo");
+              const moscaLogoImg = document.getElementById("moscaLogoImg");
+              const moscaCierreTexto = document.getElementById("moscaCierreTexto");
+              const moscaLogoEE = document.getElementById("moscaLogoEE");
+              const moscaTickerTrack = document.querySelector(".moscaTickerTrack");
+              const moscaLogo2Preload = new Image();
+              moscaLogo2Preload.src = "assets/mosca/logo2.png";
+              let moscaActivo = false;
+              let moscaRunning = false;
+              let moscaHoraCierre = "16:00";
+              let moscaInterval = null;
+              let moscaTimeouts = [];
+              let moscaCloseEventKey = null;
+              let moscaClosedEventActive = false;
+              let moscaClosedEventTimeout = null;
+              const tickerBar = document.getElementById("tickerBar");
+              const tickerTrack = document.getElementById("tickerTrack");
+              let tickerShineTimer = null;
+              let tickerActiveNotes = [];
+              let tickerItems = [];
+              let tickerAnimationFrame = null;
+              let tickerLastFrameTime = null;
+              let tickerNextNoteIndex = 0;
+              let tickerIntroTrailPending = false;
+              let tickerExitTimer = null;
+              let tickerIsExiting = false;
+              const tickerSpeed = 95;
+
+              function calibrateMoscaTickerLoop() {
+
+                     if (!moscaTickerTrack) return;
+
+                     const firstGroup = moscaTickerTrack.querySelector(".moscaTickerGroup");
+                     if (!firstGroup) return;
+
+                     const distance = firstGroup.getBoundingClientRect().width;
+
+                     if (distance <= 0) return;
 
-</div>
-</div>
-
-</div>
-
-<div id="candidateBanner" style="opacity:0;">
-
-<div id="candidateBox1">
-<div id="candidateMask1">
-
-<img src="assets/candidatos/caja1.png" class="candidateBg">
-
-<img src="" id="candidateImg">
-
-<div id="candidateLogoBox">
-<img src="assets/candidatos/logo.png" id="candidateLogo">
-</div>
-
-</div>
-</div>
-
-<div id="candidateBox2">
-<div id="candidateMask2">
-
-<img src="assets/candidatos/caja2.png" class="candidateBg">
-
-<div id="candidateTextContainer">
-<div id="candidateBannerText"></div>
-</div>
-
-</div>
-</div>
-
-</div>
-
-<div id="mosca">
-
-<div id="moscaTexto"></div>
-<div id="moscaCierreTexto">
-<span class="moscaClosedLine moscaClosedTop">
-<span class="moscaClosedChar" style="--i:0">V</span><span class="moscaClosedChar" style="--i:1">O</span><span class="moscaClosedChar" style="--i:2">T</span><span class="moscaClosedChar" style="--i:3">A</span><span class="moscaClosedChar" style="--i:4">C</span><span class="moscaClosedChar" style="--i:5">I</span><span class="moscaClosedChar" style="--i:6">O</span><span class="moscaClosedChar" style="--i:7">N</span><span class="moscaClosedChar" style="--i:8">E</span><span class="moscaClosedChar" style="--i:9">S</span>
-</span>
-<span class="moscaClosedLine moscaClosedBottom">
-<span class="moscaClosedChar" style="--i:10">C</span><span class="moscaClosedChar" style="--i:11">E</span><span class="moscaClosedChar" style="--i:12">R</span><span class="moscaClosedChar" style="--i:13">R</span><span class="moscaClosedChar" style="--i:14">A</span><span class="moscaClosedChar" style="--i:15">D</span><span class="moscaClosedChar" style="--i:16">A</span><span class="moscaClosedChar" style="--i:17">S</span>
-</span>
-</div>
-
-<div id="moscaLogo">
-<img src="assets/mosca/logo1.png" id="moscaLogoImg">
-
-<div id="moscaTicker">
-<div class="moscaTickerTrack">
-<div class="moscaTickerGroup">
-<span class="moscaText">WWW.ELESPECTADOR.COM</span>
-<span class="moscaText">WWW.ELESPECTADOR.COM</span>
-</div>
-<div class="moscaTickerGroup">
-<span class="moscaText">WWW.ELESPECTADOR.COM</span>
-<span class="moscaText">WWW.ELESPECTADOR.COM</span>
-</div>
-</div>
-</div>
-</div>
-
-<div id="moscaLogoEE">
-<div class="moscaCircleMask">
-<img src="assets/mosca/logoee.png">
-</div>
-</div>
-
-</div>
-
-<div id="tickerBar">
-<div id="tickerTrack"></div>
-</div>
-
-<script src="animation.js"></script>
-
-<script>
-
-const ably = new Ably.Realtime("bOKecA.DM-G9g:YojB__4e1uHIMPer7ANbwW7xF8jRunVc9TW7ALFLwpQ");
-const channelPrefix = "graficas-elecciones-2026-universal-v2";
-const roleChannel = ably.channels.get(channelPrefix+"-roles");
-const bannerChannel = ably.channels.get(channelPrefix+"-banners");
-const candidateChannel = ably.channels.get(channelPrefix+"-candidatos");
-const moscaChannel = ably.channels.get(channelPrefix+"-mosca");
-const tickerChannel = ably.channels.get(channelPrefix+"-ticker");
-
-let visible=false;
-let visibleSource=null;
-let changeTimer=null;
-let hideTimer=null;
-let candidateBannerMaskCreated=false;
-let candidateVisible=false;
-let candidateChangeTimer=null;
-let candidateHideTimer=null;
-let baseAnimationTimers=[];
-let candidateAnimationTimers=[];
-const mosca=document.getElementById("mosca");
-const moscaTexto=document.getElementById("moscaTexto");
-const moscaLogo=document.getElementById("moscaLogo");
-const moscaLogoImg=document.getElementById("moscaLogoImg");
-const moscaCierreTexto=document.getElementById("moscaCierreTexto");
-const moscaLogoEE=document.getElementById("moscaLogoEE");
-const moscaTickerTrack=document.querySelector(".moscaTickerTrack");
-const moscaLogo2Preload=new Image();
-moscaLogo2Preload.src="assets/mosca/logo2.png";
-let moscaActivo=false;
-let moscaRunning=false;
-let moscaHoraCierre="16:00";
-let moscaInterval=null;
-let moscaTimeouts=[];
-let moscaCloseEventKey=null;
-let moscaClosedEventActive=false;
-let moscaClosedEventTimeout=null;
-const tickerBar=document.getElementById("tickerBar");
-const tickerTrack=document.getElementById("tickerTrack");
-let tickerShineTimer=null;
-let tickerActiveNotes=[];
-let tickerItems=[];
-let tickerAnimationFrame=null;
-let tickerLastFrameTime=null;
-let tickerNextNoteIndex=0;
-let tickerIntroTrailPending=false;
-let tickerExitTimer=null;
-let tickerIsExiting=false;
-const tickerSpeed=95;
-
-function calibrateMoscaTickerLoop(){
-
-if(!moscaTickerTrack) return;
-
-const firstGroup=moscaTickerTrack.querySelector(".moscaTickerGroup");
-if(!firstGroup) return;
-
-const distance=firstGroup.getBoundingClientRect().width;
-
-if(distance<=0) return;
-
-moscaTickerTrack.style.setProperty("--moscaTickerOffset","-"+distance+"px");
-moscaTickerTrack.style.animation="none";
-void moscaTickerTrack.offsetWidth;
-moscaTickerTrack.style.animation="";
-
-}
-
-calibrateMoscaTickerLoop();
-
-if(document.fonts && document.fonts.ready){
-document.fonts.ready.then(calibrateMoscaTickerLoop);
-}
-
-window.addEventListener("resize",calibrateMoscaTickerLoop);
-
-function clearBaseAnimationTimers(){
-baseAnimationTimers.forEach(clearTimeout);
-baseAnimationTimers=[];
-}
-
-function setCandidateTimer(callback,delay){
-const timer=setTimeout(callback,delay);
-candidateAnimationTimers.push(timer);
-return timer;
-}
-
-function clearCandidateAnimationTimers(){
-candidateAnimationTimers.forEach(clearTimeout);
-candidateAnimationTimers=[];
-}
+                     moscaTickerTrack.style.setProperty("--moscaTickerOffset", "-" + distance + "px");
+                     moscaTickerTrack.style.animation = "none";
+                     void moscaTickerTrack.offsetWidth;
+                     moscaTickerTrack.style.animation = "";
+
+              }
+
+              calibrateMoscaTickerLoop();
+
+              if (document.fonts && document.fonts.ready) {
+                     document.fonts.ready.then(calibrateMoscaTickerLoop);
+              }
+
+              window.addEventListener("resize", calibrateMoscaTickerLoop);
+
+              function clearBaseAnimationTimers() {
+                     baseAnimationTimers.forEach(clearTimeout);
+                     baseAnimationTimers = [];
+              }
 
-function resetMosca(){
-
-moscaRunning=false;
+              function setCandidateTimer(callback, delay) {
+                     const timer = setTimeout(callback, delay);
+                     candidateAnimationTimers.push(timer);
+                     return timer;
+              }
 
-moscaTimeouts.forEach((timer)=>clearTimeout(timer));
-moscaTimeouts=[];
-
-if(moscaClosedEventTimeout){
-clearTimeout(moscaClosedEventTimeout);
-moscaClosedEventTimeout=null;
-}
+              function clearCandidateAnimationTimers() {
+                     candidateAnimationTimers.forEach(clearTimeout);
+                     candidateAnimationTimers = [];
+              }
 
-if(moscaInterval){
-clearInterval(moscaInterval);
-moscaInterval=null;
-}
-
-moscaClosedEventActive=false;
+              function resetMosca() {
 
-moscaTexto.style.opacity=0;
-moscaTexto.style.filter="blur(20px)";
-
-moscaCierreTexto.classList.remove("active");
-moscaCierreTexto.style.opacity=0;
-moscaCierreTexto.style.filter="blur(24px)";
-moscaCierreTexto.style.transform="translateX(26px) scale(.98)";
+                     moscaRunning = false;
 
-moscaLogo.style.opacity=0;
-moscaLogo.style.filter="blur(20px)";
-moscaLogo.classList.remove("logoSweep");
-
-moscaLogoEE.style.opacity=0;
-
-const mask=moscaLogoEE.querySelector(".moscaCircleMask");
-mask.style.clipPath="circle(0% at 50% 50%)";
-mask.style.background="white";
-
-mosca.style.opacity=0;
-mosca.style.filter="blur(20px)";
+                     moscaTimeouts.forEach((timer) => clearTimeout(timer));
+                     moscaTimeouts = [];
 
-}
+                     if (moscaClosedEventTimeout) {
+                            clearTimeout(moscaClosedEventTimeout);
+                            moscaClosedEventTimeout = null;
+                     }
 
-function formatMoscaTime(sec){
+                     if (moscaInterval) {
+                            clearInterval(moscaInterval);
+                            moscaInterval = null;
+                     }
 
-sec=Math.max(0,sec);
+                     moscaClosedEventActive = false;
 
-const h=Math.floor(sec/3600);
-const m=Math.floor((sec%3600)/60);
-const s=sec%60;
+                     moscaTexto.style.opacity = 0;
 
-return String(h).padStart(2,"0")+":"+
-       String(m).padStart(2,"0")+":"+
-       String(s).padStart(2,"0");
+                     moscaCierreTexto.classList.remove("active");
+                     moscaCierreTexto.style.opacity = 0;
+                     moscaCierreTexto.style.transform = "translateX(26px) scale(.98)";
 
-}
+                     moscaLogo.style.opacity = 0;
+                     moscaLogo.classList.remove("logoSweep");
 
-function getMoscaClock(){
+                     moscaLogoEE.style.opacity = 0;
 
-const now=new Date();
+                     const mask = moscaLogoEE.querySelector(".moscaCircleMask");
+                     mask.style.clipPath = "circle(0% at 50% 50%)";
+                     mask.style.background = "white";
 
-const colombiaNow=new Date(
-now.toLocaleString("en-US",{timeZone:"America/Bogota"})
-);
+                     mosca.style.opacity = 0;
 
-const nowSec=
-colombiaNow.getHours()*3600+
-colombiaNow.getMinutes()*60+
-colombiaNow.getSeconds();
+              }
 
-const [h,m]=moscaHoraCierre.split(":").map(Number);
-const cierreSec=(h*3600)+(m*60);
+              function formatMoscaTime(sec) {
 
-const dateKey=
-colombiaNow.getFullYear()+"-"+
-String(colombiaNow.getMonth()+1).padStart(2,"0")+"-"+
-String(colombiaNow.getDate()).padStart(2,"0")+"-"+
-moscaHoraCierre;
+                     sec = Math.max(0, sec);
 
-const diff=cierreSec-nowSec;
+                     const h = Math.floor(sec / 3600);
+                     const m = Math.floor((sec % 3600) / 60);
+                     const s = sec % 60;
 
-return {
-diff:diff,
-dateKey:dateKey,
-closed:diff<=0,
-closingMinute:diff<=0 && diff>-60
-};
+                     return String(h).padStart(2, "0") + ":" +
+                            String(m).padStart(2, "0") + ":" +
+                            String(s).padStart(2, "0");
 
-}
+              }
 
-function startMoscaClosedEvent(clock){
+              function getMoscaClock() {
 
-if(!moscaActivo) return;
+                     const now = new Date();
 
-if(moscaClosedEventActive) return;
+                     const colombiaNow = new Date(
+                            now.toLocaleString("en-US", { timeZone: "America/Bogota" })
+                     );
 
-moscaClosedEventActive=true;
-moscaCloseEventKey=clock.dateKey;
-moscaRunning=true;
+                     const nowSec =
+                            colombiaNow.getHours() * 3600 +
+                            colombiaNow.getMinutes() * 60 +
+                            colombiaNow.getSeconds();
 
-moscaTimeouts.forEach((timer)=>clearTimeout(timer));
-moscaTimeouts=[];
+                     const [h, m] = moscaHoraCierre.split(":").map(Number);
+                     const cierreSec = (h * 3600) + (m * 60);
 
-if(moscaInterval){
-clearInterval(moscaInterval);
-moscaInterval=null;
-}
+                     const dateKey =
+                            colombiaNow.getFullYear() + "-" +
+                            String(colombiaNow.getMonth() + 1).padStart(2, "0") + "-" +
+                            String(colombiaNow.getDate()).padStart(2, "0") + "-" +
+                            moscaHoraCierre;
 
-mosca.style.opacity=1;
-mosca.style.filter="blur(0)";
+                     const diff = cierreSec - nowSec;
 
-moscaTexto.style.opacity=0;
-moscaTexto.style.filter="blur(20px)";
+                     return {
+                            diff: diff,
+                            dateKey: dateKey,
+                            closed: diff <= 0,
+                            closingMinute: diff <= 0 && diff > -60
+                     };
 
-hideMoscaLogo();
-moscaLogo.classList.remove("logoSweep");
-moscaLogoImg.src="assets/mosca/logo2.png";
+              }
 
-moscaLogoEE.style.opacity=0;
-const mask=moscaLogoEE.querySelector(".moscaCircleMask");
-mask.style.background="white";
-mask.style.clipPath="circle(0% at 50% 50%)";
+              function startMoscaClosedEvent(clock) {
 
-moscaCierreTexto.classList.remove("active");
-void moscaCierreTexto.offsetWidth;
-moscaCierreTexto.classList.add("active");
+                     if (!moscaActivo) return;
 
-moscaClosedEventTimeout=setTimeout(()=>{
-moscaCierreTexto.classList.remove("active");
-moscaClosedEventTimeout=null;
-moscaClosedEventActive=false;
-moscaRunning=false;
+                     if (moscaClosedEventActive) return;
 
-if(moscaActivo){
-setTimeout(()=>startMosca(),500);
-}
+                     moscaClosedEventActive = true;
+                     moscaCloseEventKey = clock.dateKey;
+                     moscaRunning = true;
 
-},60600);
+                     moscaTimeouts.forEach((timer) => clearTimeout(timer));
+                     moscaTimeouts = [];
 
-}
+                     if (moscaInterval) {
+                            clearInterval(moscaInterval);
+                            moscaInterval = null;
+                     }
 
-function updateMoscaTexto(){
+                     mosca.style.opacity = 1;
 
-if(!moscaActivo){
-moscaTexto.innerHTML="";
-return;
-}
+                     moscaTexto.style.opacity = 0;
 
-const clock=getMoscaClock();
+                     hideMoscaLogo();
+                     moscaLogo.classList.remove("logoSweep");
+                     moscaLogoImg.src = "assets/mosca/logo2.png";
 
-if(clock.closingMinute && moscaCloseEventKey!==clock.dateKey){
-startMoscaClosedEvent(clock);
-return;
-}
+                     moscaLogoEE.style.opacity = 0;
+                     const mask = moscaLogoEE.querySelector(".moscaCircleMask");
+                     mask.style.background = "white";
+                     mask.style.clipPath = "circle(0% at 50% 50%)";
 
-if(clock.diff>0){
-moscaTexto.innerHTML=`
+                     moscaCierreTexto.classList.remove("active");
+                     if (typeof moscaCierreTexto.getAnimations === "function") {
+                            moscaCierreTexto.getAnimations().forEach(anim => anim.cancel());
+                     }
+                     moscaCierreTexto.classList.add("active");
+
+                     moscaClosedEventTimeout = setTimeout(() => {
+                            moscaCierreTexto.classList.remove("active");
+                            moscaClosedEventTimeout = null;
+                            moscaClosedEventActive = false;
+                            moscaRunning = false;
+
+                            if (moscaActivo) {
+                                   setTimeout(() => startMosca(), 500);
+                            }
+
+                     }, 60600);
+
+              }
+
+              function updateMoscaTexto() {
+
+                     if (!moscaActivo) {
+                            moscaTexto.innerHTML = "";
+                            return;
+                     }
+
+                     // Si el contenedor de la mosca no está visible, omitir el recálculo.
+                     if (moscaTexto.style.opacity === "0" || parseFloat(getComputedStyle(moscaTexto).opacity) === 0) {
+                            return;
+                     }
+
+                     const clock = getMoscaClock();
+
+                     if (clock.closingMinute && moscaCloseEventKey !== clock.dateKey) {
+                            startMoscaClosedEvent(clock);
+                            return;
+                     }
+
+                     if (clock.diff > 0) {
+                            moscaTexto.innerHTML = `
 <span class="moscaCountdownLine moscaCountdownTop">CIERRE DE</span>
 <span class="moscaCountdownLine moscaCountdownMiddle">VOTACIONES EN:</span>
 <span class="moscaCountdownLine moscaCountdownTime">${formatMoscaTime(clock.diff)}</span>
 `;
-}else{
-moscaTexto.innerHTML="";
-}
+                     } else {
+                            moscaTexto.innerHTML = "";
+                     }
 
-}
+              }
 
-function setMoscaLogo(src){
+              function setMoscaLogo(src) {
 
-if(moscaLogoImg.getAttribute("src")===src) return;
+                     if (moscaLogoImg.getAttribute("src") === src) return;
 
-moscaLogo.classList.remove("logoSweep");
-void moscaLogo.offsetWidth;
-moscaLogoImg.src=src;
-moscaLogo.classList.add("logoSweep");
+                     moscaLogo.classList.remove("logoSweep");
+                     if (typeof moscaLogo.getAnimations === "function") {
+                            moscaLogo.getAnimations().forEach(anim => anim.cancel());
+                     }
+                     moscaLogoImg.src = src;
+                     moscaLogo.classList.add("logoSweep");
 
-}
+              }
 
-function showMoscaLogo(src){
+              function showMoscaLogo(src) {
 
-setMoscaLogo(src);
-moscaLogo.style.opacity=1;
-moscaLogo.style.filter="blur(0)";
+                     setMoscaLogo(src);
+                     moscaLogo.style.opacity = 1;
 
-}
+              }
 
-function hideMoscaLogo(){
+              function hideMoscaLogo() {
 
-moscaLogo.style.opacity=0;
-moscaLogo.style.filter="blur(20px)";
+                     moscaLogo.style.opacity = 0;
 
-}
+              }
 
-function isMoscaClosed(){
+              function isMoscaClosed() {
 
-return getMoscaClock().closed;
+                     return getMoscaClock().closed;
 
-}
+              }
 
-function startMosca(){
+              function startMosca() {
 
-if(moscaClosedEventActive) return;
+                     if (moscaClosedEventActive) return;
 
-if(moscaRunning) return;
+                     if (moscaRunning) return;
 
-resetMosca();
+                     resetMosca();
 
-moscaActivo=true;
-moscaRunning=true;
+                     moscaActivo = true;
+                     moscaRunning = true;
 
-mosca.style.opacity=1;
-mosca.style.filter="blur(0)";
+                     mosca.style.opacity = 1;
 
-let t=0;
+                     let t = 0;
 
-if(!isMoscaClosed()){
+                     if (!isMoscaClosed()) {
 
-moscaTimeouts.push(setTimeout(()=>{
-moscaTexto.style.opacity=1;
-moscaTexto.style.filter="blur(0)";
-},t+200));
+                            moscaTimeouts.push(setTimeout(() => {
+                                   moscaTexto.style.opacity = 1;
+                            }, t + 200));
 
-moscaTimeouts.push(setTimeout(()=>{
-moscaTexto.style.opacity=0;
-moscaTexto.style.filter="blur(20px)";
-},t+20000));
+                            moscaTimeouts.push(setTimeout(() => {
+                                   moscaTexto.style.opacity = 0;
+                            }, t + 20000));
 
-t+=20000;
+                            t += 20000;
 
-moscaTimeouts.push(setTimeout(()=>{
-showMoscaLogo("assets/mosca/logo1.png");
-},t+200));
+                            moscaTimeouts.push(setTimeout(() => {
+                                   showMoscaLogo("assets/mosca/logo1.png");
+                            }, t + 200));
 
-moscaTimeouts.push(setTimeout(()=>{
-hideMoscaLogo();
-},t+20000));
+                            moscaTimeouts.push(setTimeout(() => {
+                                   hideMoscaLogo();
+                            }, t + 20000));
 
-t+=20000;
+                            t += 20000;
 
-}else{
+                     } else {
 
-moscaTimeouts.push(setTimeout(()=>{
-showMoscaLogo("assets/mosca/logo2.png");
-},t+200));
+                            moscaTimeouts.push(setTimeout(() => {
+                                   showMoscaLogo("assets/mosca/logo2.png");
+                            }, t + 200));
 
-moscaTimeouts.push(setTimeout(()=>{
-hideMoscaLogo();
-},t+20000));
+                            moscaTimeouts.push(setTimeout(() => {
+                                   hideMoscaLogo();
+                            }, t + 20000));
 
-t+=20000;
+                            t += 20000;
 
-moscaTimeouts.push(setTimeout(()=>{
-showMoscaLogo("assets/mosca/logo1.png");
-},t+200));
+                            moscaTimeouts.push(setTimeout(() => {
+                                   showMoscaLogo("assets/mosca/logo1.png");
+                            }, t + 200));
 
-moscaTimeouts.push(setTimeout(()=>{
-hideMoscaLogo();
-},t+20000));
+                            moscaTimeouts.push(setTimeout(() => {
+                                   hideMoscaLogo();
+                            }, t + 20000));
 
-t+=20000;
+                            t += 20000;
 
-}
+                     }
 
-moscaTimeouts.push(setTimeout(()=>{
-moscaLogoEE.style.opacity=1;
+                     moscaTimeouts.push(setTimeout(() => {
+                            moscaLogoEE.style.opacity = 1;
 
-const mask=moscaLogoEE.querySelector(".moscaCircleMask");
-mask.style.clipPath="circle(60% at 50% 50%)";
+                            const mask = moscaLogoEE.querySelector(".moscaCircleMask");
+                            mask.style.clipPath = "circle(60% at 50% 50%)";
 
-setTimeout(()=>{
-mask.style.background="transparent";
-},400);
+                            setTimeout(() => {
+                                   mask.style.background = "transparent";
+                            }, 400);
 
-},t+200));
+                     }, t + 200));
 
-moscaTimeouts.push(setTimeout(()=>{
-const mask=moscaLogoEE.querySelector(".moscaCircleMask");
-mask.style.background="white";
-mask.style.clipPath="circle(0% at 50% 50%)";
-},t+10000));
+                     moscaTimeouts.push(setTimeout(() => {
+                            const mask = moscaLogoEE.querySelector(".moscaCircleMask");
+                            mask.style.background = "white";
+                            mask.style.clipPath = "circle(0% at 50% 50%)";
+                     }, t + 10000));
 
-moscaTimeouts.push(setTimeout(()=>{
-moscaLogoEE.style.opacity=0;
-},t+10500));
+                     moscaTimeouts.push(setTimeout(() => {
+                            moscaLogoEE.style.opacity = 0;
+                     }, t + 10500));
 
-t+=10000;
+                     t += 10000;
 
-moscaTimeouts.push(setTimeout(()=>{
+                     moscaTimeouts.push(setTimeout(() => {
 
-moscaRunning=false;
+                            moscaRunning = false;
 
-if(!moscaActivo) return;
+                            if (!moscaActivo) return;
 
-if(moscaActivo) startMosca();
+                            // Programar el próximo ciclo usando un setTimeout único,
+                            // sin recursión implícita.
+                            moscaTimeouts.push(setTimeout(() => {
+                                   if (moscaActivo) startMosca();
+                            }, 500));
 
-},t));
+                     }, t));
 
-moscaInterval=setInterval(updateMoscaTexto,1000);
-updateMoscaTexto();
+                     moscaInterval = setInterval(() => {
+                            if (!moscaActivo) return;
+                            updateMoscaTexto();
+                     }, 1000);
+                     updateMoscaTexto();
 
-}
+              }
 
-function stopMosca(){
-moscaActivo=false;
-resetMosca();
-}
+              function stopMosca() {
+                     moscaActivo = false;
+                     resetMosca();
+              }
 
-function hideImmediately(){
-const banner=document.getElementById("banner");
-banner.style.opacity="0";
-banner.style.transition="none";
-banner.style.transform="translateY(0px)";
-}
+              function hideImmediately() {
+                     const banner = document.getElementById("banner");
+                     banner.style.opacity = "0";
+                     banner.style.transition = "none";
+                     banner.style.transform = "translateY(0px)";
+              }
 
-hideImmediately();
+              hideImmediately();
 
-function hideCandidateImmediately(){
-const banner=document.getElementById("candidateBanner");
-banner.style.opacity="0";
-banner.style.transition="none";
-banner.style.transform="translateY(0px)";
-}
+              function hideCandidateImmediately() {
+                     const banner = document.getElementById("candidateBanner");
+                     banner.style.opacity = "0";
+                     banner.style.transition = "none";
+                     banner.style.transform = "translateY(0px)";
+              }
 
-hideCandidateImmediately();
+              hideCandidateImmediately();
 
-function createCandidateBannerMask(){
+              function createCandidateBannerMask() {
 
-if(candidateBannerMaskCreated) return;
+                     if (candidateBannerMaskCreated) return;
 
-const banner=document.getElementById("candidateBanner");
-const bannerMask=document.createElement("div");
+                     const banner = document.getElementById("candidateBanner");
+                     const bannerMask = document.createElement("div");
 
-bannerMask.id="candidateBannerMask";
-bannerMask.style.position="absolute";
-bannerMask.style.left="0px";
-bannerMask.style.bottom="83px";
-bannerMask.style.width="1920px";
-bannerMask.style.height="600px";
-bannerMask.style.overflow="hidden";
-bannerMask.style.zIndex="20";
-bannerMask.style.pointerEvents="none";
+                     bannerMask.id = "candidateBannerMask";
+                     bannerMask.style.position = "absolute";
+                     bannerMask.style.left = "0px";
+                     bannerMask.style.bottom = "83px";
+                     bannerMask.style.width = "1920px";
+                     bannerMask.style.height = "600px";
+                     bannerMask.style.overflow = "hidden";
+                     bannerMask.style.zIndex = "20";
+                     bannerMask.style.pointerEvents = "none";
 
-banner.parentNode.insertBefore(bannerMask,banner);
-bannerMask.appendChild(banner);
+                     banner.parentNode.insertBefore(bannerMask, banner);
+                     bannerMask.appendChild(banner);
 
-banner.style.position="absolute";
-banner.style.bottom="165px";
-banner.style.left="0";
+                     banner.style.position = "absolute";
+                     banner.style.bottom = "165px";
+                     banner.style.left = "0";
 
-candidateBannerMaskCreated=true;
+                     candidateBannerMaskCreated = true;
 
-}
+              }
 
-function resetCandidateBanner(){
+              function resetCandidateBanner() {
 
-createCandidateBannerMask();
+                     createCandidateBannerMask();
 
-const banner=document.getElementById("candidateBanner");
-const mask1=document.getElementById("candidateMask1");
-const mask2=document.getElementById("candidateMask2");
-const logo=document.getElementById("candidateLogoBox");
-const candidateImg=document.getElementById("candidateImg");
+                     const banner = document.getElementById("candidateBanner");
+                     const mask1 = document.getElementById("candidateMask1");
+                     const mask2 = document.getElementById("candidateMask2");
+                     const logo = document.getElementById("candidateLogoBox");
+                     const candidateImg = document.getElementById("candidateImg");
 
-banner.style.transition="none";
-mask1.style.transition="none";
-mask2.style.transition="none";
-logo.style.transition="none";
+                     banner.style.transition = "none";
+                     mask1.style.transition = "none";
+                     mask2.style.transition = "none";
+                     logo.style.transition = "none";
 
-banner.style.transform="translateY(0px)";
-banner.style.opacity="1";
+                     banner.style.transform = "translateY(0px)";
+                     banner.style.opacity = "1";
 
-logo.style.left="50vw";
+                     logo.style.left = "50vw";
 
-document.getElementById("candidateLogo").style.opacity="1";
+                     document.getElementById("candidateLogo").style.opacity = "1";
 
-candidateImg.style.display="block";
-candidateImg.style.opacity="0";
+                     candidateImg.style.display = "block";
+                     candidateImg.style.opacity = "0";
 
-mask1.style.clipPath="inset(0 0 0 100%)";
-mask2.style.clipPath="inset(0 0 0 100%)";
+                     mask1.style.clipPath = "inset(0 0 0 100%)";
+                     mask2.style.clipPath = "inset(0 0 0 100%)";
 
-mask2.style.zIndex="1";
+                     mask2.style.zIndex = "1";
 
-}
+              }
 
-function startCandidateBanner(){
+              function startCandidateBanner() {
 
-clearCandidateAnimationTimers();
-resetCandidateBanner();
+                     clearCandidateAnimationTimers();
+                     resetCandidateBanner();
 
-const mask1=document.getElementById("candidateMask1");
-const mask2=document.getElementById("candidateMask2");
-const logo=document.getElementById("candidateLogoBox");
-const candidateImg=document.getElementById("candidateImg");
-const logoImg=document.getElementById("candidateLogo");
+                     const mask1 = document.getElementById("candidateMask1");
+                     const mask2 = document.getElementById("candidateMask2");
+                     const logo = document.getElementById("candidateLogoBox");
+                     const candidateImg = document.getElementById("candidateImg");
+                     const logoImg = document.getElementById("candidateLogo");
 
-setCandidateTimer(()=>{
+                     setCandidateTimer(() => {
 
-mask1.style.transition="clip-path 0.6s ease";
-mask1.style.clipPath="inset(0 0 0 0)";
+                            mask1.style.transition = "clip-path 0.6s ease";
+                            mask1.style.clipPath = "inset(0 0 0 0)";
 
-},100);
+                     }, 100);
 
-setCandidateTimer(()=>{
+                     setCandidateTimer(() => {
 
-mask1.style.clipPath="inset(0 1720px 0 0)";
+                            mask1.style.clipPath = "inset(0 1720px 0 0)";
 
-logo.style.transition="left 0.6s ease";
-logo.style.left="100px";
+                            logo.style.transition = "left 0.6s ease";
+                            logo.style.left = "100px";
 
-logoImg.style.opacity="0";
+                            logoImg.style.opacity = "0";
 
-candidateImg.style.opacity="1";
+                            candidateImg.style.opacity = "1";
 
-},1030);
+                     }, 1030);
 
-setCandidateTimer(()=>{
+                     setCandidateTimer(() => {
 
-mask2.style.zIndex="-1";
-mask2.style.clipPath="inset(0 0 0 0)";
+                            mask2.style.zIndex = "-1";
+                            mask2.style.clipPath = "inset(0 0 0 0)";
 
-},925);
+                     }, 925);
 
-}
+              }
 
-function hideCandidateBanner(){
+              function hideCandidateBanner() {
 
-const banner=document.getElementById("candidateBanner");
+                     const banner = document.getElementById("candidateBanner");
 
-banner.style.transition="transform 1.5s ease";
-banner.style.transform="translateY(400px)";
+                     banner.style.transition = "transform 1.5s ease";
+                     banner.style.transform = "translateY(400px)";
 
-}
+              }
 
-function showCandidateOverlay(text,candidate,mode="two"){
+              function showCandidateOverlay(text, candidate, mode = "two") {
 
-const banner=document.getElementById("candidateBanner");
-const candidateImg=document.getElementById("candidateImg");
-const candidateText=document.getElementById("candidateBannerText");
+                     const banner = document.getElementById("candidateBanner");
+                     const candidateImg = document.getElementById("candidateImg");
+                     const candidateText = document.getElementById("candidateBannerText");
 
-clearTimeout(candidateChangeTimer);
-clearTimeout(candidateHideTimer);
-clearTimeout(changeTimer);
-clearTimeout(hideTimer);
-clearBaseAnimationTimers();
+                     clearTimeout(candidateChangeTimer);
+                     clearTimeout(candidateHideTimer);
+                     clearTimeout(changeTimer);
+                     clearTimeout(hideTimer);
+                     clearBaseAnimationTimers();
 
-if(visible){
+                     if (visible) {
 
-hideBanner();
+                            hideBanner();
 
-candidateChangeTimer=setTimeout(()=>{
+                            candidateChangeTimer = setTimeout(() => {
 
-hideImmediately();
-visible=false;
-visibleSource=null;
+                                   hideImmediately();
+                                   visible = false;
+                                   visibleSource = null;
 
-candidateImg.src="assets/candidatos/"+candidate;
-candidateText.className=(mode==="single") ? "singleLineMode" : "";
-candidateText.innerHTML=(mode==="single") ? escapeHTML(text) : balanceTwoLineText(text,"candidateBannerText");
+                                   candidateImg.src = "assets/candidatos/" + candidate;
+                                   candidateText.className = (mode === "single") ? "singleLineMode" : "";
+                                   candidateText.innerHTML = (mode === "single") ? escapeHTML(text) : balanceTwoLineText(text, "candidateBannerText");
 
-banner.style.opacity="1";
-startCandidateBanner();
+                                   banner.style.opacity = "1";
+                                   startCandidateBanner();
 
-candidateVisible=true;
+                                   candidateVisible = true;
 
-},3500);
+                            }, 3500);
 
-return;
+                            return;
 
-}
+                     }
 
-if(candidateVisible){
+                     if (candidateVisible) {
 
-hideCandidateBanner();
+                            hideCandidateBanner();
 
-candidateChangeTimer=setTimeout(()=>{
+                            candidateChangeTimer = setTimeout(() => {
 
-candidateImg.src="assets/candidatos/"+candidate;
-candidateText.className=(mode==="single") ? "singleLineMode" : "";
-candidateText.innerHTML=(mode==="single") ? escapeHTML(text) : balanceTwoLineText(text,"candidateBannerText");
+                                   candidateImg.src = "assets/candidatos/" + candidate;
+                                   candidateText.className = (mode === "single") ? "singleLineMode" : "";
+                                   candidateText.innerHTML = (mode === "single") ? escapeHTML(text) : balanceTwoLineText(text, "candidateBannerText");
 
-banner.style.opacity="1";
-startCandidateBanner();
+                                   banner.style.opacity = "1";
+                                   startCandidateBanner();
 
-candidateVisible=true;
+                                   candidateVisible = true;
 
-},3500);
+                            }, 3500);
 
-}else{
+                     } else {
 
-candidateImg.src="assets/candidatos/"+candidate;
-candidateText.className=(mode==="single") ? "singleLineMode" : "";
-candidateText.innerHTML=(mode==="single") ? escapeHTML(text) : balanceTwoLineText(text,"candidateBannerText");
+                            candidateImg.src = "assets/candidatos/" + candidate;
+                            candidateText.className = (mode === "single") ? "singleLineMode" : "";
+                            candidateText.innerHTML = (mode === "single") ? escapeHTML(text) : balanceTwoLineText(text, "candidateBannerText");
 
-banner.style.opacity="1";
-startCandidateBanner();
+                            banner.style.opacity = "1";
+                            startCandidateBanner();
 
-candidateVisible=true;
+                            candidateVisible = true;
 
-}
+                     }
 
-}
+              }
 
-function hideCandidateOverlay(){
+              function hideCandidateOverlay() {
 
-if(!candidateVisible) return;
+                     if (!candidateVisible) return;
 
-clearTimeout(candidateChangeTimer);
-clearTimeout(candidateHideTimer);
-clearCandidateAnimationTimers();
+                     clearTimeout(candidateChangeTimer);
+                     clearTimeout(candidateHideTimer);
+                     clearCandidateAnimationTimers();
 
-hideCandidateBanner();
+                     hideCandidateBanner();
 
-candidateHideTimer=setTimeout(()=>{
+                     candidateHideTimer = setTimeout(() => {
 
-hideCandidateImmediately();
-candidateVisible=false;
+                            hideCandidateImmediately();
+                            candidateVisible = false;
 
-},1500);
+                     }, 1500);
 
-}
+              }
 
-function escapeHTML(value){
+              function escapeHTML(value) {
 
-return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+                     return String(value)
+                            .replace(/&/g, "&amp;")
+                            .replace(/</g, "&lt;")
+                            .replace(/>/g, "&gt;")
+                            .replace(/"/g, "&quot;")
+                            .replace(/'/g, "&#039;");
 
-}
+              }
 
-function createTickerItem(note,x){
-const dot='<span class="tickerDot"></span>';
-const brand='<span class="tickerBrandText">ELECCIONES 2026</span>';
-const item=document.createElement("div");
+              function createTickerItem(note, x) {
+                     const dot = '<span class="tickerDot"></span>';
+                     const brand = '<span class="tickerBrandText">ELECCIONES 2026</span>';
+                     const item = document.createElement("div");
 
-item.className="tickerItem";
-item.innerHTML='<span class="tickerNoteText">'+escapeHTML(note)+'</span>'+dot+brand+dot;
-item.style.transform="translateX("+x+"px)";
+                     item.className = "tickerItem";
+                     item.innerHTML = '<span class="tickerNoteText">' + escapeHTML(note) + '</span>' + dot + brand + dot;
+                     item.style.transform = "translateX(" + x + "px)";
 
-if(tickerIntroTrailPending){
-item.classList.add("tickerIntroTrail");
-tickerIntroTrailPending=false;
-}
+                     if (tickerIntroTrailPending) {
+                            item.classList.add("tickerIntroTrail");
+                            tickerIntroTrailPending = false;
+                     }
 
-tickerTrack.appendChild(item);
+                     tickerTrack.appendChild(item);
 
-const width=item.getBoundingClientRect().width;
-const tickerItem={element:item,x:x,width:width,note:note};
+                     const width = item.getBoundingClientRect().width;
+                     const tickerItem = { element: item, x: x, width: width, note: note };
 
-tickerItems.push(tickerItem);
+                     tickerItems.push(tickerItem);
 
-return tickerItem;
-}
+                     return tickerItem;
+              }
 
-function getNextTickerNote(){
+              function getNextTickerNote() {
 
-if(tickerActiveNotes.length===0) return null;
+                     if (tickerActiveNotes.length === 0) return null;
 
-if(tickerNextNoteIndex>=tickerActiveNotes.length){
-tickerNextNoteIndex=0;
-}
+                     if (tickerNextNoteIndex >= tickerActiveNotes.length) {
+                            tickerNextNoteIndex = 0;
+                     }
 
-const note=tickerActiveNotes[tickerNextNoteIndex];
-tickerNextNoteIndex=(tickerNextNoteIndex+1)%tickerActiveNotes.length;
+                     const note = tickerActiveNotes[tickerNextNoteIndex];
+                     tickerNextNoteIndex = (tickerNextNoteIndex + 1) % tickerActiveNotes.length;
 
-return note;
+                     return note;
 
-}
+              }
 
-function addNextTickerItem(x){
+              function addNextTickerItem(x) {
 
-const note=getNextTickerNote();
+                     const note = getNextTickerNote();
 
-if(!note) return null;
+                     if (!note) return null;
 
-return createTickerItem(note,x);
+                     return createTickerItem(note, x);
 
-}
+              }
 
-function fillTickerQueue(){
+              function fillTickerQueue() {
 
-if(tickerActiveNotes.length===0) return;
+                     if (tickerActiveNotes.length === 0) return;
 
-const barWidth=tickerBar.getBoundingClientRect().width || window.innerWidth;
-let nextX=barWidth;
+                     const barWidth = tickerBar.getBoundingClientRect().width || window.innerWidth;
+                     let nextX = barWidth;
 
-if(tickerItems.length>0){
-const last=tickerItems[tickerItems.length-1];
-nextX=last.x+last.width;
-}
+                     if (tickerItems.length > 0) {
+                            const last = tickerItems[tickerItems.length - 1];
+                            nextX = last.x + last.width;
+                     }
 
-while(nextX<barWidth*1.35){
-const item=addNextTickerItem(nextX);
+                     while (nextX < barWidth * 1.35) {
+                            const item = addNextTickerItem(nextX);
 
-if(!item) return;
+                            if (!item) return;
 
-nextX=item.x+item.width;
-}
+                            nextX = item.x + item.width;
+                     }
 
-}
+              }
 
-function moveTickerItems(timestamp){
+              function moveTickerItems(timestamp) {
 
-if(!tickerBar.classList.contains("active") && !tickerIsExiting){
-tickerAnimationFrame=null;
-tickerLastFrameTime=null;
-return;
-}
+                     if (!tickerBar.classList.contains("active") && !tickerIsExiting) {
+                            tickerAnimationFrame = null;
+                            tickerLastFrameTime = null;
+                            return;
+                     }
 
-if(tickerLastFrameTime===null){
-tickerLastFrameTime=timestamp;
-}
+                     if (tickerLastFrameTime === null) {
+                            tickerLastFrameTime = timestamp;
+                     }
 
-const elapsed=Math.min((timestamp-tickerLastFrameTime)/1000,0.08);
-tickerLastFrameTime=timestamp;
+                     const elapsed = Math.min((timestamp - tickerLastFrameTime) / 1000, 0.08);
+                     tickerLastFrameTime = timestamp;
 
-tickerItems.forEach((item)=>{
-item.x-=tickerSpeed*elapsed;
-item.element.style.transform="translateX("+item.x+"px)";
-});
+                     tickerItems.forEach((item) => {
+                            item.x -= tickerSpeed * elapsed;
+                            item.element.style.transform = "translateX(" + item.x + "px)";
+                     });
 
-tickerItems=tickerItems.filter((item)=>{
-if(item.x+item.width>0) return true;
-item.element.remove();
-return false;
-});
+                     tickerItems = tickerItems.filter((item) => {
+                            if (item.x + item.width > 0) return true;
+                            item.element.remove();
+                            return false;
+                     });
 
-if(tickerBar.classList.contains("active")){
-fillTickerQueue();
-}
+                     if (tickerBar.classList.contains("active")) {
+                            fillTickerQueue();
+                     }
 
-tickerAnimationFrame=requestAnimationFrame(moveTickerItems);
+                     tickerAnimationFrame = requestAnimationFrame(moveTickerItems);
 
-}
+              }
 
-function startTickerMovement(){
+              function startTickerMovement() {
 
-if(tickerAnimationFrame) return;
+                     if (tickerAnimationFrame) return;
 
-tickerLastFrameTime=null;
-tickerAnimationFrame=requestAnimationFrame(moveTickerItems);
+                     tickerLastFrameTime = null;
+                     tickerAnimationFrame = requestAnimationFrame(moveTickerItems);
 
-}
+              }
 
-function stopTickerMovement(){
+              function stopTickerMovement() {
 
-if(tickerAnimationFrame){
-cancelAnimationFrame(tickerAnimationFrame);
-tickerAnimationFrame=null;
-}
+                     if (tickerAnimationFrame) {
+                            cancelAnimationFrame(tickerAnimationFrame);
+                            tickerAnimationFrame = null;
+                     }
 
-tickerLastFrameTime=null;
-tickerItems.forEach((item)=>item.element.remove());
-tickerItems=[];
-tickerNextNoteIndex=0;
+                     tickerLastFrameTime = null;
+                     tickerItems.forEach((item) => item.element.remove());
+                     tickerItems = [];
+                     tickerNextNoteIndex = 0;
 
-}
+              }
 
-function triggerRandomTickerShine(){
+              function triggerRandomTickerShine() {
 
-const brands=[...tickerTrack.querySelectorAll(".tickerBrandText")];
+                     const brands = [...tickerTrack.querySelectorAll(".tickerBrandText")];
 
-if(brands.length===0 || !tickerBar.classList.contains("active")) return;
+                     if (brands.length === 0 || !tickerBar.classList.contains("active")) return;
 
-brands.forEach((brand)=>brand.classList.remove("tickerShine"));
+                     brands.forEach((brand) => brand.classList.remove("tickerShine"));
 
-const visibleBrands=brands.filter((brand)=>{
-const rect=brand.getBoundingClientRect();
-return rect.right>0 && rect.left<window.innerWidth;
-});
+                     const visibleBrands = brands.filter((brand) => {
+                            const rect = brand.getBoundingClientRect();
+                            return rect.right > 0 && rect.left < window.innerWidth;
+                     });
 
-const pool=visibleBrands.length ? visibleBrands : brands;
-const selected=pool[Math.floor(Math.random()*pool.length)];
+                     const pool = visibleBrands.length ? visibleBrands : brands;
+                     const selected = pool[Math.floor(Math.random() * pool.length)];
 
-selected.classList.add("tickerShine");
+                     selected.classList.add("tickerShine");
 
-setTimeout(()=>{
-selected.classList.remove("tickerShine");
-},1300);
+                     setTimeout(() => {
+                            selected.classList.remove("tickerShine");
+                     }, 1300);
 
-}
+              }
 
-function stopTickerShine(){
+              function stopTickerShine() {
 
-if(tickerShineTimer){
-clearTimeout(tickerShineTimer);
-tickerShineTimer=null;
-}
+                     if (tickerShineTimer) {
+                            clearTimeout(tickerShineTimer);
+                            tickerShineTimer = null;
+                     }
 
-tickerTrack.querySelectorAll(".tickerBrandText").forEach((brand)=>{
-brand.classList.remove("tickerShine");
-});
+                     tickerTrack.querySelectorAll(".tickerBrandText").forEach((brand) => {
+                            brand.classList.remove("tickerShine");
+                     });
 
-}
+              }
 
-function startTickerShine(){
+              function startTickerShine() {
 
-stopTickerShine();
+                     stopTickerShine();
 
-function scheduleNextShine(){
-tickerShineTimer=setTimeout(()=>{
-triggerRandomTickerShine();
-scheduleNextShine();
-},20000);
-}
+                     function scheduleNextShine() {
+                            tickerShineTimer = setTimeout(() => {
+                                   triggerRandomTickerShine();
+                                   scheduleNextShine();
+                            }, 20000);
+                     }
 
-scheduleNextShine();
+                     scheduleNextShine();
 
-}
+              }
 
-function showTicker(notes){
+              function showTicker(notes) {
 
-if(tickerExitTimer){
-clearTimeout(tickerExitTimer);
-tickerExitTimer=null;
-}
+                     if (tickerExitTimer) {
+                            clearTimeout(tickerExitTimer);
+                            tickerExitTimer = null;
+                     }
 
-tickerIsExiting=false;
+                     tickerIsExiting = false;
 
-const cleanNotes=notes
-.map((note)=>String(note).replace(/\s+/g," ").trim())
-.filter(Boolean);
+                     const cleanNotes = notes
+                            .map((note) => String(note).replace(/\s+/g, " ").trim())
+                            .filter(Boolean);
 
-if(cleanNotes.length===0){
-hideTicker();
-return;
-}
+                     if (cleanNotes.length === 0) {
+                            hideTicker();
+                            return;
+                     }
 
-if(tickerBar.classList.contains("active")){
-tickerActiveNotes=[...cleanNotes];
+                     if (tickerBar.classList.contains("active")) {
+                            tickerActiveNotes = [...cleanNotes];
 
-if(tickerNextNoteIndex>=tickerActiveNotes.length){
-tickerNextNoteIndex=0;
-}
+                            if (tickerNextNoteIndex >= tickerActiveNotes.length) {
+                                   tickerNextNoteIndex = 0;
+                            }
 
-return;
-}
+                            return;
+                     }
 
-tickerActiveNotes=[...cleanNotes];
-tickerNextNoteIndex=0;
-tickerTrack.innerHTML="";
-tickerItems=[];
-tickerIntroTrailPending=true;
-fillTickerQueue();
-requestAnimationFrame(()=>{
-tickerBar.classList.add("active");
-startTickerMovement();
-});
-startTickerShine();
-}
+                     tickerActiveNotes = [...cleanNotes];
+                     tickerNextNoteIndex = 0;
+                     tickerTrack.innerHTML = "";
+                     tickerItems = [];
+                     tickerIntroTrailPending = true;
+                     fillTickerQueue();
+                     requestAnimationFrame(() => {
+                            tickerBar.classList.add("active");
+                            startTickerMovement();
+                     });
+                     startTickerShine();
+              }
 
-function hideTicker(){
-if(tickerExitTimer){
-clearTimeout(tickerExitTimer);
-}
+              function hideTicker() {
+                     if (tickerExitTimer) {
+                            clearTimeout(tickerExitTimer);
+                     }
 
-tickerBar.classList.remove("active");
-tickerActiveNotes=[];
-tickerIntroTrailPending=false;
-stopTickerShine();
+                     tickerBar.classList.remove("active");
+                     tickerActiveNotes = [];
+                     tickerIntroTrailPending = false;
+                     stopTickerShine();
 
-tickerIsExiting=true;
+                     tickerIsExiting = true;
 
-tickerExitTimer=setTimeout(()=>{
-tickerIsExiting=false;
-stopTickerMovement();
-tickerExitTimer=null;
-},720);
-}
+                     tickerExitTimer = setTimeout(() => {
+                            tickerIsExiting = false;
+                            stopTickerMovement();
+                            tickerExitTimer = null;
+                     }, 720);
+              }
 
-function balanceTwoLineText(text,containerId){
+              function balanceTwoLineText(text, containerId) {
 
-const cleanText=String(text).replace(/\s+/g," ").trim();
-const words=cleanText.split(" ");
+                     const cleanText = String(text).replace(/\s+/g, " ").trim();
+                     const words = cleanText.split(" ");
 
-if(words.length<4) return escapeHTML(cleanText);
+                     if (words.length < 4) return escapeHTML(cleanText);
 
-const container=document.getElementById(containerId);
-const style=window.getComputedStyle(container);
-const maxWidth=container.clientWidth || parseFloat(style.width);
+                     const container = document.getElementById(containerId);
+                     const style = window.getComputedStyle(container);
+                     const maxWidth = container.clientWidth || parseFloat(style.width);
 
-const lineHeight=parseFloat(style.lineHeight) || (parseFloat(style.fontSize)*1.25);
+                     const lineHeight = parseFloat(style.lineHeight) || (parseFloat(style.fontSize) * 1.25);
 
-const probe=document.createElement("div");
-probe.style.position="absolute";
-probe.style.visibility="hidden";
-probe.style.left="-9999px";
-probe.style.top="-9999px";
-probe.style.width=maxWidth+"px";
-probe.style.whiteSpace="normal";
-probe.style.fontStyle=style.fontStyle;
-probe.style.fontVariant=style.fontVariant;
-probe.style.fontSize=style.fontSize;
-probe.style.fontWeight=style.fontWeight;
-probe.style.fontFamily=style.fontFamily;
-probe.style.lineHeight=style.lineHeight;
-probe.style.letterSpacing=style.letterSpacing;
-probe.style.textTransform=style.textTransform;
-probe.style.wordBreak=style.wordBreak;
-probe.style.overflow="visible";
-probe.textContent=cleanText;
-document.body.appendChild(probe);
+                     const probe = document.createElement("div");
+                     probe.style.position = "absolute";
+                     probe.style.visibility = "hidden";
+                     probe.style.left = "-9999px";
+                     probe.style.top = "-9999px";
+                     probe.style.width = maxWidth + "px";
+                     probe.style.whiteSpace = "normal";
+                     probe.style.fontStyle = style.fontStyle;
+                     probe.style.fontVariant = style.fontVariant;
+                     probe.style.fontSize = style.fontSize;
+                     probe.style.fontWeight = style.fontWeight;
+                     probe.style.fontFamily = style.fontFamily;
+                     probe.style.lineHeight = style.lineHeight;
+                     probe.style.letterSpacing = style.letterSpacing;
+                     probe.style.textTransform = style.textTransform;
+                     probe.style.wordBreak = style.wordBreak;
+                     probe.style.overflow = "visible";
+                     probe.textContent = cleanText;
+                     document.body.appendChild(probe);
 
-const naturalHeight=probe.getBoundingClientRect().height;
+                     const naturalHeight = probe.getBoundingClientRect().height;
 
-if(naturalHeight<=lineHeight*1.35){
-document.body.removeChild(probe);
-return escapeHTML(cleanText);
-}
+                     if (naturalHeight <= lineHeight * 1.35) {
+                            document.body.removeChild(probe);
+                            return escapeHTML(cleanText);
+                     }
 
-if(naturalHeight>lineHeight*2.35){
-document.body.removeChild(probe);
-return escapeHTML(cleanText);
-}
+                     if (naturalHeight > lineHeight * 2.35) {
+                            document.body.removeChild(probe);
+                            return escapeHTML(cleanText);
+                     }
 
-let bestIndex=null;
-let bestScore=Infinity;
+                     let bestIndex = null;
+                     let bestScore = Infinity;
 
-probe.style.width="auto";
-probe.style.whiteSpace="nowrap";
+                     probe.style.width = "auto";
+                     probe.style.whiteSpace = "nowrap";
 
-for(let i=1;i<words.length;i++){
+                     for (let i = 1; i < words.length; i++) {
 
-const first=words.slice(0,i).join(" ");
-const second=words.slice(i).join(" ");
+                            const first = words.slice(0, i).join(" ");
+                            const second = words.slice(i).join(" ");
 
-probe.textContent=first;
-const firstWidth=probe.getBoundingClientRect().width;
+                            probe.textContent = first;
+                            const firstWidth = probe.getBoundingClientRect().width;
 
-probe.textContent=second;
-const secondWidth=probe.getBoundingClientRect().width;
+                            probe.textContent = second;
+                            const secondWidth = probe.getBoundingClientRect().width;
 
-if(firstWidth>maxWidth || secondWidth>maxWidth) continue;
+                            if (firstWidth > maxWidth || secondWidth > maxWidth) continue;
 
-const score=Math.abs(firstWidth-secondWidth);
+                            const score = Math.abs(firstWidth - secondWidth);
 
-if(score<bestScore){
-bestScore=score;
-bestIndex=i;
-}
+                            if (score < bestScore) {
+                                   bestScore = score;
+                                   bestIndex = i;
+                            }
 
-}
+                     }
 
-if(bestIndex===null){
-document.body.removeChild(probe);
-return escapeHTML(cleanText);
-}
+                     if (bestIndex === null) {
+                            document.body.removeChild(probe);
+                            return escapeHTML(cleanText);
+                     }
 
-const firstLine=words.slice(0,bestIndex).join(" ");
-const secondLine=words.slice(bestIndex).join(" ");
+                     const firstLine = words.slice(0, bestIndex).join(" ");
+                     const secondLine = words.slice(bestIndex).join(" ");
 
-document.body.removeChild(probe);
+                     document.body.removeChild(probe);
 
-return escapeHTML(firstLine)+"<br>"+escapeHTML(secondLine);
+                     return escapeHTML(firstLine) + "<br>" + escapeHTML(secondLine);
 
-}
+              }
 
-function setBannerContent(content,mode){
+              function setBannerContent(content, mode) {
 
-const bannerText=document.getElementById("bannerText");
-bannerText.className=mode;
+                     const bannerText = document.getElementById("bannerText");
+                     bannerText.className = mode;
 
-if(mode==="bannerMode"){
-bannerText.innerHTML=`<div class="bannerLine">${balanceTwoLineText(content,"bannerText")}</div>`;
-return;
-}
+                     if (mode === "bannerMode") {
+                            bannerText.innerHTML = `<div class="bannerLine">${balanceTwoLineText(content, "bannerText")}</div>`;
+                            return;
+                     }
 
-if(mode==="bannerSingleMode"){
-bannerText.innerHTML=`<div class="bannerLine">${escapeHTML(content)}</div>`;
-return;
-}
+                     if (mode === "bannerSingleMode") {
+                            bannerText.innerHTML = `<div class="bannerLine">${escapeHTML(content)}</div>`;
+                            return;
+                     }
 
-bannerText.innerHTML=content;
+                     bannerText.innerHTML = content;
 
-}
+              }
 
-function startBaseBanner(){
+              function startBaseBanner() {
 
-clearBaseAnimationTimers();
+                     clearBaseAnimationTimers();
 
-const nativeSetTimeout=window.setTimeout;
+                     const nativeSetTimeout = window.setTimeout;
 
-window.setTimeout=(callback,delay)=>{
-const timer=nativeSetTimeout(callback,delay);
-baseAnimationTimers.push(timer);
-return timer;
-};
+                     window.setTimeout = (callback, delay) => {
+                            const timer = nativeSetTimeout(callback, delay);
+                            baseAnimationTimers.push(timer);
+                            return timer;
+                     };
 
-try{
-startBanner();
-}finally{
-window.setTimeout=nativeSetTimeout;
-}
+                     try {
+                            startBanner();
+                     } finally {
+                            window.setTimeout = nativeSetTimeout;
+                     }
 
-}
+              }
 
-function showOverlay(source,html,mode){
+              function showOverlay(source, html, mode) {
 
-const banner=document.getElementById("banner");
+                     const banner = document.getElementById("banner");
 
-clearTimeout(changeTimer);
-clearTimeout(hideTimer);
-clearTimeout(candidateChangeTimer);
-clearTimeout(candidateHideTimer);
-clearCandidateAnimationTimers();
+                     clearTimeout(changeTimer);
+                     clearTimeout(hideTimer);
+                     clearTimeout(candidateChangeTimer);
+                     clearTimeout(candidateHideTimer);
+                     clearCandidateAnimationTimers();
 
-if(candidateVisible){
+                     if (candidateVisible) {
 
-hideCandidateBanner();
+                            hideCandidateBanner();
 
-changeTimer=setTimeout(()=>{
+                            changeTimer = setTimeout(() => {
 
-hideCandidateImmediately();
-candidateVisible=false;
+                                   hideCandidateImmediately();
+                                   candidateVisible = false;
 
-setBannerContent(html,mode);
+                                   setBannerContent(html, mode);
 
-banner.style.opacity="1";
-startBaseBanner();
+                                   banner.style.opacity = "1";
+                                   startBaseBanner();
 
-visible=true;
-visibleSource=source;
+                                   visible = true;
+                                   visibleSource = source;
 
-},3500);
+                            }, 3500);
 
-return;
+                            return;
 
-}
+                     }
 
-if(visible){
+                     if (visible) {
 
-hideBanner();
+                            hideBanner();
 
-changeTimer=setTimeout(()=>{
+                            changeTimer = setTimeout(() => {
 
-setBannerContent(html,mode);
+                                   setBannerContent(html, mode);
 
-banner.style.opacity="1";
-startBaseBanner();
+                                   banner.style.opacity = "1";
+                                   startBaseBanner();
 
-visible=true;
-visibleSource=source;
+                                   visible = true;
+                                   visibleSource = source;
 
-},3500);
+                            }, 3500);
 
-}else{
+                     } else {
 
-setBannerContent(html,mode);
+                            setBannerContent(html, mode);
 
-banner.style.opacity="1";
-startBaseBanner();
+                            banner.style.opacity = "1";
+                            startBaseBanner();
 
-visible=true;
-visibleSource=source;
+                            visible = true;
+                            visibleSource = source;
 
-}
+                     }
 
-}
+              }
 
-function hideOverlay(source){
+              function hideOverlay(source) {
 
-if(!visible) return;
+                     if (!visible) return;
 
-if(source!==visibleSource) return;
+                     if (source !== visibleSource) return;
 
-clearTimeout(changeTimer);
-clearTimeout(hideTimer);
-clearBaseAnimationTimers();
+                     clearTimeout(changeTimer);
+                     clearTimeout(hideTimer);
+                     clearBaseAnimationTimers();
 
-hideBanner();
+                     hideBanner();
 
-hideTimer=setTimeout(()=>{
-hideImmediately();
-visible=false;
-visibleSource=null;
-},1500);
+                     hideTimer = setTimeout(() => {
+                            hideImmediately();
+                            visible = false;
+                            visibleSource = null;
+                     }, 1500);
 
-}
+              }
 
-roleChannel.subscribe("banner",(message)=>{
+              roleChannel.subscribe("banner", (message) => {
 
-const data=message.data;
+                     const data = message.data;
 
-if(data.action==="show"){
+                     if (data.action === "show") {
 
-if(!data.name || !data.role) return;
+                            if (!data.name || !data.role) return;
 
-const name=escapeHTML(data.name.toUpperCase());
-const role=escapeHTML(data.role.toUpperCase());
+                            const name = escapeHTML(data.name.toUpperCase());
+                            const role = escapeHTML(data.role.toUpperCase());
 
-const textHTML = `
+                            const textHTML = `
 <div class="nameLine">${name}</div>
 <div class="roleLine">${role}</div>
 `;
 
-showOverlay("roles",textHTML,"roleMode");
+                            showOverlay("roles", textHTML, "roleMode");
 
-}
+                     }
 
-if(data.action==="hide"){
+                     if (data.action === "hide") {
 
-hideOverlay("roles");
+                            hideOverlay("roles");
 
-}
+                     }
 
-});
+              });
 
-bannerChannel.subscribe("banner",(message)=>{
+              bannerChannel.subscribe("banner", (message) => {
 
-const data=message.data;
+                     const data = message.data;
 
-if(data.action==="show"){
+                     if (data.action === "show") {
 
-const mode=(data.mode==="two") ? "bannerMode" : "bannerSingleMode";
-showOverlay("banners",data.text.toUpperCase(),mode);
+                            const mode = (data.mode === "two") ? "bannerMode" : "bannerSingleMode";
+                            showOverlay("banners", data.text.toUpperCase(), mode);
 
-}
+                     }
 
-if(data.action==="hide"){
+                     if (data.action === "hide") {
 
-hideOverlay("banners");
+                            hideOverlay("banners");
 
-}
+                     }
 
-});
+              });
 
-candidateChannel.subscribe("banner",(message)=>{
+              candidateChannel.subscribe("banner", (message) => {
 
-const data=message.data;
+                     const data = message.data;
 
-if(data.action==="show"){
+                     if (data.action === "show") {
 
-if(!data.text || !data.candidate) return;
+                            if (!data.text || !data.candidate) return;
 
-showCandidateOverlay(data.text.toUpperCase(),data.candidate,data.mode);
+                            showCandidateOverlay(data.text.toUpperCase(), data.candidate, data.mode);
 
-}
+                     }
 
-if(data.action==="hide"){
+                     if (data.action === "hide") {
 
-hideCandidateOverlay();
+                            hideCandidateOverlay();
 
-}
+                     }
 
-});
+              });
 
-moscaChannel.subscribe("control",(message)=>{
+              moscaChannel.subscribe("control", (message) => {
 
-const data=message.data;
+                     const data = message.data;
 
-if(data.action==="on"){
-stopMosca();
-setTimeout(()=>startMosca(),80);
-}
+                     if (data.action === "on") {
+                            stopMosca();
+                            setTimeout(() => startMosca(), 80);
+                     }
 
-if(data.action==="off"){
-stopMosca();
-}
+                     if (data.action === "off") {
+                            stopMosca();
+                     }
 
-if(data.action==="updateHora"){
-moscaHoraCierre=data.hora;
-moscaCloseEventKey=null;
-updateMoscaTexto();
-}
+                     if (data.action === "updateHora") {
+                            moscaHoraCierre = data.hora;
+                            moscaCloseEventKey = null;
+                            updateMoscaTexto();
+                     }
 
-});
+              });
 
-tickerChannel.subscribe("control",(message)=>{
+              tickerChannel.subscribe("control", (message) => {
 
-const data=message.data;
+                     const data = message.data;
 
-if(data.action==="show"){
-showTicker(Array.isArray(data.notes) ? data.notes : []);
-}
+                     if (data.action === "show") {
+                            showTicker(Array.isArray(data.notes) ? data.notes : []);
+                     }
 
-if(data.action==="hide"){
-hideTicker();
-}
+                     if (data.action === "hide") {
+                            hideTicker();
+                     }
 
-});
+              });
 
-</script>
+       </script>
 
 </body>
+
 </html>
