@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://use.typekit.net/wtc5lqk.css">
+
+    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+
+    <style>
+        body {
+            background: #1e1e1e;
+            color: #e6e6e6;
+            font-family: sans-serif;
+            margin: 40px;
+            display: flex;
+        }
+
+        .version {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #666;
+            margin-right: 20px;
+            margin-top: 5px;
+        }
+
+        .container {
+            flex: 1;
+        }
+
+        .tabs {
+            width: 854px;
+            margin: 0 auto 24px auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .tabButton {
+            background: #2e2e2e;
+            color: #d8d8d8;
+            border: 1px solid #444;
+            padding: 10px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .tabButton:hover {
+            background: #3a3a3a;
+        }
+
+        .tabButton.active {
+            background: #2c8f6b;
+            border-color: #38a77f;
+            color: white;
+        }
+
+        .tabPanel {
+            display: none;
+        }
+
+        .tabPanel.active {
+            display: block;
+        }
+
+        .previewTitle {
+            width: 854px;
+            margin: 0 auto 12px auto;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: white;
+            text-align: left;
+        }
+
+        .preview {
+            width: 854px;
+            height: 480px;
+            border: 4px solid white;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 1920px;
+            height: 1080px;
+            transform: scale(0.444);
+            transform-origin: top left;
+            border: none;
+        }
+
+        .previewButtons {
+            width: 854px;
+            margin: 15px auto 0 auto;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .previewButtons button {
+            background: #2e2e2e;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .previewButtons button:hover {
+            background: #3d3d3d;
+        }
+
+        /* PANEL CON SCROLL */
+
+        .panel {
+            width: 854px;
+            margin: auto;
+            margin-top: 30px;
+            max-height: 620px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        #panel {
+            max-height: 285px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .item span {
+            flex: 1;
+            margin-left: 12px;
+            font-size: 14px;
+        }
+
+        .candidateSelect {
+            background: #1f1f1f;
+            color: white;
+            border: 1px solid #555;
+            padding: 6px 10px;
+            border-radius: 4px;
+            min-width: 240px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 42px;
+            height: 22px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #555;
+            transition: .3s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background: #2c8f6b;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        .deleteBtn {
+            margin-left: 10px;
+            background: #444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .deleteBtn:hover {
+            background: #aa3333;
+        }
+
+        .inputArea {
+            width: 600px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .inputArea input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 4px;
+            font-size: 14px;
+            background: #2a2a2a;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 6px;
+        }
+
+        .inputArea textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            resize: none;
+            font-family: sans-serif;
+            font-size: 14px;
+            background: #2a2a2a;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .inputArea textarea.limit {
+            border-color: #cc4444;
+            background: #3a1e1e;
+        }
+
+        .counter {
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-align: right;
+            color: #aaa;
+        }
+
+        .counter.warning {
+            color: #ff5555;
+        }
+
+        .error {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .addBtn {
+            margin-top: 10px;
+            padding: 8px 18px;
+            background: #2c8f6b;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .addBtn:hover {
+            background: #38a77f;
+        }
+
+        .modeToggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0 0 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: #d8d8d8;
+        }
+
+        .inputActions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .restoreBtn {
+            margin: 0;
+        }
+
+        .previewRestoreButton {
+            display: none;
+            position: absolute;
+            right: 112px;
+            top: 0;
+        }
+
+        .previewRestoreButton.active {
+            display: block;
+        }
+
+        .previewForceExitButton {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 2px;
+            padding: 6px 10px !important;
+            font-size: 12px;
+            background: #d8d8d8 !important;
+            color: #1f1f1f !important;
+            font-weight: 700;
+        }
+
+        .previewForceExitButton.active {
+            display: block;
+        }
+
+        .previewForceExitButton:hover {
+            background: #eeeeee !important;
+        }
+
+        .moscaControl {
+            width: 854px;
+            margin: 30px auto 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .moscaSwitch {
+            width: 70px;
+            height: 34px;
+            position: relative;
+        }
+
+        .moscaSwitch input {
+            opacity: 0;
+        }
+
+        .moscaSwitch .slider {
+            border-radius: 34px;
+        }
+
+        .moscaSwitch .slider:before {
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+        }
+
+        .moscaSwitch input:checked+.slider:before {
+            transform: translateX(36px);
+        }
+
+        .moscaTimeBox {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .moscaTimeBox input[type="time"],
+        .moscaTimeBox select {
+            padding: 8px;
+            background: #000;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color-scheme: dark;
+        }
+
+        .moscaTimeBox input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 1;
+        }
+
+        .moscaTimeButton {
+            width: 36px;
+            height: 36px;
+            background: #222;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .moscaTimeButton:hover {
+            background: #333;
+        }
+
+        .moscaStatus {
+            color: #00e676;
+        }
+
+        .tickerControl {
+            width: 854px;
+            margin: 30px auto 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .tickerHeader {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #2a2a2a;
+            padding: 14px;
+            border-radius: 6px;
+        }
+
+        .tickerHeaderLabel {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .tickerNotes {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tickerNote {
+            background: #2a2a2a;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .tickerNoteTextLabel {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.35;
+            text-align: left;
+        }
+
+        .tickerNoteTop {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .tickerNoteTop textarea {
+            flex: 1;
+        }
+
+        .tickerAddButton {
+            align-self: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background: #2c8f6b;
+            color: white;
+            font-size: 26px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .tickerAddButton:hover {
+            background: #38a77f;
+        }
+
+        .loginOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #101010;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loginBox {
+            width: min(520px, calc(100vw - 48px));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            text-align: center;
+        }
+
+        .loginLogo {
+            max-width: 260px;
+            width: 70%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .loginTitle {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .loginSubtitle {
+            font-size: 16px;
+            color: #d8d8d8;
+        }
+
+        .loginForm {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+        }
+
+        .loginForm input {
+            flex: 1;
+            padding: 12px;
+            font-size: 15px;
+            background: #202020;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+        }
+
+        .loginForm button {
+            padding: 12px 18px;
+            background: #2c8f6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .loginForm button:hover {
+            background: #38a77f;
+        }
+
+        .loginError {
+            min-height: 18px;
+            font-size: 13px;
+            color: #ff5555;
+        }
+
+        .loginRemember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #d8d8d8;
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .loginRemember input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #2c8f6b;
+            cursor: pointer;
+        }
+
+        .logoutButton {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 20;
+            background: #2e2e2e;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .logoutButton:hover {
+            background: #3a3a3a;
+        }
+
+        .logoutAllButton {
+            top: 58px;
+            background: #3a2424;
+            border-color: #6a3939;
+        }
+
+        .logoutAllButton:hover {
+            background: #5a2d2d;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button type="button" class="logoutButton" id="logoutButton">Cerrar sesión</button>
+    <button type="button" class="logoutButton logoutAllButton" id="logoutAllButton">Cerrar todas las sesiones</button>
+
+    <div class="loginOverlay" id="loginOverlay">
+        <div class="loginBox">
+            <img src="assets/seguridad/EE en vivo.png" class="loginLogo" alt="EE en vivo">
+            <div class="loginTitle">GRÁFICAS ELECCIONES 2026</div>
+            <div class="loginSubtitle">Ingresa tu API Key de Control para acceder</div>
+            <div class="loginForm">
+                <input type="password" id="loginApiKey" autocomplete="off" placeholder="API Key de Control">
+                <button type="button" id="loginButton">Entrar</button>
+            </div>
+            <label class="loginRemember">
+                <input type="checkbox" id="loginRemember" checked>
+                Recordar en este equipo por 24 horas
+            </label>
+            <div class="loginError" id="loginError"></div>
+        </div>
+    </div>
+
+    <div class="version" id="connectionDot"></div>
+
+    <div class="container">
+
+        <div class="tabs">
+            <button class="tabButton active" data-tab="rol" data-title="Controlador de títulos de rol"
+                onclick="showTab('rol')">Rol</button>
+            <button class="tabButton" data-tab="banners" data-title="Controlador de banners"
+                onclick="showTab('banners')">Banners</button>
+            <button class="tabButton" data-tab="candidatos" data-title="Controlador de candidatos"
+                onclick="showTab('candidatos')">Candidatos</button>
+            <button class="tabButton" data-tab="mosca" data-title="Controlador de mosca"
+                onclick="showTab('mosca')">Mosca</button>
+            <button class="tabButton" data-tab="ticker" data-title="Controlador de ticker"
+                onclick="showTab('ticker')">Ticker</button>
+        </div>
+
+        <div class="previewTitle" id="controllerTitle">
+            Controlador de títulos de rol
+        </div>
+
+        <div class="preview">
+            <iframe src="overlay.html"></iframe>
+        </div>
+
+        <div class="previewButtons">
+
+            <button onclick="openOverlay()">Abrir overlay</button>
+            <button onclick="copyOverlay()">Copiar URL para vMix</button>
+            <button class="restoreBtn previewRestoreButton active" data-restore-tab="rol" type="button"
+                onclick="restoreDeletedBanners()">Restaurar borrados</button>
+            <button class="restoreBtn previewRestoreButton" data-restore-tab="banners" type="button"
+                onclick="restoreDeletedNewsBanners()">Restaurar borrados</button>
+            <button class="restoreBtn previewRestoreButton" data-restore-tab="candidatos" type="button"
+                onclick="restoreDeletedCandidateBanners()">Restaurar borrados</button>
+            <button class="restoreBtn previewRestoreButton" data-restore-tab="ticker" type="button"
+                onclick="restoreDeletedTickerNotes()">Restaurar borrados</button>
+            <button class="previewForceExitButton active" data-force-tab="rol" type="button"
+                onclick="forceRoleExit()">Forzar salida</button>
+            <button class="previewForceExitButton" data-force-tab="banners" type="button"
+                onclick="forceBannerExit()">Forzar salida</button>
+            <button class="previewForceExitButton" data-force-tab="candidatos" type="button"
+                onclick="forceCandidateExit()">Forzar salida</button>
+            <button class="previewForceExitButton" data-force-tab="mosca" type="button"
+                onclick="forceMoscaExit()">Forzar salida</button>
+            <button class="previewForceExitButton" data-force-tab="ticker" type="button"
+                onclick="forceTickerExit()">Forzar salida</button>
+
+        </div>
+
+        <div class="tabPanel active" id="tab-rol">
+
+            <div class="panel" id="panel"></div>
+
+            <div class="inputArea">
+
+                <input id="newName" maxlength="70" placeholder="Nombre">
+                <div class="counter" id="countName">0 / 70</div>
+
+                <input id="newRole" maxlength="100" placeholder="Rol">
+                <div class="counter" id="countRole">0 / 100</div>
+
+                <button class="addBtn" onclick="addBanner()">Agregar</button>
+
+            </div>
+
+        </div>
+
+        <div class="tabPanel" id="tab-banners">
+
+            <div class="panel" id="bannerPanel"></div>
+
+            <div class="inputArea">
+
+                <textarea id="newBannerText" maxlength="65"></textarea>
+
+                <div class="counter" id="bannerCounter">0 / 65</div>
+
+                <div class="error" id="bannerErrorMsg">límite máximo de caracteres</div>
+
+                <div class="inputActions">
+                    <button class="addBtn" onclick="addNewsBanner()">Agregar</button>
+                    <label class="modeToggle">
+                        <span>Dos líneas</span>
+                        <label class="switch">
+                            <input type="checkbox" id="bannerTwoLineToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="tabPanel" id="tab-candidatos">
+
+            <div class="panel" id="candidatePanel"></div>
+
+            <div class="inputArea">
+
+                <textarea id="newCandidateText" maxlength="65"></textarea>
+
+                <div class="counter" id="candidateCounter">0 / 65</div>
+
+                <div class="error" id="candidateErrorMsg">límite máximo de caracteres</div>
+
+                <div class="inputActions">
+                    <button class="addBtn" onclick="addCandidateBanner()">Agregar</button>
+                    <label class="modeToggle">
+                        <span>Dos líneas</span>
+                        <label class="switch">
+                            <input type="checkbox" id="candidateTwoLineToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="tabPanel" id="tab-mosca">
+
+            <div class="moscaControl">
+
+                <label class="switch moscaSwitch">
+                    <input type="checkbox" id="moscaToggle">
+                    <span class="slider"></span>
+                </label>
+
+                <div>Cierre de votaciones en:</div>
+
+                <div class="moscaTimeBox">
+                    <input type="time" id="moscaHora" value="16:00">
+                    <button type="button" class="moscaTimeButton" id="moscaHoraButton" title="Cambiar hora">◷</button>
+                    <span id="moscaStatus" class="moscaStatus"></span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="tabPanel" id="tab-ticker">
+
+            <div class="tickerControl">
+
+                <div class="tickerHeader">
+                    <div class="tickerHeaderLabel">Activar ticker</div>
+                    <label class="switch moscaSwitch">
+                        <input type="checkbox" id="tickerToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="tickerNotes" id="tickerNotes"></div>
+
+                <div class="inputArea">
+
+                    <textarea id="newTickerText" maxlength="130"></textarea>
+
+                    <div class="counter" id="tickerCounter">0 / 130</div>
+
+                    <div class="error" id="tickerErrorMsg">límite máximo de caracteres</div>
+
+                    <button class="addBtn" type="button" id="tickerAddButton">Agregar</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        // Almacenamiento local de la API Key de Control
+        const CONTROL_KEY_STORAGE = "graficas-elecciones-2026-control-key";
+        const CONTROL_KEY_DATE = "graficas-elecciones-2026-control-key-date";
+        const KEY_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 horas
+
+        // Estado de la conexión Ably
+        let ably = null;
+        let roleChannel = null;
+        let bannerChannel = null;
+        let candidateChannel = null;
+        let moscaChannel = null;
+        let tickerChannel = null;
+        let securityChannel = null;
+
+        const channelPrefix = "graficas-elecciones-2026-universal-v2";
+
+        function saveApiKey(key) {
+            try {
+                localStorage.setItem(CONTROL_KEY_STORAGE, key);
+                localStorage.setItem(CONTROL_KEY_DATE, Date.now().toString());
+            } catch (e) {
+                console.warn("No se pudo guardar la API Key en localStorage:", e);
+            }
+        }
+
+        function clearStoredApiKey() {
+            try {
+                localStorage.removeItem(CONTROL_KEY_STORAGE);
+                localStorage.removeItem(CONTROL_KEY_DATE);
+            } catch (e) { /* noop */ }
+        }
+
+        function getStoredApiKey() {
+            try {
+                const key = localStorage.getItem(CONTROL_KEY_STORAGE);
+                const dateStr = localStorage.getItem(CONTROL_KEY_DATE);
+                if (!key || !dateStr) return null;
+                const age = Date.now() - parseInt(dateStr, 10);
+                if (!isFinite(age) || age > KEY_MAX_AGE_MS) {
+                    clearStoredApiKey();
+                    return null;
+                }
+                return key;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function unlockControl() {
+            document.getElementById("loginOverlay").style.display = "none";
+        }
+
+        function lockControl() {
+            const overlay = document.getElementById("loginOverlay");
+            const input = document.getElementById("loginApiKey");
+            const error = document.getElementById("loginError");
+            error.innerText = "";
+            input.value = "";
+            overlay.style.display = "flex";
+            input.focus();
+        }
+
+        // Conectar Ably con la key proporcionada y validar que tenga
+        // permisos de publish haciendo un publish de prueba a un canal
+        // efímero. Si la key es solo de subscribe, el publish fallará.
+        function connectWithApiKey(key) {
+            return new Promise((resolve) => {
+                let resolved = false;
+                let authFailed = false;
+                let testAbly = null;
+                let timeout = null;
+
+                const finish = (ok, reason) => {
+                    if (resolved) return;
+                    resolved = true;
+                    if (timeout) clearTimeout(timeout);
+                    if (testAbly) {
+                        try { testAbly.close(); } catch (e) { /* noop */ }
+                    }
+                    resolve({ ok, reason });
+                };
+
+                // Validar formato básico de la key Ably (formato: "name:secret")
+                if (typeof key !== "string" || !key.includes(":")) {
+                    finish(false, "invalid_format");
+                    return;
+                }
+
+                timeout = setTimeout(() => {
+                    finish(false, "timeout");
+                }, 6000);
+
+                try {
+                    testAbly = new Ably.Realtime({ key, autoConnect: true });
+                } catch (e) {
+                    finish(false, "invalid_format");
+                    return;
+                }
+
+                const validationChannelName = channelPrefix + "-validation-" + Date.now();
+                let testChannel;
+                try {
+                    testChannel = testAbly.channels.get(validationChannelName);
+                } catch (e) {
+                    finish(false, "invalid_format");
+                    return;
+                }
+
+                testAbly.connection.on((stateChange) => {
+                    if (stateChange.reason && stateChange.reason.code >= 40000 && stateChange.reason.code < 50000) {
+                        authFailed = true;
+                        finish(false, "auth_failed");
+                        return;
+                    }
+                    if (stateChange.current === "connected" && !authFailed) {
+                        testChannel.publish("ping", { ts: Date.now() }, (err) => {
+                            if (err) {
+                                finish(false, "publish_denied");
+                            } else {
+                                finish(true, null);
+                            }
+                        });
+                    }
+                    if (stateChange.current === "failed" || stateChange.current === "suspended") {
+                        finish(false, "connection_" + stateChange.current);
+                    }
+                });
+            });
+        }
+
+        function initializeAbly(key) {
+            // Cierra cualquier instancia previa
+            if (ably) {
+                try { ably.close(); } catch (e) { /* noop */ }
+            }
+
+            ably = new Ably.Realtime({ key, autoConnect: true });
+            roleChannel = ably.channels.get(channelPrefix + "-roles");
+            bannerChannel = ably.channels.get(channelPrefix + "-banners");
+            candidateChannel = ably.channels.get(channelPrefix + "-candidatos");
+            moscaChannel = ably.channels.get(channelPrefix + "-mosca");
+            tickerChannel = ably.channels.get(channelPrefix + "-ticker");
+            securityChannel = ably.channels.get(channelPrefix + "-seguridad");
+
+            // Re-vincular handlers que dependen de las variables de canal
+            bindAblyHandlers();
+        }
+
+        function bindAblyHandlers() {
+            const connectionDot = document.getElementById("connectionDot");
+
+            ably.connection.on((stateChange) => {
+                if (stateChange.current === "connected") {
+                    connectionDot.style.background = "#00ff7a";
+                }
+                if (stateChange.current === "connecting" || stateChange.current === "disconnected") {
+                    connectionDot.style.background = "#ffaa00";
+                }
+                if (stateChange.current === "suspended" || stateChange.current === "failed") {
+                    connectionDot.style.background = "#ff0033";
+                }
+            });
+
+            securityChannel.subscribe("control", (message) => {
+                const data = message.data;
+                if (data.action === "logoutAll") {
+                    clearStoredApiKey();
+                    lockControl();
+                }
+            });
+        }
+
+        async function submitLogin() {
+            const input = document.getElementById("loginApiKey");
+            const remember = document.getElementById("loginRemember");
+            const error = document.getElementById("loginError");
+            const button = document.getElementById("loginButton");
+            const key = input.value.trim();
+
+            error.innerText = "";
+            if (!key) {
+                error.innerText = "Ingresa una API Key";
+                input.focus();
+                return;
+            }
+
+            button.disabled = true;
+            button.innerText = "Validando...";
+
+            const result = await connectWithApiKey(key);
+
+            button.disabled = false;
+            button.innerText = "Entrar";
+
+            if (!result.ok) {
+                let msg = "API Key inválida";
+                if (result.reason === "timeout") msg = "Tiempo agotado, intenta de nuevo";
+                else if (result.reason === "publish_denied") msg = "La API Key no tiene permisos de publicación";
+                else if (result.reason && result.reason.startsWith("connection_")) msg = "No se pudo conectar a Ably";
+                error.innerText = msg;
+                input.value = "";
+                input.focus();
+                return;
+            }
+
+            // Key válida: guardar si está marcado
+            if (remember.checked) {
+                saveApiKey(key);
+            } else {
+                clearStoredApiKey();
+            }
+
+            // Inicializar Ably con la key validada
+            initializeAbly(key);
+
+            unlockControl();
+
+            // Si la función init del control existe, ejecutarla ahora que los canales están listos
+            if (typeof afterAblyReady === "function") {
+                afterAblyReady();
+            }
+        }
+
+        function logout() {
+            clearStoredApiKey();
+            if (ably) {
+                try { ably.close(); } catch (e) { /* noop */ }
+            }
+            lockControl();
+        }
+
+        function logoutAll() {
+            if (securityChannel) {
+                securityChannel.publish("control", {
+                    action: "logoutAll",
+                    createdAt: Date.now()
+                });
+            }
+            logout();
+        }
+
+        document.getElementById("loginButton").addEventListener("click", submitLogin);
+        document.getElementById("loginApiKey").addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                submitLogin();
+            }
+        });
+
+        document.getElementById("logoutButton").addEventListener("click", logout);
+        document.getElementById("logoutAllButton").addEventListener("click", logoutAll);
+
+        // Hook que se ejecuta después de un login exitoso o auto-login.
+        // Se difiere con setTimeout(0) para asegurar que las variables
+        // let/const (tickerNotesPanel, tickerNotes, etc.) declaradas
+        // más abajo en este mismo script ya estén inicializadas.
+        // Sin este defer, intentar acceder a esas variables lanza
+        // ReferenceError por estar en temporal dead zone.
+        function afterAblyReady() {
+            setTimeout(() => {
+                try {
+                    render();
+                    renderNewsBanners();
+                    updateNewsBannerCounter();
+                    renderCandidateBanners();
+                    updateCandidateCounter();
+                    renderTickerNotes();
+                    updateTickerCounter();
+                } catch (e) {
+                    console.error("afterAblyReady error:", e);
+                }
+            }, 0);
+        }
+
+        // Intentar auto-login si hay una key guardada y vigente
+        async function tryAutoLogin() {
+            const stored = getStoredApiKey();
+            if (!stored) return;
+
+            const error = document.getElementById("loginError");
+            const button = document.getElementById("loginButton");
+            button.disabled = true;
+            button.innerText = "Reconectando...";
+
+            const result = await connectWithApiKey(stored);
+
+            button.disabled = false;
+            button.innerText = "Entrar";
+
+            if (!result.ok) {
+                // La key guardada ya no es válida (expirada o revocada)
+                clearStoredApiKey();
+                error.innerText = "La sesión guardada expiró. Ingresa tu API Key.";
+                return;
+            }
+
+            initializeAbly(stored);
+            unlockControl();
+
+            if (typeof afterAblyReady === "function") {
+                afterAblyReady();
+            }
+        }
+
+        tryAutoLogin();
+
+        function showTab(tabName) {
+
+            document.querySelectorAll(".tabButton").forEach((button) => {
+                button.classList.toggle("active", button.dataset.tab === tabName);
+            });
+
+            document.querySelectorAll(".tabPanel").forEach((panel) => {
+                panel.classList.toggle("active", panel.id === "tab-" + tabName);
+            });
+
+            document.querySelectorAll(".previewRestoreButton").forEach((button) => {
+                button.classList.toggle("active", button.dataset.restoreTab === tabName);
+            });
+
+            document.querySelectorAll(".previewForceExitButton").forEach((button) => {
+                button.classList.toggle("active", button.dataset.forceTab === tabName);
+            });
+
+            const activeButton = document.querySelector(".tabButton.active");
+            document.getElementById("controllerTitle").innerText = activeButton.dataset.title;
+
+        }
+
+        function uncheckPanelSwitches(panelId) {
+
+            const panel = document.getElementById(panelId);
+            if (!panel) return;
+
+            panel.querySelectorAll(".switch input").forEach((input) => {
+                input.checked = false;
+            });
+
+        }
+
+        function forceRoleExit() {
+            roleChannel.publish("banner", { action: "hide" });
+            uncheckPanelSwitches("tab-rol");
+        }
+
+        function forceBannerExit() {
+            bannerChannel.publish("banner", { action: "hide" });
+            uncheckPanelSwitches("tab-banners");
+        }
+
+        function forceCandidateExit() {
+            candidateChannel.publish("banner", { action: "hide" });
+            uncheckPanelSwitches("tab-candidatos");
+        }
+
+        function forceMoscaExit() {
+            moscaChannel.publish("control", { action: "off" });
+            moscaToggle.checked = false;
+        }
+
+        function forceTickerExit() {
+            tickerChannel.publish("control", { action: "hide" });
+            tickerToggle.checked = false;
+
+        }
+
+        const tabShortcuts = {
+            "1": "rol",
+            "2": "banners",
+            "3": "candidatos",
+            "4": "mosca",
+            "5": "ticker"
+        };
+
+        document.addEventListener("keydown", (event) => {
+
+            const target = event.target;
+            const isWritingField = target && (
+                target.tagName === "INPUT" ||
+                target.tagName === "TEXTAREA" ||
+                target.tagName === "SELECT" ||
+                target.isContentEditable
+            );
+
+            if (isWritingField) return;
+
+            const tabName = tabShortcuts[event.key];
+
+            if (!tabName) return;
+
+            event.preventDefault();
+            showTab(tabName);
+
+        });
+
+        /* TITULOS PREESTABLECIDOS */
+
+        let banners = [
+
+            { name: "ALEJANDRA TRUJILLO", role: "DIRECTORA DE PROYECTOS DE FESCOL" },
+            { name: "ANDRÉS OSORIO GUILLOT", role: "COORDINADOR DE NEWSLETTERS DE EL ESPECTADOR" },
+            { name: "CARLOS CHACÓN", role: "DIRECTOR ICP HERNÁN ECHAVARRÍA" },
+            { name: "CINDY MORALES", role: "EDITORA DE COLOMBIA + 20" },
+            { name: "DANIEL VALERO", role: "EDITOR DE POLÍTICA DE EL ESPECTADOR" },
+            { name: "DAVID EFRÉN ORTEGA", role: "PERIODISTA DE EL ESPECTADOR" },
+            { name: "ÉLBER GUTIÉREZ ROA", role: "PRODUCTOR GENERAL DE EL ESPECTADOR" },
+            { name: "GUSTAVO MONTES", role: "PERIODISTA DE EL ESPECTADOR" },
+            { name: "HUGO SANTIAGO CARO", role: "PERIODISTA DE EL ESPECTADOR" },
+            { name: "JUAN CARLOS RINCÓN", role: "EDITOR DE OPINIÓN DE EL ESPECTADOR" },
+            { name: "KAREN VANESSA QUINTERO", role: "PERIODISTA DE EL ESPECTADOR" },
+            { name: "LARIZA PIZANO", role: "COLUMNISTA DE EL ESPECTADOR" },
+            { name: "LEÓN VALENCIA", role: "DIRECTOR DE LA FUNDACIÓN PARES" },
+            { name: "LUIS ERNESTO GÓMEZ", role: "ANALISTA" },
+            { name: "MARCELA OSORIO", role: "EDITORA WEB DE EL ESPECTADOR" },
+            { name: "MARGARITA RESTREPO", role: "EXCONGRESISTA POR EL CENTRO DEMOCRÁTICO" },
+            { name: "MARÍA ALEJANDRA VICTORINO", role: "ANALISTA DE EXTITUTO" },
+            { name: "MARIA JOSÉ BARRIOS FIGUEROA", role: "PERIODISTA DE EL ESPECTADOR" },
+            { name: "NICOLÁS DÍAZ", role: "DIRECTOR DE EXTITUTO" },
+            { name: "PATRICIA MUÑOZ YI", role: "SENADORA ELECTA POR SALVACIÓN NACIONAL" },
+            { name: "RAMIRO BEJARANO", role: "COLUMNISTA DE EL ESPECTADOR" },
+            { name: "SANTIAGO RIVAS", role: "ANALISTA INVITADO" },
+            { name: "SERGIO GUZMÁN", role: "DIRECTOR DE COLOMBIA RISK ANALYSIS" },
+            { name: "SERGIO SILVA", role: "EDITOR DE AMBIENTE DE EL ESPECTADOR" },
+            { name: "VALERIE CIFUENTES", role: "DIRECTORA EDITORIAL DE ECONOMÍA PARA LA PIPOL" }
+
+        ];
+
+        let activeIndex = null;
+        let autoOffTimer = null;
+        let deletedBanners = [];
+
+        function clearOtherLowerThirdSwitches(activeType) {
+
+            if (activeType !== "rol") {
+                activeIndex = null;
+                clearTimeout(autoOffTimer);
+                render();
+            }
+
+            if (activeType !== "banners") {
+                activeNewsBannerIndex = null;
+                renderNewsBanners();
+            }
+
+            if (activeType !== "candidatos") {
+                activeCandidateIndex = null;
+                renderCandidateBanners();
+            }
+
+        }
+
+        function render() {
+
+            const panel = document.getElementById("panel");
+
+            panel.innerHTML = "";
+
+            banners.forEach((item, i) => {
+
+                const row = document.createElement("div");
+                row.className = "item";
+
+                const switchWrap = document.createElement("label");
+                switchWrap.className = "switch";
+
+                const toggle = document.createElement("input");
+                toggle.type = "checkbox";
+                toggle.checked = (activeIndex === i);
+                toggle.onchange = () => toggleBanner(i);
+
+                const slider = document.createElement("span");
+                slider.className = "slider";
+
+                switchWrap.appendChild(toggle);
+                switchWrap.appendChild(slider);
+
+                const label = document.createElement("span");
+                label.innerText = item.name.toUpperCase();
+
+                const del = document.createElement("button");
+                del.innerText = "Borrar";
+                del.className = "deleteBtn";
+                del.onclick = () => deleteBanner(i);
+
+                row.appendChild(switchWrap);
+                row.appendChild(label);
+                row.appendChild(del);
+
+                panel.appendChild(row);
+
+            });
+
+        }
+
+        function toggleBanner(i) {
+
+            if (activeIndex === i) {
+
+                roleChannel.publish("banner", { action: "hide" });
+                activeIndex = null;
+                clearTimeout(autoOffTimer);
+                render();
+                return;
+
+            }
+
+            activeIndex = i;
+            clearOtherLowerThirdSwitches("rol");
+
+            roleChannel.publish("banner", {
+                action: "show",
+                name: banners[i].name,
+                role: banners[i].role
+            });
+
+            clearTimeout(autoOffTimer);
+
+            autoOffTimer = setTimeout(() => {
+
+                roleChannel.publish("banner", { action: "hide" });
+                activeIndex = null;
+                render();
+
+            }, 11000);
+
+            render();
+
+        }
+
+        function deleteBanner(i) {
+
+            const deleted = banners.splice(i, 1)[0];
+
+            if (deleted) {
+                deletedBanners.push({
+                    item: deleted,
+                    index: i
+                });
+            }
+
+            if (activeIndex === i) {
+
+                roleChannel.publish("banner", { action: "hide" });
+                activeIndex = null;
+
+            }
+
+            if (activeIndex !== null && i < activeIndex) {
+                activeIndex--;
+            }
+
+            render();
+
+        }
+
+        function restoreDeletedBanners() {
+
+            if (deletedBanners.length === 0) return;
+
+            const activeItem = activeIndex !== null ? banners[activeIndex] : null;
+
+            deletedBanners
+                .sort((a, b) => a.index - b.index)
+                .forEach((entry) => {
+                    const index = Math.min(entry.index, banners.length);
+                    banners.splice(index, 0, entry.item);
+
+                });
+
+            banners.sort((a, b) => a.name.localeCompare(b.name, "es", { sensitivity: "base" }));
+            activeIndex = activeItem ? banners.indexOf(activeItem) : null;
+
+            deletedBanners = [];
+            render();
+
+        }
+
+        function addBanner() {
+
+            const name = document.getElementById("newName").value.trim();
+            const role = document.getElementById("newRole").value.trim();
+
+            if (!name || !role) return;
+
+            banners.push({
+                name: name,
+                role: role
+            });
+
+            document.getElementById("newName").value = "";
+            document.getElementById("newRole").value = "";
+
+            updateCounter(nameInput, countName);
+            updateCounter(roleInput, countRole);
+
+            render();
+
+        }
+
+        function openOverlay() {
+            window.open(new URL("overlay.html", window.location.href).href, "_blank");
+        }
+
+        function copyOverlay() {
+
+            const url = "https://carlosdm123.github.io/graficas-elecciones-2026/overlay.html";
+
+            navigator.clipboard.writeText(url);
+
+            alert("URL copiada para vMix");
+
+        }
+
+        const nameInput = document.getElementById("newName");
+        const roleInput = document.getElementById("newRole");
+
+        const countName = document.getElementById("countName");
+        const countRole = document.getElementById("countRole");
+
+        function updateCounter(input, count) {
+
+            const len = input.value.length;
+            const max = input.maxLength;
+
+            count.innerText = len + " / " + max;
+
+            if (len >= max) {
+                input.style.border = "2px solid #ff0033";
+            } else {
+                input.style.border = "1px solid #555";
+            }
+
+        }
+
+        nameInput.addEventListener("input", () => updateCounter(nameInput, countName));
+        roleInput.addEventListener("input", () => updateCounter(roleInput, countRole));
+
+        let newsBanners = [
+
+            { text: "Se intensifica el debate sobre economía y seguridad nacional", mode: "single" },
+            { text: "Nuevas encuestas agitan panorama electoral en Colombia 2026", mode: "single" },
+            { text: "Colombia entra en una etapa decisiva rumbo a elecciones 2026", mode: "single" }
+
+        ];
+
+        let activeNewsBannerIndex = null;
+        let deletedNewsBanners = [];
+
+        function renderNewsBanners() {
+
+            const panel = document.getElementById("bannerPanel");
+
+            panel.innerHTML = "";
+
+            newsBanners.forEach((item, i) => {
+
+                const row = document.createElement("div");
+                row.className = "item";
+
+                const switchWrap = document.createElement("label");
+                switchWrap.className = "switch";
+
+                const toggle = document.createElement("input");
+                toggle.type = "checkbox";
+                toggle.checked = (activeNewsBannerIndex === i);
+                toggle.onchange = () => toggleNewsBanner(i);
+
+                const slider = document.createElement("span");
+                slider.className = "slider";
+
+                switchWrap.appendChild(toggle);
+                switchWrap.appendChild(slider);
+
+                const label = document.createElement("span");
+                label.innerText = item.text;
+
+                const del = document.createElement("button");
+                del.innerText = "Borrar";
+                del.className = "deleteBtn";
+                del.onclick = () => deleteNewsBanner(i);
+
+                row.appendChild(switchWrap);
+                row.appendChild(label);
+                row.appendChild(del);
+
+                panel.appendChild(row);
+
+            });
+
+        }
+
+        function toggleNewsBanner(i) {
+
+            if (activeNewsBannerIndex === i) {
+
+                bannerChannel.publish("banner", { action: "hide" });
+                activeNewsBannerIndex = null;
+                renderNewsBanners();
+                return;
+
+            }
+
+            activeNewsBannerIndex = i;
+            clearOtherLowerThirdSwitches("banners");
+
+            bannerChannel.publish("banner", {
+                action: "show",
+                text: newsBanners[i].text.toUpperCase(),
+                mode: newsBanners[i].mode
+            });
+
+            renderNewsBanners();
+
+        }
+
+        function deleteNewsBanner(i) {
+
+            const deleted = newsBanners.splice(i, 1)[0];
+
+            if (deleted) {
+                deletedNewsBanners.push({
+                    item: deleted,
+                    index: i
+                });
+            }
+
+            if (activeNewsBannerIndex === i) {
+
+                bannerChannel.publish("banner", { action: "hide" });
+                activeNewsBannerIndex = null;
+
+            }
+
+            if (activeNewsBannerIndex !== null && i < activeNewsBannerIndex) {
+                activeNewsBannerIndex--;
+            }
+
+            renderNewsBanners();
+
+        }
+
+        function restoreDeletedNewsBanners() {
+
+            if (deletedNewsBanners.length === 0) return;
+
+            deletedNewsBanners
+                .sort((a, b) => a.index - b.index)
+                .forEach((entry) => {
+                    const index = Math.min(entry.index, newsBanners.length);
+                    newsBanners.splice(index, 0, entry.item);
+
+                    if (activeNewsBannerIndex !== null && index <= activeNewsBannerIndex) {
+                        activeNewsBannerIndex++;
+                    }
+
+                });
+
+            deletedNewsBanners = [];
+            renderNewsBanners();
+
+        }
+
+        function addNewsBanner() {
+
+            const input = document.getElementById("newBannerText");
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            newsBanners.push({
+                text: text,
+                mode: bannerTwoLineToggle.checked ? "two" : "single"
+            });
+
+            input.value = "";
+
+            updateNewsBannerCounter();
+            renderNewsBanners();
+
+        }
+
+        const newsBannerTextarea = document.getElementById("newBannerText");
+        const newsBannerCounter = document.getElementById("bannerCounter");
+        const newsBannerError = document.getElementById("bannerErrorMsg");
+        const bannerTwoLineToggle = document.getElementById("bannerTwoLineToggle");
+
+        function getBannerLimit() {
+            return bannerTwoLineToggle.checked ? 130 : 65;
+        }
+
+        function updateNewsBannerCounter() {
+
+            const len = newsBannerTextarea.value.length;
+            const max = getBannerLimit();
+
+            newsBannerTextarea.maxLength = max;
+            newsBannerCounter.innerText = len + " / " + max;
+
+            if (len > max - 20) {
+                newsBannerCounter.classList.add("warning");
+                newsBannerTextarea.classList.add("limit");
+            } else {
+                newsBannerCounter.classList.remove("warning");
+                newsBannerTextarea.classList.remove("limit");
+            }
+
+            if (len >= max) {
+                newsBannerError.style.display = "block";
+            } else {
+                newsBannerError.style.display = "none";
+            }
+
+        }
+
+        bannerTwoLineToggle.addEventListener("change", () => {
+            const max = getBannerLimit();
+            newsBannerTextarea.maxLength = max;
+
+            if (newsBannerTextarea.value.length > max) {
+                newsBannerTextarea.value = newsBannerTextarea.value.slice(0, max);
+            }
+
+            updateNewsBannerCounter();
+        });
+
+        newsBannerTextarea.addEventListener("input", updateNewsBannerCounter);
+
+        const candidates = [
+            { name: "Iván Cepeda", file: "candidato 1.png" },
+            { name: "Clara Eugenia López", file: "candidato 2.png" },
+            { name: "Claudia López", file: "candidato 3.png" },
+            { name: "Santiago Botero Jaramillo", file: "candidato 4.png" },
+            { name: "Abelardo de la Espriella", file: "candidato 5.png" },
+            { name: "Mauricio Lizcano", file: "candidato 6.png" },
+            { name: "Miguel Uribe Londoño", file: "candidato 7.png" },
+            { name: "Sondra Macollins", file: "candidato 8.png" },
+            { name: "Roy Barreras", file: "candidato 9.png" },
+            { name: "Carlos Eduardo Caicedo", file: "candidato 10.png" },
+            { name: "Gustavo Matamoros", file: "candidato 11.png" },
+            { name: "Paloma Valencia", file: "candidato 12.png" },
+            { name: "Sergio Fajardo", file: "candidato 13.png" },
+            { name: "Luis Gilberto Murillo", file: "candidato 14.png" },
+            { name: "Voto en blanco", file: "candidato 15.png" }
+        ];
+
+        let candidateBanners = [
+
+            {
+                text: "Iván Cepeda suma apoyos en distintos sectores políticos",
+                candidate: "candidato 1.png",
+                mode: "single"
+            },
+
+            {
+                text: "Abelardo de la Espriella recorre regiones en campaña 2026",
+                candidate: "candidato 5.png",
+                mode: "single"
+            },
+
+            {
+                text: "Paloma Valencia plantea reformas en debate presidencial",
+                candidate: "candidato 12.png",
+                mode: "single"
+            }
+
+        ];
+
+        let activeCandidateIndex = null;
+        let deletedCandidateBanners = [];
+
+        function renderCandidateBanners() {
+
+            const panel = document.getElementById("candidatePanel");
+
+            panel.innerHTML = "";
+
+            candidateBanners.forEach((item, i) => {
+
+                const row = document.createElement("div");
+                row.className = "item";
+
+                const switchWrap = document.createElement("label");
+                switchWrap.className = "switch";
+
+                const toggle = document.createElement("input");
+                toggle.type = "checkbox";
+                toggle.checked = (activeCandidateIndex === i);
+                toggle.onchange = () => toggleCandidateBanner(i);
+
+                const slider = document.createElement("span");
+                slider.className = "slider";
+
+                switchWrap.appendChild(toggle);
+                switchWrap.appendChild(slider);
+
+                const label = document.createElement("span");
+                label.innerText = item.text;
+
+                const select = document.createElement("select");
+                select.className = "candidateSelect";
+
+                candidates.forEach((candidate) => {
+
+                    const option = document.createElement("option");
+                    option.value = candidate.file;
+                    option.innerText = candidate.name;
+
+                    if (candidate.file === item.candidate) {
+                        option.selected = true;
+                    }
+
+                    select.appendChild(option);
+
+                });
+
+                select.onchange = (event) => {
+
+                    candidateBanners[i].candidate = event.target.value;
+
+                    if (activeCandidateIndex === i) {
+
+                        const candidatePayload = {
+                            action: "show",
+                            text: candidateBanners[i].text.toUpperCase(),
+                            candidate: candidateBanners[i].candidate,
+                            mode: candidateBanners[i].mode
+                        };
+
+                        candidateChannel.publish("banner", candidatePayload);
+
+                    }
+
+                };
+
+                const del = document.createElement("button");
+                del.innerText = "Borrar";
+                del.className = "deleteBtn";
+                del.onclick = () => deleteCandidateBanner(i);
+
+                row.appendChild(switchWrap);
+                row.appendChild(label);
+                row.appendChild(select);
+                row.appendChild(del);
+
+                panel.appendChild(row);
+
+            });
+
+        }
+
+        function toggleCandidateBanner(i) {
+
+            if (activeCandidateIndex === i) {
+
+                candidateChannel.publish("banner", { action: "hide" });
+                activeCandidateIndex = null;
+                renderCandidateBanners();
+                return;
+
+            }
+
+            activeCandidateIndex = i;
+            clearOtherLowerThirdSwitches("candidatos");
+
+            const candidatePayload = {
+                action: "show",
+                text: candidateBanners[i].text.toUpperCase(),
+                candidate: candidateBanners[i].candidate,
+                mode: candidateBanners[i].mode
+            };
+
+            candidateChannel.publish("banner", candidatePayload);
+
+            renderCandidateBanners();
+
+        }
+
+        function deleteCandidateBanner(i) {
+
+            const deleted = candidateBanners.splice(i, 1)[0];
+
+            if (deleted) {
+                deletedCandidateBanners.push({
+                    item: deleted,
+                    index: i
+                });
+            }
+
+            if (activeCandidateIndex === i) {
+
+                candidateChannel.publish("banner", { action: "hide" });
+                activeCandidateIndex = null;
+
+            }
+
+            if (activeCandidateIndex !== null && i < activeCandidateIndex) {
+                activeCandidateIndex--;
+            }
+
+            renderCandidateBanners();
+
+        }
+
+        function restoreDeletedCandidateBanners() {
+
+            if (deletedCandidateBanners.length === 0) return;
+
+            deletedCandidateBanners
+                .sort((a, b) => a.index - b.index)
+                .forEach((entry) => {
+                    const index = Math.min(entry.index, candidateBanners.length);
+                    candidateBanners.splice(index, 0, entry.item);
+
+                    if (activeCandidateIndex !== null && index <= activeCandidateIndex) {
+                        activeCandidateIndex++;
+                    }
+
+                });
+
+            deletedCandidateBanners = [];
+            renderCandidateBanners();
+
+        }
+
+        function addCandidateBanner() {
+
+            const input = document.getElementById("newCandidateText");
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            candidateBanners.push({
+                text: text,
+                candidate: "candidato 1.png",
+                mode: candidateTwoLineToggle.checked ? "two" : "single"
+            });
+
+            input.value = "";
+
+            updateCandidateCounter();
+            renderCandidateBanners();
+
+        }
+
+        const candidateTextarea = document.getElementById("newCandidateText");
+        const candidateCounter = document.getElementById("candidateCounter");
+        const candidateError = document.getElementById("candidateErrorMsg");
+        const candidateTwoLineToggle = document.getElementById("candidateTwoLineToggle");
+
+        function getCandidateLimit() {
+            return candidateTwoLineToggle.checked ? 130 : 65;
+        }
+
+        function updateCandidateCounter() {
+
+            const len = candidateTextarea.value.length;
+            const max = getCandidateLimit();
+
+            candidateTextarea.maxLength = max;
+            candidateCounter.innerText = len + " / " + max;
+
+            if (len > max - 20) {
+                candidateCounter.classList.add("warning");
+                candidateTextarea.classList.add("limit");
+            } else {
+                candidateCounter.classList.remove("warning");
+                candidateTextarea.classList.remove("limit");
+            }
+
+            if (len >= max) {
+                candidateError.style.display = "block";
+            } else {
+                candidateError.style.display = "none";
+            }
+
+        }
+
+        candidateTwoLineToggle.addEventListener("change", () => {
+            const max = getCandidateLimit();
+            candidateTextarea.maxLength = max;
+
+            if (candidateTextarea.value.length > max) {
+                candidateTextarea.value = candidateTextarea.value.slice(0, max);
+            }
+
+            updateCandidateCounter();
+        });
+
+        candidateTextarea.addEventListener("input", updateCandidateCounter);
+
+        const moscaToggle = document.getElementById("moscaToggle");
+        const moscaHoraInput = document.getElementById("moscaHora");
+        const moscaHoraButton = document.getElementById("moscaHoraButton");
+        const moscaStatus = document.getElementById("moscaStatus");
+
+        moscaToggle.addEventListener("change", () => {
+            moscaChannel.publish("control", {
+                action: moscaToggle.checked ? "on" : "off"
+            });
+
+        });
+
+        function sendMoscaHora() {
+            moscaChannel.publish("control", {
+                action: "updateHora",
+                hora: moscaHoraInput.value
+            });
+            moscaStatus.innerText = "✔ " + moscaHoraInput.value;
+        }
+
+        moscaHoraInput.addEventListener("change", sendMoscaHora);
+
+        moscaHoraButton.addEventListener("click", () => {
+            moscaHoraInput.focus();
+
+            if (typeof moscaHoraInput.showPicker === "function") {
+                moscaHoraInput.showPicker();
+            }
+
+        });
+
+        // sendMoscaHora() ya no se ejecuta al cargar: moscaChannel es null hasta
+        // que el operador hace login. La hora de cierre se publica cuando el
+        // usuario la cambia, no al iniciar.
+
+        let tickerNotes = [
+            "Registraduría reporta normalidad en apertura de urnas para elecciones 2026"
+        ];
+        let deletedTickerNotes = [];
+
+        const tickerToggle = document.getElementById("tickerToggle");
+        const tickerNotesPanel = document.getElementById("tickerNotes");
+        const tickerAddButton = document.getElementById("tickerAddButton");
+        const tickerTextarea = document.getElementById("newTickerText");
+        const tickerCounter = document.getElementById("tickerCounter");
+        const tickerError = document.getElementById("tickerErrorMsg");
+
+        function getTickerPayload() {
+            return tickerNotes
+                .map((text) => text.trim())
+                .filter(Boolean)
+                .map((text) => text.toUpperCase());
+        }
+
+        function publishTicker() {
+
+            const notes = getTickerPayload();
+
+            if (!tickerToggle.checked || notes.length === 0) {
+                tickerChannel.publish("control", { action: "hide" });
+                return;
+            }
+
+            tickerChannel.publish("control", {
+                action: "show",
+                notes: notes
+            });
+
+        }
+
+        function renderTickerNotes() {
+
+            tickerNotesPanel.innerHTML = "";
+
+            tickerNotes.forEach((text, i) => {
+
+                const note = document.createElement("div");
+                note.className = "tickerNote";
+
+                const top = document.createElement("div");
+                top.className = "tickerNoteTop";
+
+                const label = document.createElement("span");
+                label.className = "tickerNoteTextLabel";
+                label.innerText = text;
+
+                const del = document.createElement("button");
+                del.innerText = "Borrar";
+                del.className = "deleteBtn";
+                del.type = "button";
+                del.onclick = () => {
+                    const deleted = tickerNotes.splice(i, 1)[0];
+
+                    if (deleted !== undefined) {
+                        deletedTickerNotes.push({
+                            item: deleted,
+                            index: i
+                        });
+                    }
+
+                    renderTickerNotes();
+                    publishTicker();
+                };
+
+                top.appendChild(label);
+                top.appendChild(del);
+
+                note.appendChild(top);
+                tickerNotesPanel.appendChild(note);
+
+            });
+
+        }
+
+        function restoreDeletedTickerNotes() {
+
+            if (deletedTickerNotes.length === 0) return;
+
+            if (tickerNotes.length === 1 && tickerNotes[0].trim() === "") {
+                tickerNotes = [];
+            }
+
+            deletedTickerNotes
+                .sort((a, b) => a.index - b.index)
+                .forEach((entry) => {
+                    const index = Math.min(entry.index, tickerNotes.length);
+                    tickerNotes.splice(index, 0, entry.item);
+                });
+
+            deletedTickerNotes = [];
+            renderTickerNotes();
+
+        }
+
+        function updateTickerCounter() {
+
+            const len = tickerTextarea.value.length;
+
+            tickerCounter.innerText = len + " / 130";
+
+            if (len > 110) {
+                tickerCounter.classList.add("warning");
+                tickerTextarea.classList.add("limit");
+            } else {
+                tickerCounter.classList.remove("warning");
+                tickerTextarea.classList.remove("limit");
+            }
+
+            tickerError.style.display = len >= 130 ? "block" : "none";
+
+        }
+
+        function addTickerNote() {
+
+            const text = tickerTextarea.value.trim();
+
+            if (!text) return;
+
+            tickerNotes.push(text);
+
+            tickerTextarea.value = "";
+            updateTickerCounter();
+            renderTickerNotes();
+            publishTicker();
+
+        }
+
+        tickerToggle.addEventListener("change", publishTicker);
+        tickerTextarea.addEventListener("input", updateTickerCounter);
+        tickerAddButton.addEventListener("click", addTickerNote);
+        tickerTextarea.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+                addTickerNote();
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
