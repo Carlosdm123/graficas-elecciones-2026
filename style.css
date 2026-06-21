@@ -324,7 +324,7 @@ body {
     opacity: 0;
     display: flex;
     justify-content: flex-end;
-    filter: drop-shadow(6px 6px 12px rgba(255, 255, 255, .3));
+    filter: drop-shadow(6px 6px 12px rgba(255, 255, 255, .2));
 }
 
 .moscaCircleMask {
