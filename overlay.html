@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+       <meta charset="UTF-8">
+       <link rel="stylesheet" href="https://use.typekit.net/wtc5lqk.css">
+       <link rel="stylesheet" href="style.css">
+       <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+</head>
+
+<body>
+
+       <div id="banner" style="opacity:0;">
+
+              <div id="box1">
+                     <div id="mask1">
+
+                            <img src="assets/caja1.png" class="bg">
+
+                            <div id="logoBox">
+                                   <img src="assets/logo.png" id="logo">
+                            </div>
+
+                     </div>
+              </div>
+
+              <div id="box2">
+                     <div id="mask2">
+
+                            <img src="assets/caja2.png" class="bg">
+
+                            <div id="textContainer">
+                                   <div id="bannerText"></div>
+                            </div>
+
+                     </div>
+              </div>
+
+       </div>
+
+       <div id="candidateBanner" style="opacity:0;">
+
+              <div id="candidateBox1">
+                     <div id="candidateMask1">
+
+                            <img src="assets/candidatos/caja1.png" class="candidateBg">
+
+                            <img src="" id="candidateImg">
+
+                            <div id="candidateLogoBox">
+                                   <img src="assets/candidatos/logo.png" id="candidateLogo">
+                            </div>
+
+                     </div>
+              </div>
+
+              <div id="candidateBox2">
+                     <div id="candidateMask2">
+
+                            <img src="assets/candidatos/caja2.png" class="candidateBg">
+
+                            <div id="candidateTextContainer">
+                                   <div id="candidateBannerText"></div>
+                            </div>
+
+                     </div>
+              </div>
+
+       </div>
+
+       <div id="mosca">
+
+              <div id="moscaTexto"></div>
+              <div id="moscaCierreTexto">
+                     <span class="moscaClosedLine moscaClosedTop">
+                            <span class="moscaClosedChar" style="--i:0">V</span><span class="moscaClosedChar"
+                                   style="--i:1">O</span><span class="moscaClosedChar" style="--i:2">T</span><span
+                                   class="moscaClosedChar" style="--i:3">A</span><span class="moscaClosedChar"
+                                   style="--i:4">C</span><span class="moscaClosedChar" style="--i:5">I</span><span
+                                   class="moscaClosedChar" style="--i:6">O</span><span class="moscaClosedChar"
+                                   style="--i:7">N</span><span class="moscaClosedChar" style="--i:8">E</span><span
+                                   class="moscaClosedChar" style="--i:9">S</span>
+                     </span>
+                     <span class="moscaClosedLine moscaClosedBottom">
+                            <span class="moscaClosedChar" style="--i:10">C</span><span class="moscaClosedChar"
+                                   style="--i:11">E</span><span class="moscaClosedChar" style="--i:12">R</span><span
+                                   class="moscaClosedChar" style="--i:13">R</span><span class="moscaClosedChar"
+                                   style="--i:14">A</span><span class="moscaClosedChar" style="--i:15">D</span><span
+                                   class="moscaClosedChar" style="--i:16">A</span><span class="moscaClosedChar"
+                                   style="--i:17">S</span>
+                     </span>
+              </div>
+
+              <div id="moscaLogo">
+                     <img src="assets/mosca/logo1.png" id="moscaLogoImg">
+
+                     <div id="moscaTicker">
+                            <div class="moscaTickerTrack">
+                                   <div class="moscaTickerGroup">
+                                          <span class="moscaText">WWW.ELESPECTADOR.COM</span>
+                                          <span class="moscaText">WWW.ELESPECTADOR.COM</span>
+                                   </div>
+                                   <div class="moscaTickerGroup">
+                                          <span class="moscaText">WWW.ELESPECTADOR.COM</span>
+                                          <span class="moscaText">WWW.ELESPECTADOR.COM</span>
+                                   </div>
+                            </div>
+                     </div>
+              </div>
+
+              <div id="moscaLogoEE">
+                     <div class="moscaCircleMask">
+                            <img src="assets/mosca/logoee.png">
+                     </div>
+              </div>
+
+       </div>
+
+       <div id="tickerBar">
+              <div id="tickerTrack"></div>
+       </div>
+
+       <script src="animation.js"></script>
+
+       <script>
+
+              const ably = new Ably.Realtime("bOKecA.k2ytUw:ePWuQ4buIORlYBqR7-zuSzrM69qpKUHraQz3FQgIS9k");
+              const channelPrefix = "graficas-elecciones-2026-universal-v2";
+              const roleChannel = ably.channels.get(channelPrefix + "-roles");
+              const bannerChannel = ably.channels.get(channelPrefix + "-banners");
+              const candidateChannel = ably.channels.get(channelPrefix + "-candidatos");
+              const moscaChannel = ably.channels.get(channelPrefix + "-mosca");
+              const tickerChannel = ably.channels.get(channelPrefix + "-ticker");
+
+              let visible = false;
+              let visibleSource = null;
+              let changeTimer = null;
+              let hideTimer = null;
+              let candidateBannerMaskCreated = false;
+              let candidateVisible = false;
+              let candidateChangeTimer = null;
+              let candidateHideTimer = null;
+              let baseAnimationTimers = [];
+              let candidateAnimationTimers = [];
+              const mosca = document.getElementById("mosca");
+              const moscaTexto = document.getElementById("moscaTexto");
+              const moscaLogo = document.getElementById("moscaLogo");
+              const moscaLogoImg = document.getElementById("moscaLogoImg");
+              const moscaCierreTexto = document.getElementById("moscaCierreTexto");
+              const moscaLogoEE = document.getElementById("moscaLogoEE");
+              const moscaTickerTrack = document.querySelector(".moscaTickerTrack");
+              const moscaLogo2Preload = new Image();
+              moscaLogo2Preload.src = "assets/mosca/logo2.png";
+              let moscaActivo = false;
+              let moscaRunning = false;
+              let moscaHoraCierre = "16:00";
+              let moscaInterval = null;
+              let moscaTimeouts = [];
+              let moscaCloseEventKey = null;
+              let moscaClosedEventActive = false;
+              let moscaClosedEventTimeout = null;
+              const tickerBar = document.getElementById("tickerBar");
+              const tickerTrack = document.getElementById("tickerTrack");
+              let tickerShineTimer = null;
+              let tickerActiveNotes = [];
+              let tickerItems = [];
+              let tickerAnimationFrame = null;
+              let tickerLastFrameTime = null;
+              let tickerNextNoteIndex = 0;
+              let tickerIntroTrailPending = false;
+              let tickerExitTimer = null;
+              let tickerIsExiting = false;
+              const tickerSpeed = 95;
+
+              function calibrateMoscaTickerLoop() {
+
+                     if (!moscaTickerTrack) return;
+
+                     const firstGroup = moscaTickerTrack.querySelector(".moscaTickerGroup");
+                     if (!firstGroup) return;
+
+                     const distance = firstGroup.getBoundingClientRect().width;
+
+                     if (distance <= 0) return;
+
+                     moscaTickerTrack.style.setProperty("--moscaTickerOffset", "-" + distance + "px");
+                     moscaTickerTrack.style.animation = "none";
+                     void moscaTickerTrack.offsetWidth;
+                     moscaTickerTrack.style.animation = "";
+
+              }
+
+              calibrateMoscaTickerLoop();
+
+              if (document.fonts && document.fonts.ready) {
+                     document.fonts.ready.then(calibrateMoscaTickerLoop);
+              }
+
+              window.addEventListener("resize", calibrateMoscaTickerLoop);
+
+              function clearBaseAnimationTimers() {
+                     baseAnimationTimers.forEach(clearTimeout);
+                     baseAnimationTimers = [];
+              }
+
+              function setCandidateTimer(callback, delay) {
+                     const timer = setTimeout(callback, delay);
+                     candidateAnimationTimers.push(timer);
+                     return timer;
+              }
+
+              function clearCandidateAnimationTimers() {
+                     candidateAnimationTimers.forEach(clearTimeout);
+                     candidateAnimationTimers = [];
+              }
+
+              function resetMosca() {
+
+                     moscaRunning = false;
+
+                     moscaTimeouts.forEach((timer) => clearTimeout(timer));
+                     moscaTimeouts = [];
+
+                     if (moscaClosedEventTimeout) {
+                            clearTimeout(moscaClosedEventTimeout);
+                            moscaClosedEventTimeout = null;
+                     }
+
+                     if (moscaInterval) {
+                            clearInterval(moscaInterval);
+                            moscaInterval = null;
+                     }
+
+                     moscaClosedEventActive = false;
+
+                     moscaTexto.style.opacity = 0;
+
+                     moscaCierreTexto.classList.remove("active");
+                     moscaCierreTexto.style.opacity = 0;
+                     moscaCierreTexto.style.transform = "translateX(26px) scale(.98)";
+
+                     moscaLogo.style.opacity = 0;
+                     moscaLogo.classList.remove("logoSweep");
+
+                     moscaLogoEE.style.opacity = 0;
+
+                     const mask = moscaLogoEE.querySelector(".moscaCircleMask");
+                     mask.style.clipPath = "circle(0% at 50% 50%)";
+                     mask.style.background = "white";
+
+                     mosca.style.opacity = 0;
+
+              }
+
+              function formatMoscaTime(sec) {
+
+                     sec = Math.max(0, sec);
+
+                     const h = Math.floor(sec / 3600);
+                     const m = Math.floor((sec % 3600) / 60);
+                     const s = sec % 60;
+
+                     return String(h).padStart(2, "0") + ":" +
+                            String(m).padStart(2, "0") + ":" +
+                            String(s).padStart(2, "0");
+
+              }
+
+              function getMoscaClock() {
+
+                     const now = new Date();
+
+                     const colombiaNow = new Date(
+                            now.toLocaleString("en-US", { timeZone: "America/Bogota" })
+                     );
+
+                     const nowSec =
+                            colombiaNow.getHours() * 3600 +
+                            colombiaNow.getMinutes() * 60 +
+                            colombiaNow.getSeconds();
+
+                     const [h, m] = moscaHoraCierre.split(":").map(Number);
+                     const cierreSec = (h * 3600) + (m * 60);
+
+                     const dateKey =
+                            colombiaNow.getFullYear() + "-" +
+                            String(colombiaNow.getMonth() + 1).padStart(2, "0") + "-" +
+                            String(colombiaNow.getDate()).padStart(2, "0") + "-" +
+                            moscaHoraCierre;
+
+                     const diff = cierreSec - nowSec;
+
+                     return {
+                            diff: diff,
+                            dateKey: dateKey,
+                            closed: diff <= 0,
+                            closingMinute: diff <= 0 && diff > -60
+                     };
+
+              }
+
+              function startMoscaClosedEvent(clock) {
+
+                     if (!moscaActivo) return;
+
+                     if (moscaClosedEventActive) return;
+
+                     moscaClosedEventActive = true;
+                     moscaCloseEventKey = clock.dateKey;
+                     moscaRunning = true;
+
+                     moscaTimeouts.forEach((timer) => clearTimeout(timer));
+                     moscaTimeouts = [];
+
+                     if (moscaInterval) {
+                            clearInterval(moscaInterval);
+                            moscaInterval = null;
+                     }
+
+                     mosca.style.opacity = 1;
+
+                     moscaTexto.style.opacity = 0;
+
+                     hideMoscaLogo();
+                     moscaLogo.classList.remove("logoSweep");
+                     moscaLogoImg.src = "assets/mosca/logo2.png";
+
+                     moscaLogoEE.style.opacity = 0;
+                     const mask = moscaLogoEE.querySelector(".moscaCircleMask");
+                     mask.style.background = "white";
+                     mask.style.clipPath = "circle(0% at 50% 50%)";
+
+                     moscaCierreTexto.classList.remove("active");
+                     if (typeof moscaCierreTexto.getAnimations === "function") {
+                            moscaCierreTexto.getAnimations().forEach(anim => anim.cancel());
+                     }
+                     moscaCierreTexto.classList.add("active");
+
+                     moscaClosedEventTimeout = setTimeout(() => {
+                            moscaCierreTexto.classList.remove("active");
+                            moscaClosedEventTimeout = null;
+                            moscaClosedEventActive = false;
+                            moscaRunning = false;
+
+                            if (moscaActivo) {
+                                   setTimeout(() => startMosca(), 500);
+                            }
+
+                     }, 60600);
+
+              }
+
+              function updateMoscaTexto() {
+
+                     if (!moscaActivo) {
+                            moscaTexto.innerHTML = "";
+                            return;
+                     }
+
+                     const clock = getMoscaClock();
+
+                     if (clock.closingMinute && moscaCloseEventKey !== clock.dateKey) {
+                            startMoscaClosedEvent(clock);
+                            return;
+                     }
+
+                     // Si el contenedor de la mosca no está visible, omitir el recálculo.
+                     if (moscaTexto.style.opacity === "0" || parseFloat(getComputedStyle(moscaTexto).opacity) === 0) {
+                            return;
+                     }
+
+                     if (clock.diff > 0) {
+                            moscaTexto.innerHTML = `
+<span class="moscaCountdownLine moscaCountdownTop">CIERRE DE</span>
+<span class="moscaCountdownLine moscaCountdownMiddle">VOTACIONES EN:</span>
+<span class="moscaCountdownLine moscaCountdownTime">${formatMoscaTime(clock.diff)}</span>
+`;
+                     } else {
+                            moscaTexto.innerHTML = "";
+                     }
+
+              }
+
+              function setMoscaLogo(src) {
+
+                     if (moscaLogoImg.getAttribute("src") === src) return;
+
+                     moscaLogo.classList.remove("logoSweep");
+                     if (typeof moscaLogo.getAnimations === "function") {
+                            moscaLogo.getAnimations().forEach(anim => anim.cancel());
+                     }
+                     moscaLogoImg.src = src;
+                     moscaLogo.classList.add("logoSweep");
+
+              }
+
+              function showMoscaLogo(src) {
+
+                     setMoscaLogo(src);
+                     moscaLogo.style.opacity = 1;
+
+              }
+
+              function hideMoscaLogo() {
+
+                     moscaLogo.style.opacity = 0;
+
+              }
+
+              function isMoscaClosed() {
+
+                     return getMoscaClock().closed;
+
+              }
+
+              function startMosca() {
+
+                     if (moscaClosedEventActive) return;
+
+                     if (moscaRunning) return;
+
+                     resetMosca();
+
+                     moscaActivo = true;
+
+                     const clock = getMoscaClock();
+                     if (clock.closingMinute && moscaCloseEventKey !== clock.dateKey) {
+                            startMoscaClosedEvent(clock);
+                            return;
+                     }
+
+                     moscaRunning = true;
+
+                     mosca.style.opacity = 1;
+
+                     let t = 0;
+
+                     if (!isMoscaClosed()) {
+
+                            moscaTimeouts.push(setTimeout(() => {
+                                   moscaTexto.style.opacity = 1;
+                            }, t + 200));
+
+                            moscaTimeouts.push(setTimeout(() => {
+                                   moscaTexto.style.opacity = 0;
+                            }, t + 20000));
+
+                            t += 20000;
+
+                            moscaTimeouts.push(setTimeout(() => {
+                                   showMoscaLogo("assets/mosca/logo1.png");
+                            }, t + 200));
+
+                            moscaTimeouts.push(setTimeout(() => {
+                                   hideMoscaLogo();
+                            }, t + 20000));
+
+                            t += 20000;
+
+                     } else {
+
+                            moscaTimeouts.push(setTimeout(() => {
+                                   showMoscaLogo("assets/mosca/logo2.png");
+                            }, t + 200));
+
+                            moscaTimeouts.push(setTimeout(() => {
+                                   hideMoscaLogo();
+                            }, t + 20000));
+
+                            t += 20000;
+
+                            moscaTimeouts.push(setTimeout(() => {
+                                   showMoscaLogo("assets/mosca/logo1.png");
+                            }, t + 200));
+
+                            moscaTimeouts.push(setTimeout(() => {
+                                   hideMoscaLogo();
+                            }, t + 20000));
+
+                            t += 20000;
+
+                     }
+
+                     moscaTimeouts.push(setTimeout(() => {
+                            moscaLogoEE.style.opacity = 1;
+
+                            const mask = moscaLogoEE.querySelector(".moscaCircleMask");
+                            mask.style.clipPath = "circle(60% at 50% 50%)";
+
+                            setTimeout(() => {
+                                   mask.style.background = "transparent";
+                            }, 400);
+
+                     }, t + 200));
+
+                     moscaTimeouts.push(setTimeout(() => {
+                            const mask = moscaLogoEE.querySelector(".moscaCircleMask");
+                            mask.style.background = "white";
+                            mask.style.clipPath = "circle(0% at 50% 50%)";
+                     }, t + 10000));
+
+                     moscaTimeouts.push(setTimeout(() => {
+                            moscaLogoEE.style.opacity = 0;
+                     }, t + 10500));
+
+                     t += 10000;
+
+                     moscaTimeouts.push(setTimeout(() => {
+
+                            moscaRunning = false;
+
+                            if (!moscaActivo) return;
+
+                            // Programar el próximo ciclo usando un setTimeout único,
+                            // sin recursión implícita.
+                            moscaTimeouts.push(setTimeout(() => {
+                                   if (moscaActivo) startMosca();
+                            }, 500));
+
+                     }, t));
+
+                     moscaInterval = setInterval(() => {
+                            if (!moscaActivo) return;
+                            updateMoscaTexto();
+                     }, 1000);
+                     updateMoscaTexto();
+
+              }
+
+              function stopMosca() {
+                     moscaActivo = false;
+                     resetMosca();
+              }
+
+              function hideImmediately() {
+                     const banner = document.getElementById("banner");
+                     banner.style.opacity = "0";
+                     banner.style.transition = "none";
+                     banner.style.transform = "translateY(0px)";
+              }
+
+              hideImmediately();
+
+              function hideCandidateImmediately() {
+                     const banner = document.getElementById("candidateBanner");
+                     banner.style.opacity = "0";
+                     banner.style.transition = "none";
+                     banner.style.transform = "translateY(0px)";
+              }
+
+              hideCandidateImmediately();
+
+              function createCandidateBannerMask() {
+
+                     if (candidateBannerMaskCreated) return;
+
+                     const banner = document.getElementById("candidateBanner");
+                     const bannerMask = document.createElement("div");
+
+                     bannerMask.id = "candidateBannerMask";
+                     bannerMask.style.position = "absolute";
+                     bannerMask.style.left = "0px";
+                     bannerMask.style.bottom = "83px";
+                     bannerMask.style.width = "1920px";
+                     bannerMask.style.height = "600px";
+                     bannerMask.style.overflow = "hidden";
+                     bannerMask.style.zIndex = "20";
+                     bannerMask.style.pointerEvents = "none";
+
+                     banner.parentNode.insertBefore(bannerMask, banner);
+                     bannerMask.appendChild(banner);
+
+                     banner.style.position = "absolute";
+                     banner.style.bottom = "165px";
+                     banner.style.left = "0";
+
+                     candidateBannerMaskCreated = true;
+
+              }
+
+              function resetCandidateBanner() {
+
+                     createCandidateBannerMask();
+
+                     const banner = document.getElementById("candidateBanner");
+                     const mask1 = document.getElementById("candidateMask1");
+                     const mask2 = document.getElementById("candidateMask2");
+                     const logo = document.getElementById("candidateLogoBox");
+                     const candidateImg = document.getElementById("candidateImg");
+
+                     banner.style.transition = "none";
+                     mask1.style.transition = "none";
+                     mask2.style.transition = "none";
+                     logo.style.transition = "none";
+
+                     banner.style.transform = "translateY(0px)";
+                     banner.style.opacity = "1";
+
+                     logo.style.left = "50vw";
+
+                     document.getElementById("candidateLogo").style.opacity = "1";
+
+                     candidateImg.style.display = "block";
+                     candidateImg.style.opacity = "0";
+
+                     mask1.style.clipPath = "inset(0 0 0 100%)";
+                     mask2.style.clipPath = "inset(0 0 0 100%)";
+
+                     mask2.style.zIndex = "1";
+
+              }
+
+              function startCandidateBanner() {
+
+                     clearCandidateAnimationTimers();
+                     resetCandidateBanner();
+
+                     const mask1 = document.getElementById("candidateMask1");
+                     const mask2 = document.getElementById("candidateMask2");
+                     const logo = document.getElementById("candidateLogoBox");
+                     const candidateImg = document.getElementById("candidateImg");
+                     const logoImg = document.getElementById("candidateLogo");
+
+                     setCandidateTimer(() => {
+
+                            mask1.style.transition = "clip-path 0.6s ease";
+                            mask1.style.clipPath = "inset(0 0 0 0)";
+
+                     }, 100);
+
+                     setCandidateTimer(() => {
+
+                            mask1.style.clipPath = "inset(0 1720px 0 0)";
+
+                            logo.style.transition = "left 0.6s ease";
+                            logo.style.left = "100px";
+
+                            logoImg.style.opacity = "0";
+
+                            candidateImg.style.opacity = "1";
+
+                     }, 1030);
+
+                     setCandidateTimer(() => {
+
+                            mask2.style.zIndex = "-1";
+                            mask2.style.clipPath = "inset(0 0 0 0)";
+
+                     }, 925);
+
+              }
+
+              function hideCandidateBanner() {
+
+                     const banner = document.getElementById("candidateBanner");
+
+                     banner.style.transition = "transform 1.5s ease";
+                     banner.style.transform = "translateY(400px)";
+
+              }
+
+              function showCandidateOverlay(text, candidate, mode = "two") {
+
+                     const banner = document.getElementById("candidateBanner");
+                     const candidateImg = document.getElementById("candidateImg");
+                     const candidateText = document.getElementById("candidateBannerText");
+
+                     clearTimeout(candidateChangeTimer);
+                     clearTimeout(candidateHideTimer);
+                     clearTimeout(changeTimer);
+                     clearTimeout(hideTimer);
+                     clearBaseAnimationTimers();
+
+                     if (visible) {
+
+                            hideBanner();
+
+                            candidateChangeTimer = setTimeout(() => {
+
+                                   hideImmediately();
+                                   visible = false;
+                                   visibleSource = null;
+
+                                   candidateImg.src = "assets/candidatos/" + candidate;
+                                   candidateText.className = (mode === "single") ? "singleLineMode" : "";
+                                   candidateText.innerHTML = (mode === "single") ? escapeHTML(text) : balanceTwoLineText(text, "candidateBannerText");
+
+                                   banner.style.opacity = "1";
+                                   startCandidateBanner();
+
+                                   candidateVisible = true;
+
+                            }, 3500);
+
+                            return;
+
+                     }
+
+                     if (candidateVisible) {
+
+                            hideCandidateBanner();
+
+                            candidateChangeTimer = setTimeout(() => {
+
+                                   candidateImg.src = "assets/candidatos/" + candidate;
+                                   candidateText.className = (mode === "single") ? "singleLineMode" : "";
+                                   candidateText.innerHTML = (mode === "single") ? escapeHTML(text) : balanceTwoLineText(text, "candidateBannerText");
+
+                                   banner.style.opacity = "1";
+                                   startCandidateBanner();
+
+                                   candidateVisible = true;
+
+                            }, 3500);
+
+                     } else {
+
+                            candidateImg.src = "assets/candidatos/" + candidate;
+                            candidateText.className = (mode === "single") ? "singleLineMode" : "";
+                            candidateText.innerHTML = (mode === "single") ? escapeHTML(text) : balanceTwoLineText(text, "candidateBannerText");
+
+                            banner.style.opacity = "1";
+                            startCandidateBanner();
+
+                            candidateVisible = true;
+
+                     }
+
+              }
+
+              function hideCandidateOverlay() {
+
+                     if (!candidateVisible) return;
+
+                     clearTimeout(candidateChangeTimer);
+                     clearTimeout(candidateHideTimer);
+                     clearCandidateAnimationTimers();
+
+                     hideCandidateBanner();
+
+                     candidateHideTimer = setTimeout(() => {
+
+                            hideCandidateImmediately();
+                            candidateVisible = false;
+
+                     }, 1500);
+
+              }
+
+              function escapeHTML(value) {
+
+                     return String(value)
+                            .replace(/&/g, "&amp;")
+                            .replace(/</g, "&lt;")
+                            .replace(/>/g, "&gt;")
+                            .replace(/"/g, "&quot;")
+                            .replace(/'/g, "&#039;");
+
+              }
+
+              function createTickerItem(note, x) {
+                     const dot = '<span class="tickerDot"></span>';
+                     const brand = '<span class="tickerBrandText">ELECCIONES 2026</span>';
+                     const item = document.createElement("div");
+
+                     item.className = "tickerItem";
+                     item.innerHTML = '<span class="tickerNoteText">' + escapeHTML(note) + '</span>' + dot + brand + dot;
+                     item.style.transform = "translateX(" + x + "px)";
+
+                     if (tickerIntroTrailPending) {
+                            item.classList.add("tickerIntroTrail");
+                            tickerIntroTrailPending = false;
+                     }
+
+                     tickerTrack.appendChild(item);
+
+                     const width = item.getBoundingClientRect().width;
+                     const tickerItem = { element: item, x: x, width: width, note: note };
+
+                     tickerItems.push(tickerItem);
+
+                     return tickerItem;
+              }
+
+              function getNextTickerNote() {
+
+                     if (tickerActiveNotes.length === 0) return null;
+
+                     if (tickerNextNoteIndex >= tickerActiveNotes.length) {
+                            tickerNextNoteIndex = 0;
+                     }
+
+                     const note = tickerActiveNotes[tickerNextNoteIndex];
+                     tickerNextNoteIndex = (tickerNextNoteIndex + 1) % tickerActiveNotes.length;
+
+                     return note;
+
+              }
+
+              function addNextTickerItem(x) {
+
+                     const note = getNextTickerNote();
+
+                     if (!note) return null;
+
+                     return createTickerItem(note, x);
+
+              }
+
+              function fillTickerQueue() {
+
+                     if (tickerActiveNotes.length === 0) return;
+
+                     const barWidth = tickerBar.getBoundingClientRect().width || window.innerWidth;
+                     let nextX = barWidth;
+
+                     if (tickerItems.length > 0) {
+                            const last = tickerItems[tickerItems.length - 1];
+                            nextX = last.x + last.width;
+                     }
+
+                     while (nextX < barWidth * 1.35) {
+                            const item = addNextTickerItem(nextX);
+
+                            if (!item) return;
+
+                            nextX = item.x + item.width;
+                     }
+
+              }
+
+              function moveTickerItems(timestamp) {
+
+                     if (!tickerBar.classList.contains("active") && !tickerIsExiting) {
+                            tickerAnimationFrame = null;
+                            tickerLastFrameTime = null;
+                            return;
+                     }
+
+                     if (tickerLastFrameTime === null) {
+                            tickerLastFrameTime = timestamp;
+                     }
+
+                     const elapsed = Math.min((timestamp - tickerLastFrameTime) / 1000, 0.08);
+                     tickerLastFrameTime = timestamp;
+
+                     tickerItems.forEach((item) => {
+                            item.x -= tickerSpeed * elapsed;
+                            item.element.style.transform = "translateX(" + item.x + "px)";
+                     });
+
+                     tickerItems = tickerItems.filter((item) => {
+                            if (item.x + item.width > 0) return true;
+                            item.element.remove();
+                            return false;
+                     });
+
+                     if (tickerBar.classList.contains("active")) {
+                            fillTickerQueue();
+                     }
+
+                     tickerAnimationFrame = requestAnimationFrame(moveTickerItems);
+
+              }
+
+              function startTickerMovement() {
+
+                     if (tickerAnimationFrame) return;
+
+                     tickerLastFrameTime = null;
+                     tickerAnimationFrame = requestAnimationFrame(moveTickerItems);
+
+              }
+
+              function stopTickerMovement() {
+
+                     if (tickerAnimationFrame) {
+                            cancelAnimationFrame(tickerAnimationFrame);
+                            tickerAnimationFrame = null;
+                     }
+
+                     tickerLastFrameTime = null;
+                     tickerItems.forEach((item) => item.element.remove());
+                     tickerItems = [];
+                     tickerNextNoteIndex = 0;
+
+              }
+
+              function triggerRandomTickerShine() {
+
+                     const brands = [...tickerTrack.querySelectorAll(".tickerBrandText")];
+
+                     if (brands.length === 0 || !tickerBar.classList.contains("active")) return;
+
+                     brands.forEach((brand) => brand.classList.remove("tickerShine"));
+
+                     const visibleBrands = brands.filter((brand) => {
+                            const rect = brand.getBoundingClientRect();
+                            return rect.right > 0 && rect.left < window.innerWidth;
+                     });
+
+                     const pool = visibleBrands.length ? visibleBrands : brands;
+                     const selected = pool[Math.floor(Math.random() * pool.length)];
+
+                     selected.classList.add("tickerShine");
+
+                     setTimeout(() => {
+                            selected.classList.remove("tickerShine");
+                     }, 1300);
+
+              }
+
+              function stopTickerShine() {
+
+                     if (tickerShineTimer) {
+                            clearTimeout(tickerShineTimer);
+                            tickerShineTimer = null;
+                     }
+
+                     tickerTrack.querySelectorAll(".tickerBrandText").forEach((brand) => {
+                            brand.classList.remove("tickerShine");
+                     });
+
+              }
+
+              function startTickerShine() {
+
+                     stopTickerShine();
+
+                     function scheduleNextShine() {
+                            tickerShineTimer = setTimeout(() => {
+                                   triggerRandomTickerShine();
+                                   scheduleNextShine();
+                            }, 20000);
+                     }
+
+                     scheduleNextShine();
+
+              }
+
+              function showTicker(notes) {
+
+                     if (tickerExitTimer) {
+                            clearTimeout(tickerExitTimer);
+                            tickerExitTimer = null;
+                     }
+
+                     tickerIsExiting = false;
+
+                     const cleanNotes = notes
+                            .map((note) => String(note).replace(/\s+/g, " ").trim())
+                            .filter(Boolean);
+
+                     if (cleanNotes.length === 0) {
+                            hideTicker();
+                            return;
+                     }
+
+                     if (tickerBar.classList.contains("active")) {
+                            tickerActiveNotes = [...cleanNotes];
+
+                            if (tickerNextNoteIndex >= tickerActiveNotes.length) {
+                                   tickerNextNoteIndex = 0;
+                            }
+
+                            return;
+                     }
+
+                     tickerActiveNotes = [...cleanNotes];
+                     tickerNextNoteIndex = 0;
+                     tickerTrack.innerHTML = "";
+                     tickerItems = [];
+                     tickerIntroTrailPending = true;
+                     fillTickerQueue();
+                     requestAnimationFrame(() => {
+                            tickerBar.classList.add("active");
+                            startTickerMovement();
+                     });
+                     startTickerShine();
+              }
+
+              function hideTicker() {
+                     if (tickerExitTimer) {
+                            clearTimeout(tickerExitTimer);
+                     }
+
+                     tickerBar.classList.remove("active");
+                     tickerActiveNotes = [];
+                     tickerIntroTrailPending = false;
+                     stopTickerShine();
+
+                     tickerIsExiting = true;
+
+                     tickerExitTimer = setTimeout(() => {
+                            tickerIsExiting = false;
+                            stopTickerMovement();
+                            tickerExitTimer = null;
+                     }, 720);
+              }
+
+              function balanceTwoLineText(text, containerId) {
+
+                     const cleanText = String(text).replace(/\s+/g, " ").trim();
+                     const words = cleanText.split(" ");
+
+                     if (words.length < 4) return escapeHTML(cleanText);
+
+                     const container = document.getElementById(containerId);
+                     const style = window.getComputedStyle(container);
+                     const maxWidth = container.clientWidth || parseFloat(style.width);
+
+                     const lineHeight = parseFloat(style.lineHeight) || (parseFloat(style.fontSize) * 1.25);
+
+                     const probe = document.createElement("div");
+                     probe.style.position = "absolute";
+                     probe.style.visibility = "hidden";
+                     probe.style.left = "-9999px";
+                     probe.style.top = "-9999px";
+                     probe.style.width = maxWidth + "px";
+                     probe.style.whiteSpace = "normal";
+                     probe.style.fontStyle = style.fontStyle;
+                     probe.style.fontVariant = style.fontVariant;
+                     probe.style.fontSize = style.fontSize;
+                     probe.style.fontWeight = style.fontWeight;
+                     probe.style.fontFamily = style.fontFamily;
+                     probe.style.lineHeight = style.lineHeight;
+                     probe.style.letterSpacing = style.letterSpacing;
+                     probe.style.textTransform = style.textTransform;
+                     probe.style.wordBreak = style.wordBreak;
+                     probe.style.overflow = "visible";
+                     probe.textContent = cleanText;
+                     document.body.appendChild(probe);
+
+                     const naturalHeight = probe.getBoundingClientRect().height;
+
+                     if (naturalHeight <= lineHeight * 1.35) {
+                            document.body.removeChild(probe);
+                            return escapeHTML(cleanText);
+                     }
+
+                     if (naturalHeight > lineHeight * 2.35) {
+                            document.body.removeChild(probe);
+                            return escapeHTML(cleanText);
+                     }
+
+                     let bestIndex = null;
+                     let bestScore = Infinity;
+
+                     probe.style.width = "auto";
+                     probe.style.whiteSpace = "nowrap";
+
+                     for (let i = 1; i < words.length; i++) {
+
+                            const first = words.slice(0, i).join(" ");
+                            const second = words.slice(i).join(" ");
+
+                            probe.textContent = first;
+                            const firstWidth = probe.getBoundingClientRect().width;
+
+                            probe.textContent = second;
+                            const secondWidth = probe.getBoundingClientRect().width;
+
+                            if (firstWidth > maxWidth || secondWidth > maxWidth) continue;
+
+                            const score = Math.abs(firstWidth - secondWidth);
+
+                            if (score < bestScore) {
+                                   bestScore = score;
+                                   bestIndex = i;
+                            }
+
+                     }
+
+                     if (bestIndex === null) {
+                            document.body.removeChild(probe);
+                            return escapeHTML(cleanText);
+                     }
+
+                     const firstLine = words.slice(0, bestIndex).join(" ");
+                     const secondLine = words.slice(bestIndex).join(" ");
+
+                     document.body.removeChild(probe);
+
+                     return escapeHTML(firstLine) + "<br>" + escapeHTML(secondLine);
+
+              }
+
+              function setBannerContent(content, mode) {
+
+                     const bannerText = document.getElementById("bannerText");
+                     bannerText.className = mode;
+
+                     if (mode === "bannerMode") {
+                            bannerText.innerHTML = `<div class="bannerLine">${balanceTwoLineText(content, "bannerText")}</div>`;
+                            return;
+                     }
+
+                     if (mode === "bannerSingleMode") {
+                            bannerText.innerHTML = `<div class="bannerLine">${escapeHTML(content)}</div>`;
+                            return;
+                     }
+
+                     bannerText.innerHTML = content;
+
+              }
+
+              function startBaseBanner() {
+
+                     clearBaseAnimationTimers();
+
+                     const nativeSetTimeout = window.setTimeout;
+
+                     window.setTimeout = (callback, delay) => {
+                            const timer = nativeSetTimeout(callback, delay);
+                            baseAnimationTimers.push(timer);
+                            return timer;
+                     };
+
+                     try {
+                            startBanner();
+                     } finally {
+                            window.setTimeout = nativeSetTimeout;
+                     }
+
+              }
+
+              function showOverlay(source, html, mode) {
+
+                     const banner = document.getElementById("banner");
+
+                     clearTimeout(changeTimer);
+                     clearTimeout(hideTimer);
+                     clearTimeout(candidateChangeTimer);
+                     clearTimeout(candidateHideTimer);
+                     clearCandidateAnimationTimers();
+
+                     if (candidateVisible) {
+
+                            hideCandidateBanner();
+
+                            changeTimer = setTimeout(() => {
+
+                                   hideCandidateImmediately();
+                                   candidateVisible = false;
+
+                                   setBannerContent(html, mode);
+
+                                   banner.style.opacity = "1";
+                                   startBaseBanner();
+
+                                   visible = true;
+                                   visibleSource = source;
+
+                            }, 3500);
+
+                            return;
+
+                     }
+
+                     if (visible) {
+
+                            hideBanner();
+
+                            changeTimer = setTimeout(() => {
+
+                                   setBannerContent(html, mode);
+
+                                   banner.style.opacity = "1";
+                                   startBaseBanner();
+
+                                   visible = true;
+                                   visibleSource = source;
+
+                            }, 3500);
+
+                     } else {
+
+                            setBannerContent(html, mode);
+
+                            banner.style.opacity = "1";
+                            startBaseBanner();
+
+                            visible = true;
+                            visibleSource = source;
+
+                     }
+
+              }
+
+              function hideOverlay(source) {
+
+                     if (!visible) return;
+
+                     if (source !== visibleSource) return;
+
+                     clearTimeout(changeTimer);
+                     clearTimeout(hideTimer);
+                     clearBaseAnimationTimers();
+
+                     hideBanner();
+
+                     hideTimer = setTimeout(() => {
+                            hideImmediately();
+                            visible = false;
+                            visibleSource = null;
+                     }, 1500);
+
+              }
+
+              roleChannel.subscribe("banner", (message) => {
+
+                     const data = message.data;
+
+                     if (data.action === "show") {
+
+                            if (!data.name || !data.role) return;
+
+                            const name = escapeHTML(data.name.toUpperCase());
+                            const role = escapeHTML(data.role.toUpperCase());
+
+                            const textHTML = `
+<div class="nameLine">${name}</div>
+<div class="roleLine">${role}</div>
+`;
+
+                            showOverlay("roles", textHTML, "roleMode");
+
+                     }
+
+                     if (data.action === "hide") {
+
+                            hideOverlay("roles");
+
+                     }
+
+              });
+
+              bannerChannel.subscribe("banner", (message) => {
+
+                     const data = message.data;
+
+                     if (data.action === "show") {
+
+                            const mode = (data.mode === "two") ? "bannerMode" : "bannerSingleMode";
+                            showOverlay("banners", data.text.toUpperCase(), mode);
+
+                     }
+
+                     if (data.action === "hide") {
+
+                            hideOverlay("banners");
+
+                     }
+
+              });
+
+              candidateChannel.subscribe("banner", (message) => {
+
+                     const data = message.data;
+
+                     if (data.action === "show") {
+
+                            if (!data.text || !data.candidate) return;
+
+                            showCandidateOverlay(data.text.toUpperCase(), data.candidate, data.mode);
+
+                     }
+
+                     if (data.action === "hide") {
+
+                            hideCandidateOverlay();
+
+                     }
+
+              });
+
+              moscaChannel.subscribe("control", (message) => {
+
+                     const data = message.data;
+
+                     if (data.action === "on") {
+                            stopMosca();
+                            setTimeout(() => startMosca(), 80);
+                     }
+
+                     if (data.action === "off") {
+                            stopMosca();
+                     }
+
+                     if (data.action === "updateHora") {
+                            moscaHoraCierre = data.hora;
+                            moscaCloseEventKey = null;
+                            updateMoscaTexto();
+                     }
+
+              });
+
+              tickerChannel.subscribe("control", (message) => {
+
+                     const data = message.data;
+
+                     if (data.action === "show") {
+                            showTicker(Array.isArray(data.notes) ? data.notes : []);
+                     }
+
+                     if (data.action === "hide") {
+                            hideTicker();
+                     }
+
+              });
+
+       </script>
+
+</body>
+
+</html>
